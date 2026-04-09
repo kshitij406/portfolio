@@ -3,12 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0f0f0d;
-  --accent: #e8ff47;
-  --text: #d4d0c8;
-  --muted: #6b6760;
-  --surface: #1a1a17;
-  --border: #2a2a26;
+  --bg: #14181c;
+  --surface: #2c3440;
+  --surface-raised: #384455;
+  --text: #c8ccd0;
+  --muted: #99aabb;
+  --muted-dim: #667788;
+  --accent: #00e054;
+  --accent-dim: rgba(0, 224, 84, 0.1);
+  --rating: #e9a23b;
+  --rating-dim: rgba(233, 162, 59, 0.1);
+  --border: #445566;
+  --border-dim: rgba(68, 85, 102, 0.5);
 }
 
 * {
@@ -87,8 +93,8 @@ body {
 
 /* Timeline dot pulse */
 @keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 255, 71, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(232, 255, 71, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 224, 84, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 224, 84, 0); }
 }
 
 .timeline-dot-active {
@@ -100,3 +106,16 @@ body {
 .annotation-2 { transform: rotate(0.6deg); }
 .annotation-3 { transform: rotate(-0.4deg); }
 .annotation-4 { transform: rotate(0.9deg); }
+
+/* Poster card shimmer overlay */
+.poster-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.poster-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}

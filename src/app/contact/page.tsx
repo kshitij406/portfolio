@@ -36,7 +36,7 @@ export default function ContactPage() {
             <span
               className="text-xs"
               style={{
-                color: "var(--muted)",
+                color: "var(--muted-dim)",
                 fontFamily: "var(--font-dm-mono), monospace",
                 letterSpacing: "0.1em",
               }}
@@ -59,9 +59,9 @@ export default function ContactPage() {
             className="text-base md:text-lg max-w-lg leading-relaxed mb-12"
             style={{ color: "var(--muted)" }}
           >
-            I&apos;m not actively hunting for roles right now but I&apos;m
-            always up for a good conversation — about systems, backends,
-            whatever you&apos;re building, or films. Especially films.
+            Not actively hunting for roles right now, but open to good
+            conversations. About software, about what you are building, about
+            films. Send something interesting and I will read it.
           </p>
         </SectionObserver>
 
@@ -94,34 +94,40 @@ export default function ContactPage() {
               elsewhere
             </div>
             <div className="flex flex-wrap gap-6">
-              {SOCIAL.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-2 text-sm transition-opacity hover:opacity-100 opacity-70"
-                >
-                  <span
-                    className="font-medium group-hover:underline"
-                    style={{
-                      color: "var(--text)",
-                      fontFamily: "var(--font-dm-mono), monospace",
-                    }}
+              {SOCIAL.map((link) => {
+                const isLetterboxd = link.label === "Letterboxd";
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-2 text-sm transition-opacity hover:opacity-100 opacity-70"
                   >
-                    {link.label}
-                  </span>
-                  <span style={{ color: "var(--border)" }}>/</span>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-dm-mono), monospace",
-                      color: "var(--muted)",
-                    }}
-                  >
-                    {link.handle}
-                  </span>
-                </a>
-              ))}
+                    {isLetterboxd && (
+                      <span style={{ color: "var(--rating)" }}>★</span>
+                    )}
+                    <span
+                      className="font-medium group-hover:underline"
+                      style={{
+                        color: isLetterboxd ? "var(--rating)" : "var(--text)",
+                        fontFamily: "var(--font-dm-mono), monospace",
+                      }}
+                    >
+                      {link.label}
+                    </span>
+                    <span style={{ color: "var(--border)" }}>/</span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-dm-mono), monospace",
+                        color: isLetterboxd ? "var(--rating)" : "var(--muted)",
+                      }}
+                    >
+                      {link.handle}
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </SectionObserver>
@@ -139,7 +145,7 @@ export default function ContactPage() {
             <div className="flex items-center gap-3 mb-2">
               <span
                 className="inline-block w-2 h-2 rounded-full"
-                style={{ background: "#4ade80" }}
+                style={{ background: "var(--accent)" }}
               />
               <span
                 className="text-xs uppercase tracking-widest"
@@ -173,18 +179,29 @@ export default function ContactPage() {
 
       {/* Footer */}
       <footer
-        className="px-6 md:px-12 py-8"
+        className="px-6 md:px-12 py-8 flex flex-wrap justify-between gap-4 items-center"
         style={{ borderTop: "1px solid var(--border)" }}
       >
         <p
           className="text-xs"
-          style={{
-            color: "var(--muted)",
-            fontFamily: "var(--font-dm-mono), monospace",
-          }}
+          style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
         >
-          kshitij jha · open to a good conversation
+          kshitij jha · mauritius
         </p>
+        <div className="flex gap-5 text-xs" style={{ fontFamily: "var(--font-dm-mono), monospace" }}>
+          <a href="https://github.com/kxitiz" target="_blank" rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--muted)" }}>
+            GitHub
+          </a>
+          <a href="https://linkedin.com/in/kshitijjha" target="_blank" rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--muted)" }}>
+            LinkedIn
+          </a>
+          <a href="https://letterboxd.com/Kxitiz_/" target="_blank" rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--rating)" }}>
+            ★ Letterboxd
+          </a>
+        </div>
       </footer>
     </main>
   );

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const CONFESSIONS = [
-  "I have Googled how to exit Vim more than once.",
+  "I have asked Claude to explain code I wrote earlier that same day.",
   "My first React component was 400 lines long.",
   "I wrote a shell script to avoid writing a shell script.",
   "I have read the Dune appendices.",

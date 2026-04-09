@@ -12,7 +12,13 @@ const config: Config = {
         bg: "var(--bg)",
         accent: "var(--accent)",
         surface: "var(--surface)",
+        "surface-raised": "var(--surface-raised)",
         border: "var(--border)",
+        rating: "var(--rating)",
+        muted: "var(--muted)",
+        "muted-dim": "var(--muted-dim)",
+        "border-dim": "var(--border-dim)",
+        "accent-dim": "var(--accent-dim)",
       },
       fontFamily: {
         syne: ["var(--font-syne)", "sans-serif"],

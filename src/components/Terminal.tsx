@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 const LINES = [
-  "currently: watching films",
+  "location: Mauritius",
   "status: pushing to main",
-  "location: Mauritius (for now)",
-  "mood: debugging",
-  "next stop: UK",
-  "coffee: yes",
+  "model: claude-sonnet",
+  "watching: something on letterboxd",
+  "year: 2 of 3",
+  "last build: successful",
 ];
 
 const TYPING_SPEED = 55;

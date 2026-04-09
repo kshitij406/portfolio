@@ -1,46 +1,57 @@
 import Terminal from "@/components/Terminal";
 import Link from "next/link";
 
+export const revalidate = 3600;
+
 const NAV_CARDS = [
   {
     href: "/about",
     number: "01",
     label: "About",
-    description: "CS student. Backend person. Mauritius → UK. Watches films.",
+    description: "CS student. Backend focus. Mauritius. Watches films.",
   },
   {
     href: "/work",
     number: "02",
     label: "Work",
-    description: "APIs, internships, client projects. Real code, real users.",
+    description: "APIs, client projects, real users.",
   },
   {
     href: "/contact",
     number: "03",
     label: "Contact",
-    description: "Say hi. I don't bite. Usually.",
+    description: "Send something interesting.",
   },
 ];
 
-const TICKER_ITEMS = [
-  "backend engineer",
-  "allegedly",
-  "c# · .net",
-  "sap hana survivor",
-  "mauritius → uk",
-  "second year cs",
-  "letterboxd addict",
-  "open to conversations",
-  "not a frontend person",
-  "4 stars, would rewatch",
-  "pushing to main",
-  "probably debugging",
-];
+async function getLetterboxdFilmCount(): Promise<number | null> {
+  try {
+    const res = await fetch("https://letterboxd.com/Kxitiz_/rss/", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    const xml = await res.text();
+    const year = new Date().getFullYear().toString();
+    const matches = xml.match(
+      new RegExp(`<letterboxd:watchedDate>${year}-`, "g")
+    );
+    return matches?.length ?? 0;
+  } catch {
+    return null;
+  }
+}
 
-export default function Home() {
-  const tickerContent = [...TICKER_ITEMS, ...TICKER_ITEMS]
-    .map((item) => `${item} ·`)
-    .join("  ");
+export default async function Home() {
+  const filmCount = await getLetterboxdFilmCount();
+
+  const profileStats = [
+    { count: "2", label: "roles" },
+    { count: "5", label: "projects" },
+    { count: "11", label: "skills" },
+    ...(filmCount !== null
+      ? [{ count: `${filmCount}`, label: "films this year", href: "https://letterboxd.com/Kxitiz_/" }]
+      : [{ count: "/Kxitiz_", label: "letterboxd", href: "https://letterboxd.com/Kxitiz_/" }]),
+  ];
 
   return (
     <main
@@ -60,39 +71,93 @@ export default function Home() {
           className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6"
           style={{ fontFamily: "var(--font-syne), sans-serif" }}
         >
-          <span style={{ color: "var(--text)" }}>Backend engineer,</span>
+          <span style={{ color: "var(--text)" }}>I write software,</span>
           <br />
           <span style={{ color: "var(--accent)" }}>allegedly.</span>
         </h1>
 
         <p
-          className="text-lg md:text-xl max-w-xl leading-relaxed mb-16"
+          className="text-lg md:text-xl max-w-xl leading-relaxed mb-8"
           style={{ color: "var(--muted)" }}
         >
-          CS student finishing up in Mauritius before relocating to the UK.
-          I build APIs and systems that talk to databases. Sometimes they even
-          work on the first deploy.
+          CS student in Mauritius. I build web applications and APIs, mostly
+          with Next.js and Node.js. AI agents are part of the workflow now.
+          This site was one of them.
         </p>
 
-        {/* Navigation cards */}
+        {/* Profile stats bar */}
         <div
-          className="w-full"
-          style={{ borderTop: "1px solid var(--border)" }}
+          className="flex flex-wrap gap-8 py-4 mb-8"
+          style={{
+            borderTop: "1px solid var(--border)",
+            borderBottom: "1px solid var(--border)",
+          }}
         >
+          {profileStats.map((stat) =>
+            "href" in stat && stat.href ? (
+              <a
+                key={stat.label}
+                href={stat.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-start gap-0.5 transition-opacity hover:opacity-100 opacity-80"
+              >
+                <span
+                  className="text-base font-bold"
+                  style={{
+                    fontFamily: "var(--font-syne), sans-serif",
+                    color: "var(--rating)",
+                  }}
+                >
+                  ★ {stat.count}
+                </span>
+                <span
+                  className="text-xs uppercase tracking-wider"
+                  style={{
+                    color: "var(--muted-dim)",
+                    fontFamily: "var(--font-dm-mono), monospace",
+                  }}
+                >
+                  {stat.label}
+                </span>
+              </a>
+            ) : (
+              <div key={stat.label} className="flex flex-col items-start gap-0.5">
+                <span
+                  className="text-base font-bold"
+                  style={{
+                    fontFamily: "var(--font-syne), sans-serif",
+                    color: "var(--text)",
+                  }}
+                >
+                  {stat.count}
+                </span>
+                <span
+                  className="text-xs uppercase tracking-wider"
+                  style={{
+                    color: "var(--muted-dim)",
+                    fontFamily: "var(--font-dm-mono), monospace",
+                  }}
+                >
+                  {stat.label}
+                </span>
+              </div>
+            )
+          )}
+        </div>
+
+        {/* Navigation cards */}
+        <div style={{ borderTop: "1px solid var(--border)" }}>
           {NAV_CARDS.map((card) => (
             <Link key={card.href} href={card.href} className="block group">
               <div
-                className="flex items-center gap-6 md:gap-10 py-5 md:py-6 transition-all duration-200"
-                style={{
-                  borderBottom: "1px solid var(--border)",
-                  paddingLeft: "0",
-                  paddingRight: "0",
-                }}
+                className="flex items-center gap-6 md:gap-10 py-5 md:py-6 px-3 -mx-3 transition-all duration-200 rounded group-hover:bg-[var(--surface)]"
+                style={{ borderBottom: "1px solid var(--border)" }}
               >
                 <span
                   className="shrink-0 text-xs tabular-nums"
                   style={{
-                    color: "var(--muted)",
+                    color: "var(--muted-dim)",
                     fontFamily: "var(--font-dm-mono), monospace",
                     minWidth: "28px",
                   }}
@@ -126,38 +191,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── TICKER ─── */}
-      <div
-        className="w-full overflow-hidden py-3 border-t border-b"
-        style={{
-          borderColor: "var(--border)",
-          background: "var(--surface)",
-        }}
-      >
-        <div className="ticker-track">
-          <span
-            className="text-xs pr-8"
-            style={{
-              color: "var(--muted)",
-              fontFamily: "var(--font-dm-mono), monospace",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {tickerContent}
-          </span>
-          <span
-            className="text-xs pr-8"
-            style={{
-              color: "var(--muted)",
-              fontFamily: "var(--font-dm-mono), monospace",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {tickerContent}
-          </span>
-        </div>
-      </div>
-
       {/* ─── FOOTER ─── */}
       <footer
         className="px-6 md:px-12 py-8 flex flex-wrap justify-between gap-4 items-center"
@@ -166,21 +199,44 @@ export default function Home() {
         <p
           className="text-xs"
           style={{
-            color: "var(--muted)",
+            color: "var(--muted-dim)",
             fontFamily: "var(--font-dm-mono), monospace",
           }}
         >
-          built by kshitij jha · no template · no buzzwords
+          kshitij jha · mauritius
         </p>
-        <p
-          className="text-xs"
-          style={{
-            color: "var(--border)",
-            fontFamily: "var(--font-dm-mono), monospace",
-          }}
+        <div
+          className="flex gap-5 text-xs"
+          style={{ fontFamily: "var(--font-dm-mono), monospace" }}
         >
-          letterboxd.com/Kxitiz_
-        </p>
+          <a
+            href="https://github.com/kxitiz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100"
+            style={{ color: "var(--muted)" }}
+          >
+            GitHub
+          </a>
+          <a
+            href="https://linkedin.com/in/kshitijjha"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100"
+            style={{ color: "var(--muted)" }}
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://letterboxd.com/Kxitiz_/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity opacity-50 hover:opacity-100"
+            style={{ color: "var(--rating)" }}
+          >
+            ★ Letterboxd
+          </a>
+        </div>
       </footer>
     </main>
   );

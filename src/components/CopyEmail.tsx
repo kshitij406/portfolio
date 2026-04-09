@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const EMAIL = "kshitijjha.dev@gmail.com";
+const EMAIL = "kshitij.j615@gmail.com";
 
 export default function CopyEmail() {
   const [copied, setCopied] = useState(false);
@@ -44,7 +44,7 @@ export default function CopyEmail() {
           fontFamily: "var(--font-dm-mono), monospace",
           borderColor: copied ? "var(--accent)" : "var(--border)",
           color: copied ? "var(--accent)" : "var(--muted)",
-          background: copied ? "rgba(232,255,71,0.08)" : "transparent",
+          background: copied ? "var(--accent-dim)" : "transparent",
           opacity: copied ? 1 : 0.5,
         }}
       >
