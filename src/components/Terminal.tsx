@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 const LINES = [
   "location: Mauritius",
-  "status: pushing to main",
-  "model: claude-sonnet",
-  "watching: something on letterboxd",
+  "status: building useful things",
+  "editor: vscode + ai pair",
+  "watching: always logged on letterboxd",
   "year: 2 of 3",
   "last build: successful",
 ];

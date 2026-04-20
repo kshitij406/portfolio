@@ -4,17 +4,17 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const SKILLS: Record<string, string> = {
-  C: "Segfault avoided. Barely.",
-  "C#": "Enterprise-grade. Ship it.",
-  Python: "It works. No idea why.",
-  React: "useState used irresponsibly.",
-  "React Native": "Compiled on the first try. Suspicious.",
-  "Next.js": "Hydration error: ignored.",
-  TypeScript: "Tried to escape JavaScript. This is still JavaScript.",
-  "REST APIs": "200 OK. Probably fine.",
-  "SAP HANA": "Enterprise-grade. You wouldn't get it.",
-  Git: "Pushed to main. Prayed.",
-  Linux: "sudo worked. Moving on.",
+  C: "Pointers respected. Crashes reduced.",
+  "C#": "Production-ready and calm under pressure.",
+  Python: "Fast to build, easy to iterate.",
+  React: "UI patterns that stay maintainable.",
+  "React Native": "Mobile features shipped without drama.",
+  "Next.js": "Strong defaults, fast delivery.",
+  TypeScript: "Helpful guardrails, fewer surprises.",
+  "REST APIs": "Contract-first, then implementation.",
+  "SAP HANA": "Learned through real-world constraints.",
+  Git: "Clean branches, recoverable mistakes.",
+  Linux: "Comfortable in shell and server workflows.",
 };
 
 export default function SkillBenchmark() {
@@ -35,15 +35,15 @@ export default function SkillBenchmark() {
             key={skill}
             onClick={() => handleClick(skill)}
             className="px-3 py-1.5 rounded text-sm border transition-all duration-150 cursor-pointer"
-            style={{
-              fontFamily: "var(--font-dm-mono), monospace",
-              borderColor: active === skill ? "var(--accent)" : "var(--border)",
-              color: active === skill ? "var(--accent)" : "var(--text)",
-              background: active === skill ? "rgba(232,255,71,0.08)" : "var(--surface)",
-            }}
-          >
-            {skill}
-          </button>
+              style={{
+                fontFamily: "var(--font-dm-mono), monospace",
+                borderColor: active === skill ? "var(--accent)" : "var(--border)",
+                color: active === skill ? "var(--accent)" : "var(--text)",
+                background: active === skill ? "var(--accent-dim)" : "var(--surface)",
+              }}
+            >
+              {skill}
+            </button>
         ))}
       </div>
 

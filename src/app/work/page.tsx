@@ -2,24 +2,25 @@ import ScrambleText from "@/components/ScrambleText";
 import SkillBenchmark from "@/components/SkillBenchmark";
 import SectionObserver from "@/components/SectionObserver";
 import ScrollProgress from "@/components/ScrollProgress";
+import SiteFooter from "@/components/SiteFooter";
 import StarRating from "@/components/StarRating";
 import { EXPERIENCE, PROJECTS, SKILLS_RATED } from "@/data/content";
+import { SOCIAL_LINKS } from "@/data/site";
 
 const mono = { fontFamily: "var(--font-dm-mono), monospace" } as const;
 const syne = { fontFamily: "var(--font-syne), sans-serif" } as const;
 
 export default function WorkPage() {
+  const avgProjectRating = (
+    PROJECTS.reduce((sum, p) => sum + p.rating, 0) / PROJECTS.length
+  ).toFixed(1);
+
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--bg)", color: "var(--text)" }}
-    >
+    <main className="min-h-screen" style={{ color: "var(--text)" }}>
       <ScrollProgress />
 
-      <div
-        className="px-6 md:px-12 lg:px-20 pt-32 pb-24"
-        style={{ maxWidth: "1100px", margin: "0 auto" }}
-      >
+      <div className="px-6 md:px-12 lg:px-20 pt-32 pb-24">
+        <div className="content-shell">
         {/* Header */}
         <SectionObserver>
           <div className="mb-4">
@@ -27,12 +28,37 @@ export default function WorkPage() {
               02 / work
             </span>
           </div>
-          <div className="mb-16">
+          <div className="mb-10">
             <ScrambleText
-              text="What I've built."
+              text="Selected work."
               className="text-5xl md:text-6xl lg:text-7xl font-bold"
               as="h1"
             />
+          </div>
+        </SectionObserver>
+
+        <SectionObserver delay={50}>
+          <div className="editorial-card p-5 md:p-6 mb-16">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <p className="text-sm md:text-base max-w-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
+                I build products that prioritize reliability, speed, and clear user flow.
+                Most of this work was shipped for real constraints, not demo scenarios.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a href={SOCIAL_LINKS.github.href} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                  GitHub Activity
+                </a>
+                <a href={SOCIAL_LINKS.linkedin.href} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+                  LinkedIn Updates
+                </a>
+              </div>
+            </div>
+            <div className="editorial-divider my-4" />
+            <div className="flex flex-wrap gap-8 text-sm" style={{ fontFamily: "var(--font-dm-mono), monospace" }}>
+              <span><strong style={{ color: "var(--text)" }}>{PROJECTS.length}</strong> projects tracked</span>
+              <span><strong style={{ color: "var(--text)" }}>{EXPERIENCE.length}</strong> practical roles</span>
+              <span><strong style={{ color: "var(--rating)" }}>★ {avgProjectRating}</strong> avg project rating</span>
+            </div>
           </div>
         </SectionObserver>
 
@@ -40,12 +66,12 @@ export default function WorkPage() {
         <section className="mb-24">
           <SectionObserver>
             <div className="flex items-baseline gap-4 mb-10">
-              <h2 className="text-2xl font-bold" style={syne}>Experience</h2>
-              <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
-                the highlights — no buzzwords, I promise
-              </span>
-            </div>
-          </SectionObserver>
+                <h2 className="text-2xl font-bold" style={syne}>Experience</h2>
+                <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
+                  the practical highlights
+                </span>
+              </div>
+            </SectionObserver>
 
           {/* Timeline */}
           <div className="relative">
@@ -73,10 +99,9 @@ export default function WorkPage() {
 
                     {/* Card */}
                     <div
-                      className="flex-1 p-5 md:p-6 rounded border transition-colors duration-200"
+                      className="flex-1 p-5 md:p-6 rounded border transition-colors duration-200 editorial-card"
                       style={{
                         borderColor: i === 0 ? "var(--accent)" : "var(--border)",
-                        background: "var(--surface)",
                       }}
                     >
                       {/* Diary header */}
@@ -141,7 +166,7 @@ export default function WorkPage() {
             <div className="flex items-baseline gap-4 mb-10">
               <h2 className="text-2xl font-bold" style={syne}>Projects</h2>
               <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
-                things I built because I wanted to
+                shipped work and active builds
               </span>
             </div>
           </SectionObserver>
@@ -162,14 +187,14 @@ export default function WorkPage() {
         >
           <SectionObserver>
             <div className="flex items-baseline gap-4 mb-10">
-              <h2 className="text-2xl font-bold" style={syne}>Skills</h2>
-              <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
-                self-assessed. take with salt.
-              </span>
-            </div>
+                <h2 className="text-2xl font-bold" style={syne}>Skills</h2>
+                <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
+                self-assessed, grounded in shipped work
+                </span>
+              </div>
 
-            {/* Rated list */}
-            <div className="mb-8" style={{ borderTop: "1px solid var(--border)" }}>
+              {/* Rated list */}
+            <div className="mb-8 editorial-card" style={{ borderTop: "1px solid var(--border)" }}>
               {SKILLS_RATED.map((item, i) => (
                 <div
                   key={item.skill}
@@ -199,37 +224,15 @@ export default function WorkPage() {
             {/* Benchmark (bonus) */}
             <div className="pt-6" style={{ borderTop: "1px solid var(--border-dim)" }}>
               <p className="text-xs mb-4" style={{ ...mono, color: "var(--muted-dim)" }}>
-                {`// click a skill to run the benchmark`}
+                {`// click a skill to run the benchmark feed`}
               </p>
               <SkillBenchmark />
             </div>
           </SectionObserver>
         </section>
       </div>
-
-      {/* Footer */}
-      <footer
-        className="px-6 md:px-12 py-8 flex flex-wrap justify-between gap-4 items-center"
-        style={{ borderTop: "1px solid var(--border)" }}
-      >
-        <p className="text-xs" style={{ ...mono, color: "var(--muted-dim)" }}>
-          kshitij jha · mauritius
-        </p>
-        <div className="flex gap-5 text-xs" style={mono}>
-          <a href="https://github.com/kxitiz" target="_blank" rel="noopener noreferrer"
-            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--muted)" }}>
-            GitHub
-          </a>
-          <a href="https://linkedin.com/in/kshitijjha" target="_blank" rel="noopener noreferrer"
-            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--muted)" }}>
-            LinkedIn
-          </a>
-          <a href="https://letterboxd.com/Kxitiz_/" target="_blank" rel="noopener noreferrer"
-            className="transition-opacity opacity-50 hover:opacity-100" style={{ color: "var(--rating)" }}>
-            ★ Letterboxd
-          </a>
-        </div>
-      </footer>
+      </div>
+      <SiteFooter />
     </main>
   );
 }
