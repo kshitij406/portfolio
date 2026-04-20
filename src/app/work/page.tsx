@@ -4,6 +4,7 @@ import SectionObserver from "@/components/SectionObserver";
 import ScrollProgress from "@/components/ScrollProgress";
 import SiteFooter from "@/components/SiteFooter";
 import StarRating from "@/components/StarRating";
+import TiltCard from "@/components/ui/TiltCard";
 import { EXPERIENCE, PROJECTS, SKILLS_RATED } from "@/data/content";
 import { SOCIAL_LINKS } from "@/data/site";
 
@@ -31,14 +32,14 @@ export default function WorkPage() {
           <div className="mb-10">
             <ScrambleText
               text="Selected work."
-              className="text-5xl md:text-6xl lg:text-7xl font-bold"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-gradient-accent"
               as="h1"
             />
           </div>
         </SectionObserver>
 
         <SectionObserver delay={50}>
-          <div className="editorial-card p-5 md:p-6 mb-16">
+          <div className="editorial-card shimmer-card p-5 md:p-6 mb-16">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <p className="text-sm md:text-base max-w-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
                 I build products that prioritize reliability, speed, and clear user flow.
@@ -246,8 +247,9 @@ function ProjectCard({
 }) {
   if (featured) {
     return (
+      <TiltCard className="md:col-span-2" intensity={5}>
       <div
-        className="md:col-span-2 flex flex-col md:flex-row rounded overflow-hidden border transition-colors duration-200 hover:border-[var(--accent)]"
+        className="flex flex-col md:flex-row rounded overflow-hidden border transition-colors duration-200 hover:border-[var(--accent)]"
         style={{ borderColor: "var(--border)", background: "var(--surface)" }}
       >
         {/* Poster */}
@@ -308,10 +310,12 @@ function ProjectCard({
           </div>
         </div>
       </div>
+      </TiltCard>
     );
   }
 
   return (
+    <TiltCard intensity={5}>
     <div
       className="flex flex-col rounded overflow-hidden border transition-colors duration-200 hover:border-[var(--accent)]"
       style={{ borderColor: "var(--border)", background: "var(--surface)" }}
@@ -372,5 +376,6 @@ function ProjectCard({
         </div>
       </div>
     </div>
+    </TiltCard>
   );
 }

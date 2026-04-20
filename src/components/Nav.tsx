@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { SOCIAL_LINKS } from "@/data/site";
 
 const LINKS = [
@@ -12,14 +14,28 @@ const LINKS = [
 
 export default function Nav() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <nav
+    <motion.nav
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className="fixed top-0 left-0 right-0 z-40 px-6 md:px-12 py-4"
       style={{
         background: "var(--surface-glass)",
         backdropFilter: "blur(14px)",
         borderBottom: "1px solid var(--border)",
+        boxShadow: scrolled
+          ? "0 1px 0 0 var(--border), 0 8px 32px rgba(0,0,0,0.22)"
+          : "none",
+        transition: "box-shadow 0.3s ease",
       }}
     >
       <div className="content-shell flex items-center justify-between gap-4">
@@ -29,7 +45,7 @@ export default function Nav() {
           style={{ fontFamily: "var(--font-dm-mono), monospace" }}
         >
           <span
-            className="inline-block w-2 h-2 rounded-full"
+            className="inline-block w-2 h-2 rounded-full timeline-dot-active"
             style={{ background: "var(--accent)" }}
           />
           <span
@@ -58,9 +74,11 @@ export default function Nav() {
               >
                 {link.label}
                 {active && (
-                  <span
+                  <motion.span
+                    layoutId="nav-underline"
                     className="absolute bottom-0 left-0 right-0 h-px"
                     style={{ background: "var(--accent)" }}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
               </Link>
@@ -78,6 +96,6 @@ export default function Nav() {
           </a>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

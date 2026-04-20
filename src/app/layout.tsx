@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Syne, DM_Mono, DM_Sans, Caveat } from "next/font/google";
 import Nav from "@/components/Nav";
+import CustomCursor from "@/components/ui/CustomCursor";
+import PageTransition from "@/components/ui/PageTransition";
 import "./globals.css";
 
 const syne = Syne({
@@ -47,8 +49,9 @@ export default function RootLayout({
         className={`${syne.variable} ${dmMono.variable} ${dmSans.variable} ${caveat.variable}`}
         style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
       >
+        <CustomCursor />
         <Nav />
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

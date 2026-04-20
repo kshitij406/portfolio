@@ -36,8 +36,8 @@ html {
 
 body {
   background:
-    radial-gradient(circle at 10% -10%, rgba(0, 194, 111, 0.08), transparent 42%),
-    radial-gradient(circle at 90% 0%, rgba(244, 180, 75, 0.08), transparent 35%),
+    radial-gradient(circle at 10% -10%, rgba(0, 194, 111, 0.11), transparent 42%),
+    radial-gradient(circle at 90% 0%, rgba(244, 180, 75, 0.11), transparent 35%),
     linear-gradient(180deg, #11161d 0%, #131a22 40%, #14181d 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
@@ -54,6 +54,18 @@ body::before {
   background-size: 2px 2px;
   opacity: 0.1;
   z-index: -1;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
 }
 
 a {
@@ -211,11 +223,14 @@ button:focus-visible {
   background: var(--accent);
   color: #0f151c;
   border-color: transparent;
+  box-shadow: 0 0 0 0 rgba(0, 194, 111, 0);
+  transition: box-shadow 0.25s ease, transform 0.2s ease, background 0.2s ease;
 }
 
 .btn-primary:hover {
   background: var(--accent-strong);
   transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(0, 194, 111, 0.35), 0 0 40px rgba(0, 194, 111, 0.12);
 }
 
 .btn-secondary {
@@ -261,4 +276,59 @@ button:focus-visible {
   .social-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Gradient text utilities */
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 50%, #00a85f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #ffd166 0%, var(--rating) 50%, #d4933a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card shimmer sweep */
+@keyframes shimmer-sweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.035) 50%, transparent 60%);
+  background-size: 200% 100%;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+/* Custom cursor */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Footer marquee speed variant */
+.ticker-track-slow {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 38s linear infinite;
+}
+
+.ticker-track-slow:hover {
+  animation-play-state: paused;
 }

@@ -27,7 +27,7 @@ export default function ContactPage() {
             <div className="mb-8">
               <ScrambleText
                 text="Let's connect."
-                className="text-5xl md:text-6xl lg:text-7xl font-bold"
+                className="text-5xl md:text-6xl lg:text-7xl font-bold text-gradient-accent"
                 as="h1"
               />
             </div>

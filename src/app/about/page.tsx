@@ -69,7 +69,7 @@ export default function AboutPage() {
           <div className="mb-10">
             <ScrambleText
               text="A quick read on me."
-              className="text-5xl md:text-6xl lg:text-7xl font-bold"
+              className="text-5xl md:text-6xl lg:text-7xl font-bold text-gradient-accent"
               as="h1"
             />
           </div>

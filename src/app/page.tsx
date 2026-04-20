@@ -1,5 +1,7 @@
 import Terminal from "@/components/Terminal";
 import SiteFooter from "@/components/SiteFooter";
+import HeroSpotlight from "@/components/ui/HeroSpotlight";
+import StatsRow from "@/components/ui/StatsRow";
 import { PROFILE, SOCIAL_LINKS } from "@/data/site";
 import Link from "next/link";
 
@@ -73,9 +75,10 @@ export default async function Home() {
   return (
     <main className="min-h-screen flex flex-col" style={{ color: "var(--text)" }}>
       <section
-        className="flex-1 px-6 md:px-12 lg:px-20 pt-32 pb-16"
+        className="flex-1 px-6 md:px-12 lg:px-20 pt-32 pb-16 relative"
       >
-        <div className="content-shell">
+        <HeroSpotlight />
+        <div className="content-shell relative z-10">
           <div className="mb-8">
             <Terminal />
           </div>
@@ -88,7 +91,7 @@ export default async function Home() {
               >
                 <span>I build web products</span>
                 <br />
-                <span style={{ color: "var(--accent)" }}>that feel intentional.</span>
+                <span className="text-gradient-accent">that feel intentional.</span>
               </h1>
 
               <p className="text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
@@ -109,7 +112,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <aside className="editorial-card p-5 md:p-6">
+            <aside className="editorial-card shimmer-card p-5 md:p-6">
               <div className="chip mb-3">currently rolling</div>
               <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
                 {latestFilm ? `Latest Letterboxd log: ${latestFilm}.` : "Latest Letterboxd log loading from RSS."} Yes, movies influence the design decisions here.
@@ -129,30 +132,8 @@ export default async function Home() {
             </aside>
           </div>
 
-          <div className="editorial-card p-5 mb-8">
-            <div className="flex flex-wrap gap-8">
-              {profileStats.map((stat) =>
-                "href" in stat && stat.href ? (
-                  <a key={stat.label} href={stat.href} target="_blank" rel="noopener noreferrer" className="flex flex-col items-start gap-0.5">
-                    <span className="text-base font-bold" style={{ fontFamily: "var(--font-syne), sans-serif", color: "var(--rating)" }}>
-                      ★ {stat.count}
-                    </span>
-                    <span className="text-xs uppercase tracking-wider" style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}>
-                      {stat.label}
-                    </span>
-                  </a>
-                ) : (
-                  <div key={stat.label} className="flex flex-col items-start gap-0.5">
-                    <span className="text-base font-bold" style={{ fontFamily: "var(--font-syne), sans-serif", color: "var(--text)" }}>
-                      {stat.count}
-                    </span>
-                    <span className="text-xs uppercase tracking-wider" style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}>
-                      {stat.label}
-                    </span>
-                  </div>
-                )
-              )}
-            </div>
+          <div className="editorial-card shimmer-card p-5 mb-8">
+            <StatsRow stats={profileStats} />
           </div>
 
           <div style={{ borderTop: "1px solid var(--border)" }}>
