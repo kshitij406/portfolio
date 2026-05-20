@@ -1,21 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-const LINES = [
-  "location: Mauritius",
-  "status: building useful things",
-  "editor: vscode + ai pair",
-  "watching: always logged on letterboxd",
-  "year: 2 of 3",
-  "last build: successful",
-];
+import { useEffect, useMemo, useState } from "react";
 
 const TYPING_SPEED = 55;
 const PAUSE_AFTER = 2000;
 const DELETE_SPEED = 30;
 
-export default function Terminal() {
+interface TerminalProps {
+  watchingLine?: string;
+}
+
+export default function Terminal({ watchingLine }: TerminalProps) {
+  const LINES = useMemo(() => [
+    "location: Mauritius",
+    "status: building useful things",
+    "editor: vscode + ai pair",
+    watchingLine ? `watching: ${watchingLine}` : "watching: always logged on letterboxd",
+    "year: 2 of 3",
+    "last build: successful",
+  ], [watchingLine]);
   const [displayText, setDisplayText] = useState("");
   const [lineIndex, setLineIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -44,7 +47,7 @@ export default function Terminal() {
     }
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, lineIndex]);
+  }, [displayText, isDeleting, lineIndex, LINES]);
 
   return (
     <div
