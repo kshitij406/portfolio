@@ -1,8 +1,17 @@
 import { PROFILE, SOCIAL_LINKS } from "@/data/site";
 import FooterTime from "@/components/ui/FooterTime";
+import Link from "next/link";
 
 const MARQUEE_TEXT =
   "available for projects · mauritius +04:00 · open to interesting work · cs student · backend engineer · ";
+
+const NAV_LINKS = [
+  { href: "/about", label: "About" },
+  { href: "/work", label: "Work" },
+  { href: "/contact", label: "Contact" },
+];
+
+const year = new Date().getFullYear();
 
 export default function SiteFooter() {
   const repeated = MARQUEE_TEXT.repeat(4);
@@ -34,63 +43,113 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      {/* Footer content */}
-      <div className="px-6 md:px-12 py-6">
-        <div className="content-shell flex flex-wrap justify-between gap-4 items-center">
-          {/* Status indicator */}
-          <div className="flex items-center gap-2">
-            <span
-              className="inline-block w-2 h-2 rounded-full timeline-dot-active shrink-0"
-              style={{ background: "var(--accent)" }}
-            />
+      {/* Main footer */}
+      <div className="px-6 md:px-12 py-8 md:py-10">
+        <div className="content-shell">
+          {/* Three-column top section */}
+          <div
+            className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8 pb-8"
+            style={{ borderBottom: "1px solid var(--border-dim)" }}
+          >
+            {/* Brand */}
+            <div>
+              <div
+                className="flex items-center gap-2 mb-3"
+                style={{ fontFamily: "var(--font-dm-mono), monospace" }}
+              >
+                <span
+                  className="inline-block w-2 h-2 rounded-full timeline-dot-active shrink-0"
+                  style={{ background: "var(--accent)" }}
+                />
+                <span className="text-xs uppercase tracking-[0.16em]" style={{ color: "var(--text)" }}>
+                  kshitij jha
+                </span>
+              </div>
+              <p
+                className="text-xs leading-relaxed"
+                style={{ color: "var(--muted)", fontFamily: "var(--font-dm-mono), monospace" }}
+              >
+                CS student. Backend focus.
+                <br />
+                Building things that work.
+              </p>
+            </div>
+
+            {/* Pages */}
+            <div>
+              <div
+                className="text-xs uppercase tracking-widest mb-3"
+                style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
+              >
+                Pages
+              </div>
+              <ul className="space-y-2">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="footer-link">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Elsewhere */}
+            <div>
+              <div
+                className="text-xs uppercase tracking-widest mb-3"
+                style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
+              >
+                Elsewhere
+              </div>
+              <ul className="space-y-2">
+                {[SOCIAL_LINKS.github, SOCIAL_LINKS.linkedin, SOCIAL_LINKS.letterboxd].map((link) => {
+                  const isLetterboxd = link.label === "Letterboxd";
+                  return (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="footer-link"
+                        style={isLetterboxd ? { color: "var(--rating)" } : undefined}
+                      >
+                        {isLetterboxd ? "★ " : ""}{link.handle}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom: status + copyright */}
+          <div className="flex flex-wrap justify-between gap-3 items-center">
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block w-2 h-2 rounded-full timeline-dot-active shrink-0"
+                style={{ background: "var(--accent)" }}
+              />
+              <p
+                className="text-xs uppercase tracking-[0.12em]"
+                style={{
+                  color: "var(--muted-dim)",
+                  fontFamily: "var(--font-dm-mono), monospace",
+                }}
+              >
+                {PROFILE.name.toLowerCase()} · available ·{" "}
+                <FooterTime />
+              </p>
+            </div>
             <p
-              className="text-xs uppercase tracking-[0.12em]"
+              className="text-xs"
               style={{
                 color: "var(--muted-dim)",
                 fontFamily: "var(--font-dm-mono), monospace",
               }}
             >
-              {PROFILE.name.toLowerCase()} · available ·{" "}
-              <FooterTime />
+              © {year} {PROFILE.name}
             </p>
-          </div>
-
-          <div
-            className="flex flex-wrap gap-3 text-xs"
-            style={{ fontFamily: "var(--font-dm-mono), monospace" }}
-          >
-            <a
-              href={SOCIAL_LINKS.github.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-social"
-              style={{ minHeight: "34px", padding: "0 10px", fontSize: "11px" }}
-            >
-              GitHub
-            </a>
-            <a
-              href={SOCIAL_LINKS.linkedin.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-social"
-              style={{ minHeight: "34px", padding: "0 10px", fontSize: "11px" }}
-            >
-              LinkedIn
-            </a>
-            <a
-              href={SOCIAL_LINKS.letterboxd.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-social"
-              style={{
-                minHeight: "34px",
-                padding: "0 10px",
-                fontSize: "11px",
-                color: "var(--rating)",
-              }}
-            >
-              ★ Letterboxd
-            </a>
           </div>
         </div>
       </div>

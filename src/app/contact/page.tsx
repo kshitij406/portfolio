@@ -34,7 +34,7 @@ export default function ContactPage() {
           </SectionObserver>
 
           <SectionObserver delay={80}>
-            <div className="editorial-card p-6 md:p-7 mb-8">
+            <div className="editorial-card p-6 md:p-8 mb-8">
               <p className="text-base md:text-lg leading-relaxed mb-6" style={{ color: "var(--muted)" }}>
                 I am not mass-applying right now, but I am always open to sharp conversations,
                 interesting collaborations, and people building things with intent.
@@ -77,7 +77,7 @@ export default function ContactPage() {
           </SectionObserver>
 
           <SectionObserver delay={140}>
-            <div className="editorial-card p-6 mb-8">
+            <div className="editorial-card p-6 md:p-8 mb-8">
               <div
                 className="text-xs mb-4 uppercase tracking-widest"
                 style={{

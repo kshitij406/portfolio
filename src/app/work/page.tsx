@@ -64,15 +64,17 @@ export default function WorkPage() {
         </SectionObserver>
 
         {/* ─── EXPERIENCE ─── */}
-        <section className="mb-24">
+        <section className="mb-28">
           <SectionObserver>
-            <div className="flex items-baseline gap-4 mb-10">
-                <h2 className="text-2xl font-bold" style={syne}>Experience</h2>
-                <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
+            <div className="mb-10">
+              <div className="section-label-row mb-2">
+                <span className="text-xs" style={{ ...mono, color: "var(--muted-dim)", letterSpacing: "0.12em" }}>
                   the practical highlights
                 </span>
               </div>
-            </SectionObserver>
+              <h2 className="text-2xl md:text-3xl font-bold" style={syne}>Experience</h2>
+            </div>
+          </SectionObserver>
 
           {/* Timeline */}
           <div className="relative">
@@ -160,15 +162,17 @@ export default function WorkPage() {
 
         {/* ─── PROJECTS ─── */}
         <section
-          className="mb-24 pt-12"
+          className="mb-28 pt-16"
           style={{ borderTop: "1px solid var(--border)" }}
         >
           <SectionObserver>
-            <div className="flex items-baseline gap-4 mb-10">
-              <h2 className="text-2xl font-bold" style={syne}>Projects</h2>
-              <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
-                shipped work and active builds
-              </span>
+            <div className="mb-10">
+              <div className="section-label-row mb-2">
+                <span className="text-xs" style={{ ...mono, color: "var(--muted-dim)", letterSpacing: "0.12em" }}>
+                  shipped work and active builds
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold" style={syne}>Projects</h2>
             </div>
           </SectionObserver>
 
@@ -183,16 +187,18 @@ export default function WorkPage() {
 
         {/* ─── SKILLS ─── */}
         <section
-          className="pt-12"
+          className="pt-16"
           style={{ borderTop: "1px solid var(--border)" }}
         >
           <SectionObserver>
-            <div className="flex items-baseline gap-4 mb-10">
-                <h2 className="text-2xl font-bold" style={syne}>Skills</h2>
-                <span className="text-xs" style={{ ...mono, color: "var(--muted)" }}>
-                self-assessed, grounded in shipped work
+            <div className="mb-10">
+              <div className="section-label-row mb-2">
+                <span className="text-xs" style={{ ...mono, color: "var(--muted-dim)", letterSpacing: "0.12em" }}>
+                  self-assessed, grounded in shipped work
                 </span>
               </div>
+              <h2 className="text-2xl md:text-3xl font-bold" style={syne}>Skills</h2>
+            </div>
 
               {/* Rated list */}
             <div className="mb-8 editorial-card" style={{ borderTop: "1px solid var(--border)" }}>
@@ -208,13 +214,27 @@ export default function WorkPage() {
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="flex-1 text-sm font-medium" style={mono}>
-                    {item.skill}
-                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium block mb-1.5" style={mono}>
+                      {item.skill}
+                    </span>
+                    <div
+                      className="h-px rounded-full overflow-hidden"
+                      style={{ background: "var(--border-dim)" }}
+                    >
+                      <div
+                        className="skill-bar h-full rounded-full"
+                        style={{
+                          "--bar-width": `${(item.rating / 5) * 100}%`,
+                          background: "linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%)",
+                        } as React.CSSProperties}
+                      />
+                    </div>
+                  </div>
                   <StarRating rating={item.rating} size="sm" />
                   <span
                     className="hidden md:block text-xs italic text-right"
-                    style={{ color: "var(--muted)", maxWidth: "260px", flex: "0 0 260px" }}
+                    style={{ color: "var(--muted)", maxWidth: "240px", flex: "0 0 240px" }}
                   >
                     {item.review}
                   </span>

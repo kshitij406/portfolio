@@ -117,8 +117,8 @@ button:focus-visible {
 
 .section-fade {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(18px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .section-fade.visible {
@@ -338,6 +338,48 @@ html.has-custom-cursor * {
   50% { box-shadow: 0 0 0 5px rgba(224, 82, 82, 0); opacity: 0.75; }
 }
 
+/* Skill progress bars — animate when section scrolls into view */
+.skill-bar {
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-fade.visible .skill-bar {
+  width: var(--bar-width);
+}
+
+/* Avatar gradient ring — subtle rotation */
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.avatar-ring {
+  position: relative;
+}
+
+/* Annotation card hover lift */
+.annotation-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.annotation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.36), 0 0 0 1px rgba(0,194,111,0.1) !important;
+}
+
+/* Footer nav/social link hover */
+.footer-link {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent);
+}
+
 /* Footer marquee speed variant */
 .ticker-track-slow {
   display: flex;
@@ -347,4 +389,77 @@ html.has-custom-cursor * {
 
 .ticker-track-slow:hover {
   animation-play-state: paused;
+}
+
+/* ── Polish additions ─────────────────────────────────────────────── */
+
+/* Section sub-label with green accent line */
+.section-label-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.section-label-row::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Button press micro-interaction */
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Nav card interactive cursor */
+.nav-card-link {
+  cursor: pointer;
+}
+
+/* Soft glow on editorial cards on hover (opt-in) */
+.card-hover {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card-hover:hover {
+  border-color: rgba(0, 194, 111, 0.4) !important;
+  box-shadow: 0 0 0 1px rgba(0, 194, 111, 0.08), 0 20px 48px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Gradient section divider */
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 25%, var(--border) 75%, transparent 100%);
+  border: none;
+  margin: 0;
+}
+
+/* prefers-reduced-motion: disable all decorative motion */
+@media (prefers-reduced-motion: reduce) {
+  .section-fade {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .skill-bar {
+    width: var(--bar-width) !important;
+    transition: none !important;
+  }
+  .ticker-track,
+  .ticker-track-slow {
+    animation-play-state: paused;
+  }
+  .screening-dot,
+  .timeline-dot-active {
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  .shimmer-card::before {
+    animation: none !important;
+  }
 }

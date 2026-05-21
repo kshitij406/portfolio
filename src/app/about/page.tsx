@@ -81,15 +81,20 @@ export default function AboutPage() {
             className="editorial-card p-5 md:p-6 mb-12 flex flex-wrap gap-6 items-center"
           >
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "var(--accent-dim)", border: "2px solid var(--accent)" }}
+              className="w-14 h-14 rounded-full shrink-0 avatar-ring"
+              style={{
+                background: "conic-gradient(from 45deg, var(--accent), var(--accent-strong), #00a85f, var(--accent))",
+                padding: "2px",
+              }}
             >
-              <span
-                className="font-bold text-lg"
-                style={{ color: "var(--accent)", fontFamily: "var(--font-syne), sans-serif" }}
-              >
-                KJ
-              </span>
+              <div className="w-full h-full rounded-full flex items-center justify-center" style={{ background: "var(--bg-soft)" }}>
+                <span
+                  className="font-bold text-lg"
+                  style={{ color: "var(--accent)", fontFamily: "var(--font-syne), sans-serif" }}
+                >
+                  KJ
+                </span>
+              </div>
             </div>
 
             <div className="flex-1 min-w-0">
@@ -132,7 +137,7 @@ export default function AboutPage() {
           {/* Left: main content */}
           <div>
             <SectionObserver>
-              <div className="space-y-5 text-base leading-relaxed mb-12" style={{ color: "var(--text)" }}>
+              <div className="space-y-6 text-base md:text-[17px] leading-[1.75] mb-14" style={{ color: "var(--text)" }}>
                 <p>
                   I am a second-year CS student in Mauritius focused on systems and backend engineering.
                   I enjoy building the parts users do not always see: APIs, data flow, performance, and failure handling.
@@ -259,13 +264,14 @@ export default function AboutPage() {
             {ANNOTATIONS.map((note) => (
               <div
                 key={note.label}
-                className={`p-4 rounded ${note.cls}`}
+                className={`p-4 rounded ${note.cls} annotation-card`}
                 style={{
                   background: "var(--surface)",
                   borderLeft: "2px solid var(--accent)",
                   borderTop: "1px solid var(--border)",
                   borderRight: "1px solid var(--border)",
                   borderBottom: "1px solid var(--border)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,194,111,0.06)",
                 }}
               >
                 <div

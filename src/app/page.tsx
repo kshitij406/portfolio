@@ -3,6 +3,7 @@ import SiteFooter from "@/components/SiteFooter";
 import HeroSpotlight from "@/components/ui/HeroSpotlight";
 import StatsRow from "@/components/ui/StatsRow";
 import StarRating from "@/components/StarRating";
+import SectionObserver from "@/components/SectionObserver";
 import { PROFILE, SOCIAL_LINKS } from "@/data/site";
 import Link from "next/link";
 
@@ -191,42 +192,44 @@ export default async function Home() {
 
           {/* Nav cards */}
           <div style={{ borderTop: "1px solid var(--border)" }}>
-            {NAV_CARDS.map((card) => (
-              <Link key={card.href} href={card.href} className="block group">
-                <div
-                  className="flex items-center gap-6 md:gap-10 py-6 px-3 -mx-3 transition-all duration-200 rounded group-hover:bg-[var(--surface)]"
-                  style={{ borderBottom: "1px solid var(--border)" }}
-                >
-                  <span
-                    className="shrink-0 text-xs tabular-nums"
-                    style={{
-                      color: "var(--muted-dim)",
-                      fontFamily: "var(--font-dm-mono), monospace",
-                      minWidth: "28px",
-                    }}
+            {NAV_CARDS.map((card, i) => (
+              <SectionObserver key={card.href} delay={i * 70}>
+                <Link href={card.href} className="block group nav-card-link">
+                  <div
+                    className="flex items-center gap-6 md:gap-10 py-7 px-3 -mx-3 transition-all duration-200 rounded group-hover:bg-[var(--surface)]"
+                    style={{ borderBottom: "1px solid var(--border)" }}
                   >
-                    {card.number}
-                  </span>
-                  <span
-                    className="flex-1 text-3xl md:text-4xl font-bold transition-colors duration-200 group-hover:text-[var(--accent)]"
-                    style={{ fontFamily: "var(--font-syne), sans-serif" }}
-                  >
-                    {card.label}
-                  </span>
-                  <span
-                    className="hidden md:block text-sm text-right max-w-[260px] leading-snug"
-                    style={{ color: "var(--muted)" }}
-                  >
-                    {card.description}
-                  </span>
-                  <span
-                    className="ml-2 text-xl transition-all duration-200 group-hover:translate-x-1 group-hover:text-[var(--accent)]"
-                    style={{ color: "var(--border)" }}
-                  >
-                    →
-                  </span>
-                </div>
-              </Link>
+                    <span
+                      className="shrink-0 text-xs tabular-nums"
+                      style={{
+                        color: "var(--muted-dim)",
+                        fontFamily: "var(--font-dm-mono), monospace",
+                        minWidth: "28px",
+                      }}
+                    >
+                      {card.number}
+                    </span>
+                    <span
+                      className="flex-1 text-3xl md:text-4xl lg:text-5xl font-bold transition-colors duration-200 group-hover:text-[var(--accent)]"
+                      style={{ fontFamily: "var(--font-syne), sans-serif" }}
+                    >
+                      {card.label}
+                    </span>
+                    <span
+                      className="hidden md:block text-sm text-right max-w-[260px] leading-snug"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      {card.description}
+                    </span>
+                    <span
+                      className="ml-2 text-xl transition-all duration-250 group-hover:translate-x-2 group-hover:text-[var(--accent)]"
+                      style={{ color: "var(--border)" }}
+                    >
+                      →
+                    </span>
+                  </div>
+                </Link>
+              </SectionObserver>
             ))}
           </div>
         </div>
