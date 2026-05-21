@@ -37,30 +37,50 @@ interface LetterboxdData {
   latestFilmRating: number | null;
 }
 
-async function getLetterboxdData(): Promise<LetterboxdData> {
+async function fetchLatestFilm() {
   try {
     const res = await fetch("https://letterboxd.com/Kxitiz_/rss/", {
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return { filmCount: 0, latestFilm: null, latestFilmYear: null, latestFilmRating: null };
+    if (!res.ok) return { latestFilm: null, latestFilmYear: null, latestFilmRating: null };
     const xml = await res.text();
-
-    const year = new Date().getFullYear().toString();
-    const countMatches = xml.match(new RegExp(`<letterboxd:watchedDate>${year}-`, "g"));
-
-    const titleMatch = xml.match(/<letterboxd:filmTitle>(.*?)<\/letterboxd:filmTitle>/);
-    const yearMatch = xml.match(/<letterboxd:filmYear>(.*?)<\/letterboxd:filmYear>/);
-    const ratingMatch = xml.match(/<letterboxd:memberRating>(.*?)<\/letterboxd:memberRating>/);
-
     return {
-      filmCount: countMatches?.length ?? 0,
-      latestFilm: titleMatch?.[1] ?? null,
-      latestFilmYear: yearMatch?.[1] ?? null,
-      latestFilmRating: ratingMatch ? parseFloat(ratingMatch[1]) : null,
+      latestFilm: xml.match(/<letterboxd:filmTitle>(.*?)<\/letterboxd:filmTitle>/)?.[1] ?? null,
+      latestFilmYear: xml.match(/<letterboxd:filmYear>(.*?)<\/letterboxd:filmYear>/)?.[1] ?? null,
+      latestFilmRating:
+        parseFloat(xml.match(/<letterboxd:memberRating>(.*?)<\/letterboxd:memberRating>/)?.[1] ?? "") || null,
     };
   } catch {
-    return { filmCount: 0, latestFilm: null, latestFilmYear: null, latestFilmRating: null };
+    return { latestFilm: null, latestFilmYear: null, latestFilmRating: null };
   }
+}
+
+async function fetchFilmCount(year: string): Promise<number> {
+  let total = 0;
+  for (let page = 1; page <= 20; page++) {
+    try {
+      const url =
+        page === 1
+          ? `https://letterboxd.com/Kxitiz_/films/diary/for/${year}/`
+          : `https://letterboxd.com/Kxitiz_/films/diary/for/${year}/page/${page}/`;
+      const res = await fetch(url, { next: { revalidate: 3600 } });
+      if (!res.ok) break;
+      const html = await res.text();
+      const entries = (html.match(/diary-entry-row/g) ?? []).length;
+      if (entries === 0) break;
+      total += entries;
+      if (!html.includes(`/diary/for/${year}/page/${page + 1}/`)) break;
+    } catch {
+      break;
+    }
+  }
+  return total;
+}
+
+async function getLetterboxdData(): Promise<LetterboxdData> {
+  const year = new Date().getFullYear().toString();
+  const [film, filmCount] = await Promise.all([fetchLatestFilm(), fetchFilmCount(year)]);
+  return { filmCount, ...film };
 }
 
 export default async function Home() {
@@ -115,11 +135,11 @@ export default async function Home() {
 
             {/* Film card */}
             <aside
-              className="editorial-card shimmer-card p-5 md:p-6"
+              className="editorial-card shimmer-card p-5"
               style={{ borderLeft: "2px solid var(--rating)" }}
             >
               {/* Now screening indicator */}
-              <div className="flex items-center gap-2 mb-5">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="screening-dot" />
                 <span
                   className="text-xs uppercase tracking-widest"
@@ -131,9 +151,9 @@ export default async function Home() {
 
               {/* Film details */}
               {latestFilm ? (
-                <div className="mb-4">
+                <div className="mb-3">
                   <p
-                    className="font-bold text-base leading-snug mb-2"
+                    className="font-bold text-base leading-snug mb-1.5"
                     style={{ fontFamily: "var(--font-syne), sans-serif" }}
                   >
                     {latestFilm}
@@ -151,13 +171,13 @@ export default async function Home() {
                   </div>
                 </div>
               ) : (
-                <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+                <p className="text-sm mb-3" style={{ color: "var(--muted)" }}>
                   Loading latest log from RSS&hellip;
                 </p>
               )}
 
               <p
-                className="text-xs leading-relaxed mb-5"
+                className="text-xs leading-relaxed mb-4"
                 style={{ color: "var(--muted-dim)", fontStyle: "italic" }}
               >
                 Movies influence the design decisions here.
@@ -165,21 +185,23 @@ export default async function Home() {
 
               <div className="editorial-divider mb-4" />
 
-              <div className="social-grid">
-                <a href={SOCIAL_LINKS.github.href} target="_blank" rel="noopener noreferrer" className="btn btn-social">
-                  GitHub {SOCIAL_LINKS.github.handle}
-                </a>
-                <a href={SOCIAL_LINKS.linkedin.href} target="_blank" rel="noopener noreferrer" className="btn btn-social">
-                  LinkedIn Profile
-                </a>
+              <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <a href={SOCIAL_LINKS.github.href} target="_blank" rel="noopener noreferrer" className="btn btn-social justify-center">
+                    GitHub
+                  </a>
+                  <a href={SOCIAL_LINKS.linkedin.href} target="_blank" rel="noopener noreferrer" className="btn btn-social justify-center">
+                    LinkedIn
+                  </a>
+                </div>
                 <a
                   href={SOCIAL_LINKS.letterboxd.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-social"
+                  className="btn btn-social justify-center"
                   style={{ color: "var(--rating)" }}
                 >
-                  ★ Letterboxd
+                  ★ Letterboxd {SOCIAL_LINKS.letterboxd.handle}
                 </a>
               </div>
             </aside>

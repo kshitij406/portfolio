@@ -14,16 +14,34 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 7,
-          border: "1.5px solid #00c26f",
-          fontFamily: "monospace",
-          fontWeight: 700,
-          fontSize: 13,
-          color: "#00c26f",
-          letterSpacing: -0.5,
+          borderRadius: 6,
+          gap: 2,
         }}
       >
-        KJ
+        {/* > prompt character */}
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontWeight: 700,
+            fontSize: 17,
+            color: "#00c26f",
+            lineHeight: 1,
+            marginTop: 1,
+          }}
+        >
+          &gt;
+        </span>
+        {/* cursor block */}
+        <span
+          style={{
+            display: "block",
+            width: 7,
+            height: 14,
+            background: "#00c26f",
+            borderRadius: 1,
+            opacity: 0.9,
+          }}
+        />
       </div>
     ),
     { ...size }

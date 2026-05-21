@@ -201,12 +201,15 @@ export default function WorkPage() {
             </div>
 
               {/* Rated list */}
-            <div className="mb-8 editorial-card" style={{ borderTop: "1px solid var(--border)" }}>
+            <div className="mb-8 editorial-card overflow-hidden">
               {SKILLS_RATED.map((item, i) => (
                 <div
                   key={item.skill}
-                  className="flex items-center gap-4 py-3"
-                  style={{ borderBottom: "1px solid var(--border-dim)" }}
+                  className="flex items-center gap-4 py-3.5 px-4 md:px-5"
+                  style={{
+                    borderBottom:
+                      i < SKILLS_RATED.length - 1 ? "1px solid var(--border-dim)" : undefined,
+                  }}
                 >
                   <span
                     className="w-6 text-xs text-right shrink-0 tabular-nums"
