@@ -90,12 +90,6 @@ export default function Contact() {
                 </dd>
               </div>
               <div>
-                <dt className="label mb-1.5">Phone</dt>
-                <dd className="m-0 mono text-[0.875rem]" style={{ color: 'var(--ink-2)' }}>
-                  {PROFILE.phone}
-                </dd>
-              </div>
-              <div>
                 <dt className="label mb-1.5">Based</dt>
                 <dd className="m-0 mono text-[0.875rem]" style={{ color: 'var(--ink-2)' }}>
                   {PROFILE.from}

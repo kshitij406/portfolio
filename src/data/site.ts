@@ -2,7 +2,7 @@ export const PROFILE = {
   name: "Kshitij Jha",
   shortName: "KJ",
   email: "kshitij.j615@gmail.com",
-  phone: "[redacted]",
+  // No phone number here. This file is published, so anything in it is public.
   from: "Dar es Salaam, Tanzania",
   to: "Canterbury, UK",
   movingOn: "September 2026",
