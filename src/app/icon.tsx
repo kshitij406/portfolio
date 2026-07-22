@@ -1,8 +1,9 @@
-import { ImageResponse } from "next/og";
+import { ImageResponse } from 'next/og';
 
 export const size = { width: 32, height: 32 };
-export const contentType = "image/png";
+export const contentType = 'image/png';
 
+/** Contour lines on bone paper, the chart motif at 32px. */
 export default function Icon() {
   return new ImageResponse(
     (
@@ -10,38 +11,17 @@ export default function Icon() {
         style={{
           width: 32,
           height: 32,
-          background: "#14181d",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 6,
-          gap: 2,
+          background: '#efebe2',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 3,
         }}
       >
-        {/* > prompt character */}
-        <span
-          style={{
-            fontFamily: "monospace",
-            fontWeight: 700,
-            fontSize: 17,
-            color: "#00c26f",
-            lineHeight: 1,
-            marginTop: 1,
-          }}
-        >
-          &gt;
-        </span>
-        {/* cursor block */}
-        <span
-          style={{
-            display: "block",
-            width: 7,
-            height: 14,
-            background: "#00c26f",
-            borderRadius: 1,
-            opacity: 0.9,
-          }}
-        />
+        <div style={{ width: 20, height: 2, background: '#1d5c52', borderRadius: 2 }} />
+        <div style={{ width: 14, height: 2, background: '#1d5c52', borderRadius: 2 }} />
+        <div style={{ width: 8, height: 2, background: '#c2402a', borderRadius: 2 }} />
       </div>
     ),
     { ...size }

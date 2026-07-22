@@ -34,4 +34,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tooling / agent config
 .claude/
+.mcp.json
+
+# working notes and source material, not part of the site
+handoff.md
+reference.md
+
+# root copy of the CV. The served copy lives at public/UKResume.pdf
+# and must stay tracked, so this pattern is anchored to the repo root.
+/UKResume.pdf

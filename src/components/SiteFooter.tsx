@@ -1,156 +1,85 @@
-import { PROFILE, SOCIAL_LINKS } from "@/data/site";
-import FooterTime from "@/components/ui/FooterTime";
-import Link from "next/link";
+'use client';
 
-const MARQUEE_TEXT =
-  "available for projects · mauritius +04:00 · open to interesting work · cs student · backend engineer · ";
+import { useEffect, useState } from 'react';
+import { PROFILE } from '@/data/site';
 
-const NAV_LINKS = [
-  { href: "/about", label: "About" },
-  { href: "/work", label: "Work" },
-  { href: "/contact", label: "Contact" },
+const MARQUEE = [
+  'Go',
+  'C#',
+  'Python',
+  'TypeScript',
+  'MSSQL',
+  'Docker',
+  'Fedora',
+  'goroutines',
+  'stored procedures',
+  'ATR stops',
+  '18 m visibility',
+  'Instrument Serif',
 ];
 
-const year = new Date().getFullYear();
-
 export default function SiteFooter() {
-  const repeated = MARQUEE_TEXT.repeat(4);
+  const [time, setTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tick = () =>
+      setTime(
+        new Intl.DateTimeFormat('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'Africa/Dar_es_Salaam',
+          hour12: false,
+        }).format(new Date())
+      );
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
-    <footer style={{ borderTop: "1px solid var(--border)" }}>
-      {/* Marquee strip */}
+    <footer className="relative z-10 lg:pl-[46px]">
+      {/* Drifting keyword band, the chart legend */}
       <div
-        className="overflow-hidden py-2.5"
-        style={{
-          borderBottom: "1px solid var(--border-dim)",
-          background: "var(--surface)",
-        }}
+        className="py-4 overflow-hidden"
+        style={{ borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}
       >
-        <div className="ticker-track-slow">
-          <span
-            className="text-[10px] uppercase tracking-widest pr-8"
-            style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
-          >
-            {repeated}
-          </span>
-          <span
-            className="text-[10px] uppercase tracking-widest pr-8"
-            style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
-            aria-hidden="true"
-          >
-            {repeated}
-          </span>
+        <div className="drift-track">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0" aria-hidden={dup === 1}>
+              {MARQUEE.map((word) => (
+                <span
+                  key={word}
+                  className="mono text-[0.6875rem] tracking-[0.16em] uppercase px-6"
+                  style={{ color: 'var(--ink-4)' }}
+                >
+                  {word}
+                  <span style={{ color: 'var(--signal)' }} className="ml-6">
+                    ◦
+                  </span>
+                </span>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Main footer */}
-      <div className="px-6 md:px-12 py-8 md:py-10">
-        <div className="content-shell">
-          {/* Three-column top section */}
-          <div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8 pb-8"
-            style={{ borderBottom: "1px solid var(--border-dim)" }}
-          >
-            {/* Brand */}
-            <div>
-              <div
-                className="flex items-center gap-2 mb-3"
-                style={{ fontFamily: "var(--font-dm-mono), monospace" }}
-              >
-                <span
-                  className="inline-block w-2 h-2 rounded-full timeline-dot-active shrink-0"
-                  style={{ background: "var(--accent)" }}
-                />
-                <span className="text-xs uppercase tracking-[0.16em]" style={{ color: "var(--text)" }}>
-                  kshitij jha
-                </span>
-              </div>
-              <p
-                className="text-xs leading-relaxed"
-                style={{ color: "var(--muted)", fontFamily: "var(--font-dm-mono), monospace" }}
-              >
-                CS student. Backend focus.
-                <br />
-                Building things that work.
-              </p>
-            </div>
+      <div className="shell py-10 flex flex-col sm:flex-row gap-5 justify-between items-start sm:items-end">
+        <div>
+          <p className="display m-0 leading-none" style={{ fontSize: '1.75rem' }}>
+            {PROFILE.name}
+          </p>
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 mt-2" style={{ color: 'var(--ink-4)' }}>
+            Built with Next.js, GSAP, Lenis and Vanta. Typeset in Instrument Serif &amp; IBM Plex.
+          </p>
+        </div>
 
-            {/* Pages */}
-            <div>
-              <div
-                className="text-xs uppercase tracking-widest mb-3"
-                style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
-              >
-                Pages
-              </div>
-              <ul className="space-y-2">
-                {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="footer-link">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Elsewhere */}
-            <div>
-              <div
-                className="text-xs uppercase tracking-widest mb-3"
-                style={{ color: "var(--muted-dim)", fontFamily: "var(--font-dm-mono), monospace" }}
-              >
-                Elsewhere
-              </div>
-              <ul className="space-y-2">
-                {[SOCIAL_LINKS.github, SOCIAL_LINKS.linkedin, SOCIAL_LINKS.letterboxd].map((link) => {
-                  const isLetterboxd = link.label === "Letterboxd";
-                  return (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="footer-link"
-                        style={isLetterboxd ? { color: "var(--rating)" } : undefined}
-                      >
-                        {isLetterboxd ? "★ " : ""}{link.handle}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom: status + copyright */}
-          <div className="flex flex-wrap justify-between gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <span
-                className="inline-block w-2 h-2 rounded-full timeline-dot-active shrink-0"
-                style={{ background: "var(--accent)" }}
-              />
-              <p
-                className="text-xs uppercase tracking-[0.12em]"
-                style={{
-                  color: "var(--muted-dim)",
-                  fontFamily: "var(--font-dm-mono), monospace",
-                }}
-              >
-                {PROFILE.name.toLowerCase()} · available ·{" "}
-                <FooterTime />
-              </p>
-            </div>
-            <p
-              className="text-xs"
-              style={{
-                color: "var(--muted-dim)",
-                fontFamily: "var(--font-dm-mono), monospace",
-              }}
-            >
-              © {year} {PROFILE.name}
-            </p>
-          </div>
+        <div className="text-left sm:text-right">
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0" style={{ color: 'var(--ink-4)' }}>
+            Dar es Salaam, {time ?? '--:--'} EAT
+          </p>
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 mt-1" style={{ color: 'var(--ink-4)' }}>
+            © {new Date().getFullYear()}
+          </p>
         </div>
       </div>
     </footer>

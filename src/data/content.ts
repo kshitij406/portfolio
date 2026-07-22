@@ -1,101 +1,224 @@
+/**
+ * Everything here comes off the CV or is something I actually did.
+ * No ratings, no reviews, no invented numbers.
+ */
+
 export const EXPERIENCE = [
   {
-    role: "Backend Intern",
-    company: "CubeStone Consulting",
+    company: "Imatic Technologies Limited",
+    role: "Software Developer Intern",
     location: "Dar es Salaam, Tanzania",
-    period: "Jan 2026 to Mar 2026",
-    description:
-      "Built a fleet management API in C# on SAP HANA with a React Native client used by real operators. Most of the challenge was translating messy real-world workflow into clean, reliable backend behavior.",
-    tags: ["C# .NET", "SAP HANA", "React Native", "REST API"],
-    rating: 4.0,
-    diaryNote: "Shipped under pressure, learned fast, and left useful code behind.",
+    period: "Jun 2026 to now",
+    current: true,
+    // The thing that actually mattered about the job.
+    lede:
+      "I was hired to build one API. I ended up building it twice, in two different stacks, so the team could argue about a migration using numbers instead of opinions.",
+    points: [
+      "Built 9 REST endpoints across 6 resources in C#/.NET 8, then rebuilt the same API in Node.js so the team could compare the two while deciding whether to move off ASP.NET MVC.",
+      "Developed the Next.js prototype that consumes both services, including a proxy layer and role conditional routing.",
+      "Wrote MSSQL stored procedures handling multi mode read and write paths against a 7 table schema, working in SSMS with SQL Server running in Docker.",
+      "Delivered a Stimulsoft Reports.JS proof of concept by reverse engineering integration patterns nobody had documented. The write up fed a stakeholder decision affecting 300+ Crystal Reports.",
+    ],
+    stack: ["C#/.NET 8", "Node.js", "Next.js", "MSSQL", "Stimulsoft", "Docker"],
   },
   {
-    role: "Freelance Developer",
-    company: "Independent",
-    location: "Remote",
-    period: "2025 to present",
-    description:
-      "Designing and building business websites in Next.js and TypeScript, from concept to deployment. The stack stays consistent, but each client asks for a different kind of clarity.",
-    tags: ["Next.js", "TypeScript", "Node.js", "Tailwind"],
-    rating: 3.5,
-    diaryNote: "Small teams, direct feedback, fast iterations.",
+    company: "CubeStone Consulting",
+    role: "Software Developer Intern",
+    location: "Dar es Salaam, Tanzania",
+    period: "Jan 2026 to Mar 2026",
+    current: false,
+    lede:
+      "My first real codebase with someone else's money on it. Solo build, front to back, and I wrote the schema too.",
+    points: [
+      "Built a Fleet Management REST API on my own in C#/.NET 8, using Dapper for data access against SAP HANA, and authored the supporting table schema.",
+      "Developed a React Native client that consumes the API end to end.",
+    ],
+    stack: ["C#/.NET 8", "SAP HANA", "Dapper", "React Native"],
   },
 ];
 
+export const EDUCATION = [
+  {
+    school: "University of Kent, Canterbury",
+    qualification: "BSc Computer Science (Hons) with a Year in Industry",
+    period: "Sept 2026 to 2029",
+    note: "Stage 2. Kent International Scholarship holder. Placement year runs 2027 to 28, so I am free for a 12 month contract from July 2027.",
+  },
+  {
+    school: "Middlesex University Mauritius",
+    qualification: "Certificate of Higher Education",
+    period: "2025 to 2026",
+    note: null,
+  },
+];
+
+/**
+ * Ordered by depth of ownership, not by how impressive the README sounds.
+ * Whatever sits at the top is what gets asked about in an interview, so the
+ * top of this list is the code I can defend line by line. The weekend and
+ * team builds are further down and described as what they are.
+ */
 export const PROJECTS = [
   {
-    name: "Fleet Manager",
+    name: "Concurrent TCP Chat Server",
+    lang: "Go",
     year: "2026",
-    description:
-      "End-to-end fleet platform covering vehicles, drivers, routes, and live mobile updates. Built with C# .NET 8 and SAP HANA for a real operational environment.",
-    tags: ["C# .NET 8", "SAP HANA", "React Native"],
-    note: "Internship",
-    rating: 4.0,
-    review: "Complex backend, practical impact, zero tutorial vibes.",
-    posterGradient: "linear-gradient(135deg, #1e3a5f 0%, #0f2035 100%)",
-    posterAccent: "#2d6aaa",
+    href: "https://github.com/kshitij406/TCP",
+    live: null,
+    badge: null,
+    tier: "deep",
+    why: "I wanted to actually understand concurrency instead of trusting the runtime to sort it out for me.",
+    what: "Raw TCP, no framework. A listener hands each connection to its own goroutine, a shared register maps connections to users, and a mutex guards that register because several goroutines write to it at once. What I got out of it was the failures. Deadlocks, a concurrent map access race, WaitGroup misuse. I found each one by reasoning through the synchronisation model instead of adding sleeps until the crashing stopped. Smallest thing on this list, and the one that taught me the most.",
+    stack: ["Go", "net", "goroutines", "sync.Mutex", "WaitGroup"],
   },
   {
-    name: "Cafe 555",
+    name: "Metals CFD Trading Bot",
+    lang: "Python",
     year: "2026",
-    description:
-      "Cafe ordering interface built with React, TypeScript, and Framer Motion. Started as a design-first experiment, then evolved into a production client project.",
-    tags: ["React", "TypeScript", "Vite", "Tailwind", "Framer Motion"],
-    note: "Client",
-    rating: 4.5,
-    review: "Fast UX, strong visual direction, and smooth handoff to real use.",
-    posterGradient: "linear-gradient(135deg, #3d1f0a 0%, #2a1205 100%)",
-    posterAccent: "#c4712a",
+    href: "https://github.com/kshitij406/capital.com-metal-trading-bot",
+    live: null,
+    badge: null,
+    tier: "deep",
+    why: "I wanted to know whether the strategies people post online survive contact with live data. Mostly they do not, and I wanted that answer from my own logs rather than somebody's screenshot.",
+    what: "Gold, silver and copper CFDs on the Capital.com API. EMA 9/21 crossover with RSI(14) confirmation, ATR(14) for stop sizing, a 1.5x ATR stop against a 3x ATR target, 1% account risk per trade, one open position per instrument. I fixed the stopping criteria in advance so I could not quietly move them once it started losing. The lesson that actually stuck was infrastructural: GitHub Actions' built in cron never fired reliably across a two hour test window, so the schedule now comes from an external trigger and the workflow just listens.",
+    stack: ["Python", "Capital.com API", "SQLite", "GitHub Actions", "Discord"],
   },
   {
-    name: "Country Material",
-    year: "2026",
-    description:
-      "Freelance site currently in production. Built in Next.js with TypeScript and Tailwind, focused on performance, lead quality, and maintainable content flow.",
-    tags: ["Next.js", "TypeScript", "Tailwind"],
-    note: "Client (WIP)",
-    rating: 4.0,
-    review: "In progress, on schedule, and getting sharper each sprint.",
-    posterGradient: "linear-gradient(135deg, #1a3320 0%, #0f2016 100%)",
-    posterAccent: "#2d7a42",
+    name: "VendingMachine",
+    lang: "Python",
+    year: "2025",
+    href: "https://github.com/kshitij406/VendingMachine",
+    live: null,
+    badge: null,
+    tier: "deep",
+    why: "A university brief I refused to keep small.",
+    what: "A Tkinter GUI talking to a multithreaded TCP socket server over SQLite. The brief asked for none of that. I added live currency conversion across USD, GBP, INR and MUR, plus sales analytics in matplotlib. It was the first time I had two processes that needed to agree with each other, which is a specific and very annoying kind of problem.",
+    stack: ["Python", "Tkinter", "SQLite", "sockets", "matplotlib"],
   },
   {
     name: "Seraphim Records",
+    lang: "JS / XSLT",
     year: "2025",
-    description:
-      "Music catalogue that pulls from the MusicBrainz API and turns raw metadata into a cleaner browsing experience. Built because I wanted a tool I would actually use.",
-    tags: ["Python", "MusicBrainz API"],
-    note: "Personal",
-    rating: 3.5,
-    review: "Useful side project with real API shaping work.",
-    posterGradient: "linear-gradient(135deg, #2a1a3d 0%, #1a0f2a 100%)",
-    posterAccent: "#7c3aed",
+    href: "https://github.com/kshitij406/RecordStore",
+    live: null,
+    badge: null,
+    tier: "deep",
+    why: "An excuse to use XML and XSLT properly instead of treating them as legacy trivia, and to find out how messy real music metadata is. It is very messy.",
+    what: "A record store front end where the album data gets scraped in Python from music APIs, structured as XML, then transformed into HTML with XSLT. The transformation layer does the job a framework would normally hide from you, which was the whole reason I built it that way.",
+    stack: ["HTML/CSS", "JavaScript", "Python", "XML", "XSLT"],
   },
   {
-    name: "Smart Vending Machine",
+    name: "NitiLens",
+    lang: "TypeScript / Python",
+    year: "2026",
+    href: "https://github.com/kshitij406/NItiLens",
+    live: "https://niti-lens.vercel.app",
+    badge: "DayZero 2.0, CodeNex SRMIST",
+    tier: "sprint",
+    why: "Hackathon, team of four, built against the clock. The idea was to push a policy through the perspectives of the people it actually lands on instead of the people who debate it.",
+    what: "A four stage pipeline sitting on top of an LLM. A classifier, then four specialist agents reading risk through a fiscal, labour, equity and regional lens, then up to 50 synthetic personas grounded in NSSO and Census 2011 demographics, then a coordinator that pulls the disagreements into one briefing. Most of the engineering is orchestration and prompt design rather than novel modelling. The genuinely hard part was batching the persona calls so the thing returned inside a demo slot. We sanity checked it against MGNREGA, which has twenty years of published outcomes to check against.",
+    stack: ["Next.js", "FastAPI", "LLM agents", "Vercel", "Render"],
+  },
+  {
+    name: "Polymarket Weather Bot",
+    lang: "Python",
+    year: "2026",
+    href: "https://github.com/kshitij406/polymarket-weather-bot",
+    live: null,
+    badge: null,
+    tier: "sprint",
+    why: "An experiment in whether a prediction market prices weather badly, and an excuse to read about forecast verification, which I knew nothing about going in.",
+    what: "It blends ECMWF, GFS and UKMO ensembles with two deterministic providers into a single distribution, adds a climatological prior weighted by how far out the forecast is, and only logs a prediction when its edge over the market clears ten points. Everything resolves against historical records and scores itself on win rate, ROI and calibration. It is still running. The honest verdict is that the sample is nowhere near big enough to claim an edge.",
+    stack: ["Python", "Open-Meteo", "SQLite", "GitHub Actions", "Polymarket API"],
+  },
+  {
+    name: "Halo Student Drives",
+    lang: "TypeScript",
     year: "2025",
-    description:
-      "University project: vending machine simulation with inventory, transactions, and basic state handling. Built with Python, Tkinter, and SQLite in one focused week.",
-    tags: ["Python", "Tkinter", "SQLite"],
-    note: "University",
-    rating: 3.0,
-    review: "Straightforward build, solid fundamentals.",
-    posterGradient: "linear-gradient(135deg, #1f2f3d 0%, #121c26 100%)",
-    posterAccent: "#3a6080",
+    href: "https://github.com/kshitij406/Halo_student_drives",
+    live: "https://halo-student-drives.vercel.app",
+    badge: null,
+    tier: "sprint",
+    why: "Campus transport was expensive and students were already driving the same routes anyway. The hard part was never the software. It was trust.",
+    what: "A ride sharing platform pairing verified student drivers with riders. Driver verification, a dashboard with listings and analytics, route filtering, ratings, all on Firebase Auth, Firestore and Storage. Built with Harshil Patel and shipped to a live campus audience.",
+    stack: ["Next.js", "TypeScript", "Firebase", "Tailwind", "Vercel"],
   },
 ];
 
-export const SKILLS_RATED = [
-  { skill: "REST APIs", rating: 4.5, review: "Design first, then clean contracts." },
-  { skill: "C#", rating: 4.0, review: "Reliable backend when requirements get serious." },
-  { skill: "Git", rating: 4.0, review: "Branches stay clean. History usually does too." },
-  { skill: "Next.js", rating: 4.0, review: "Fast iteration with production-ready defaults." },
-  { skill: "SAP HANA", rating: 3.5, review: "Learned by building against real constraints." },
-  { skill: "Python", rating: 3.5, review: "Great for prototypes and practical tooling." },
-  { skill: "TypeScript", rating: 3.5, review: "Safety nets that still let you move fast." },
-  { skill: "Linux", rating: 3.5, review: "Comfortable in terminals and servers." },
-  { skill: "React", rating: 3.0, review: "Strong component patterns, no overengineering." },
-  { skill: "React Native", rating: 3.0, review: "Enough to ship useful mobile interfaces." },
-  { skill: "C", rating: 2.5, review: "Still learning, still careful with pointers." },
+export const STACK = [
+  {
+    group: "Languages",
+    items: ["C#", "Go", "Python", "TypeScript", "JavaScript", "SQL"],
+  },
+  {
+    group: "Frameworks",
+    items: [".NET 8", "ASP.NET MVC", "React", "Next.js", "React Native", "FastAPI", "Dapper"],
+  },
+  {
+    group: "Data",
+    items: ["MSSQL / SSMS", "SAP HANA", "SQLite", "Stimulsoft", "Crystal Reports"],
+  },
+  {
+    group: "Tools",
+    items: ["Git", "GitHub Actions", "Docker", "Vercel", "Linux (Fedora)"],
+  },
+];
+
+export const AWARDS = [
+  {
+    title: "MDX Speed Coding Competition 2026",
+    place: "1st Runner-Up",
+    detail: "50+ competitors across several universities.",
+  },
+  {
+    title: "Kent International Scholarship",
+    place: "Holder",
+    detail: "Awarded for entry to the University of Kent.",
+  },
+  {
+    title: "Oracle Academy",
+    place: "Certificate",
+    detail: "Database Foundations.",
+  },
+];
+
+/**
+ * The personal section. The rule I set myself: only things that are true and
+ * specific. A generic interest is worse than no interest at all.
+ */
+export const OFF_CLOCK = [
+  {
+    heading: "Underwater",
+    body: "I dive. Growing up on the Tanzanian coast and then living in Mauritius will do that to you. It is the only hobby I have where the entire skill is staying calm and breathing slowly, which turns out to be useful counter programming for a job spent staring at a screen.",
+  },
+  {
+    heading: "Souls-likes, and building them",
+    body: "I play a lot of FromSoftware games, and I have spent a fair amount of time in Unity trying to work out why their combat feels the way it does. Mostly it comes down to animation cancel windows and having the confidence to let the player lose.",
+  },
+  {
+    heading: "Fedora, KDE Plasma",
+    body: "Daily driver. I have reinstalled it more times than strictly necessary. The tinkering is the point. I learn systems by taking them apart, which is the same instinct that makes me want to read the stored procedure instead of the ORM.",
+  },
+  {
+    heading: "Robots that don't exist yet",
+    body: "Poking at ROS2, MoveIt and Gazebo. Nothing shipped. Simulation is a very forgiving place to be bad at something.",
+  },
+  {
+    heading: "Films",
+    body: "I log what I watch. Not as a personality, just as a memory aid. I forget films otherwise, and I would rather point at the list than claim a taste I cannot back up.",
+    link: { label: "Letterboxd", href: "https://boxd.it/4m4al" },
+  },
+  {
+    heading: "Philosophy and music",
+    body: "Reading, mostly ethics and philosophy of mind, mostly badly. Music constantly. It is the one thing I never put in the background of nothing.",
+    link: { label: "Spotify", href: "https://open.spotify.com/user/hsx31s71xqu746xsvlsefz42a?si=H46zkSoqQaKD7otF-15QQA&utm_source=copy-link" },
+  },
+];
+
+/** Numbers that are real and verifiable from the work above. */
+export const METRICS = [
+  { value: 9, suffix: "", label: "REST endpoints", sub: "across 6 resources, built twice" },
+  { value: 300, suffix: "+", label: "Crystal Reports", sub: "scope of the migration decision" },
+  { value: 7, suffix: "", label: "table schema", sub: "multi mode read and write paths" },
+  { value: 2, suffix: "", label: "internships", sub: "before starting stage 2" },
 ];

@@ -1,57 +1,75 @@
-import type { Metadata } from "next";
-import { Syne, DM_Mono, DM_Sans, Caveat } from "next/font/google";
-import Nav from "@/components/Nav";
-import CustomCursor from "@/components/ui/CustomCursor";
-import PageTransition from "@/components/ui/PageTransition";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Instrument_Serif, IBM_Plex_Mono, IBM_Plex_Sans, Press_Start_2P } from 'next/font/google';
+import Nav from '@/components/Nav';
+import SmoothScroll from '@/components/SmoothScroll';
+import DepthRuler from '@/components/DepthRuler';
+import { PROFILE } from '@/data/site';
+import './globals.css';
 
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--font-syne",
-  weight: ["400", "500", "600", "700", "800"],
+const display = Instrument_Serif({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  display: 'swap',
 });
 
-const dmMono = DM_Mono({
-  subsets: ["latin"],
-  variable: "--font-dm-mono",
-  weight: ["300", "400", "500"],
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500'],
+  display: 'swap',
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["300", "400", "500"],
+const body = IBM_Plex_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500'],
+  display: 'swap',
 });
 
-const caveat = Caveat({
-  subsets: ["latin"],
-  variable: "--font-caveat",
-  weight: ["400", "500", "600", "700"],
+// Used only inside the retro demo window chrome.
+const pixel = Press_Start_2P({
+  subsets: ['latin'],
+  variable: '--font-pixel',
+  weight: ['400'],
+  display: 'swap',
 });
+
+const description =
+  'Kshitij Jha, software developer. Backends in C# and Go, interfaces in Next.js. Based in Dar es Salaam, moving to Canterbury.';
 
 export const metadata: Metadata = {
-  title: "Kshitij Jha",
-  description: "CS student, backend engineer, allegedly.",
+  metadataBase: new URL('https://kshitijj.me'),
+  title: {
+    default: `${PROFILE.name}, Software Developer`,
+    template: `%s | ${PROFILE.name}`,
+  },
+  description,
   openGraph: {
-    title: "Kshitij Jha",
-    description: "CS student, backend engineer, allegedly.",
+    title: `${PROFILE.name}, Software Developer`,
+    description,
+    type: 'profile',
+    locale: 'en_GB',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${PROFILE.name}, Software Developer`,
+    description,
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${syne.variable} ${dmMono.variable} ${dmSans.variable} ${caveat.variable}`}
-        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-      >
-        <CustomCursor />
+    <html
+      lang="en"
+      className={`${display.variable} ${mono.variable} ${body.variable} ${pixel.variable}`}
+    >
+      <body>
+        <SmoothScroll />
+        <DepthRuler />
         <Nav />
-        <PageTransition>{children}</PageTransition>
+        {children}
       </body>
     </html>
   );
