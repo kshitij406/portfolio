@@ -13,7 +13,7 @@ export default function Log() {
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-start">
           <Reveal className="prose text-[1.0625rem] leading-[1.65]">
             <p>
-              I&rsquo;m nineteen, I grew up in Dar es Salaam, I studied in Mauritius, and in
+              I&rsquo;m twenty, I grew up in Dar es Salaam, I studied in Mauritius, and in
               September I move to Canterbury to start stage 2 of a Computer Science degree at Kent.
               Two internships came before the degree rather than after it, which was not the plan
               but turned out to be the useful order.
