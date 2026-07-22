@@ -67,7 +67,11 @@ export default function Nav() {
           </span>
         </a>
 
-        <ul className="hidden md:flex items-center gap-6 list-none m-0 p-0">
+        {/*
+          Bracketed labels. The brackets sit a shade back from the word so they
+          read as annotation marks rather than punctuation you have to parse.
+        */}
+        <ul className="hidden md:flex items-center gap-5 list-none m-0 p-0">
           {SECTIONS.map((s) => (
             <li key={s.id}>
               <a
@@ -75,20 +79,24 @@ export default function Nav() {
                 className="mono text-[0.6875rem] tracking-[0.14em] uppercase no-underline transition-colors duration-300"
                 style={{ color: active === s.id ? 'var(--signal)' : 'var(--ink-3)' }}
               >
+                <span style={{ color: 'var(--ink-4)' }}>[</span>
                 {s.label}
+                <span style={{ color: 'var(--ink-4)' }}>]</span>
               </a>
             </li>
           ))}
         </ul>
 
         <a
-          href="/UKResume.pdf"
+          href="/resume"
           target="_blank"
           rel="noopener noreferrer"
           className="mono text-[0.6875rem] tracking-[0.14em] uppercase no-underline md:hidden"
           style={{ color: 'var(--signal)' }}
         >
+          <span style={{ color: 'var(--ink-4)' }}>[</span>
           CV
+          <span style={{ color: 'var(--ink-4)' }}>]</span>
         </a>
       </nav>
     </header>

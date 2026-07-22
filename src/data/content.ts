@@ -215,10 +215,50 @@ export const OFF_CLOCK = [
   },
 ];
 
-/** Numbers that are real and verifiable from the work above. */
-export const METRICS = [
-  { value: 9, suffix: "", label: "REST endpoints", sub: "across 6 resources, built twice" },
-  { value: 300, suffix: "+", label: "Crystal Reports", sub: "scope of the migration decision" },
-  { value: 7, suffix: "", label: "table schema", sub: "multi mode read and write paths" },
-  { value: 2, suffix: "", label: "internships", sub: "before starting stage 2" },
+/**
+ * Three places, with their actual coordinates.
+ *
+ * On a chart the lat/long grid is the substrate everything else is plotted
+ * against, so putting real fixes on the page makes the bathymetric direction
+ * literal rather than decorative. These are the three named in the opening
+ * paragraph, in the order they happened. Nothing invented: each one is where I
+ * actually was.
+ */
+export const STATIONS = [
+  { place: "Dar es Salaam", lat: "6.7924° S", lon: "39.2083° E", note: "Grew up" },
+  { place: "Port Louis", lat: "20.1609° S", lon: "57.5012° E", note: "Studied" },
+  { place: "Canterbury", lat: "51.2802° N", lon: "1.0789° E", note: "From Sept 2026" },
+];
+
+/**
+ * The facts strip. This replaced a band of counted numbers, because a number
+ * set large invites an interviewer to test it, and endpoint counts are a task
+ * list rather than an achievement. What sits here instead is the information a
+ * recruiter actually needs and cannot get anywhere else on the page.
+ *
+ * `emphasis` marks the one line that carries the signal colour. Availability
+ * is the answer most visitors are here for, so it gets it.
+ */
+export const FACTS = [
+  {
+    label: "Based",
+    value: "Dar es Salaam, Tanzania",
+    sub: "Canterbury, UK from September 2026",
+  },
+  {
+    label: "Currently",
+    value: "Software Developer Intern",
+    sub: "Imatic Technologies Limited",
+  },
+  {
+    label: "Reading",
+    value: "BSc Computer Science with a Year in Industry",
+    sub: "University of Kent, stage 2",
+  },
+  {
+    label: "Available",
+    value: "12 month placement from July 2027",
+    sub: "UK, full time, right to work from September 2026",
+    emphasis: true,
+  },
 ];

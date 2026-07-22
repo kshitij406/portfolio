@@ -43,6 +43,7 @@ next-env.d.ts
 handoff.md
 reference.md
 
-# root copy of the CV. The served copy lives at public/UKResume.pdf
-# and must stay tracked, so this pattern is anchored to the repo root.
-/UKResume.pdf
+# The CV is no longer a file in this repo. It is generated on request from
+# src/data/resume.ts and served at /resume, which is why that data file carries
+# no phone number or address. Keep stray PDF copies out.
+*.pdf

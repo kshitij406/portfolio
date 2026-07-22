@@ -68,7 +68,7 @@ export default function Contact() {
               </Magnet>
               <Magnet padding={40} magnetStrength={6}>
                 <a
-                  href="/UKResume.pdf"
+                  href="/resume"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn"

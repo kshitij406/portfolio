@@ -147,7 +147,7 @@ export default function Hero() {
               <span data-hero-cta>
                 <Magnet padding={40} magnetStrength={6}>
                   <a
-                    href="/UKResume.pdf"
+                    href="/resume"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn"

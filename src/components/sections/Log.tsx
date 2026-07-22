@@ -1,9 +1,8 @@
 'use client';
 
-import CountUp from '@/components/bits/CountUp';
 import Reveal from '@/components/Reveal';
 import SectionHead from '@/components/SectionHead';
-import { METRICS } from '@/data/content';
+import { FACTS, STATIONS } from '@/data/content';
 
 export default function Log() {
   return (
@@ -33,33 +32,63 @@ export default function Log() {
               used. Outside of that I dive, I lose to FromSoftware bosses, and I reinstall Fedora
               more often than I need to.
             </p>
+
+            {/*
+              The three places named in the first paragraph, as actual fixes.
+              A chart is a lat/long grid before it is anything else, so plotting
+              them makes the substrate literal.
+            */}
+            <ul className="not-prose list-none m-0 p-0 mt-8 pt-5 grid gap-3 sm:grid-cols-3"
+                style={{ borderTop: '1px solid var(--rule)' }}>
+              {STATIONS.map((st) => (
+                <li key={st.place}>
+                  <div className="label mb-1.5" style={{ color: 'var(--ink-4)' }}>
+                    {st.note}
+                  </div>
+                  <div className="mono text-[0.8125rem]" style={{ color: 'var(--ink)' }}>
+                    {st.place}
+                  </div>
+                  <div
+                    className="mono text-[0.6875rem] mt-0.5"
+                    style={{ color: 'var(--signal)' }}
+                  >
+                    {st.lat} {st.lon}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </Reveal>
 
-          <Reveal stagger={0.09} className="grid grid-cols-2 gap-px" y={20}>
-            {METRICS.map((m) => (
-              <div
-                key={m.label}
-                className="plate plate--ticked p-5 sm:p-6"
-                style={{ boxShadow: 'none' }}
-              >
+          {/*
+            Facts strip. Read as a survey record: ruled rows, label left in the
+            chart-annotation voice, value set plainly. No counted numbers.
+          */}
+          <Reveal stagger={0.08} className="plate plate--ticked" y={20}>
+            <dl className="p-5 sm:p-6">
+              {FACTS.map((f, i) => (
                 <div
-                  className="display leading-none mb-2 flex items-baseline"
-                  style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', color: 'var(--signal)' }}
+                  key={f.label}
+                  className="py-3.5 first:pt-0 last:pb-0"
+                  style={{
+                    borderTop: i === 0 ? 'none' : '1px solid var(--rule-soft)',
+                  }}
                 >
-                  <CountUp to={m.value} duration={1.8} />
-                  <span>{m.suffix}</span>
+                  <dt className="label mb-1.5">{f.label}</dt>
+                  <dd
+                    className="text-[0.9375rem] leading-snug"
+                    style={{ color: f.emphasis ? 'var(--signal)' : 'var(--ink)' }}
+                  >
+                    {f.value}
+                  </dd>
+                  <dd
+                    className="mono text-[0.6875rem] leading-snug mt-1"
+                    style={{ color: 'var(--ink-4)' }}
+                  >
+                    {f.sub}
+                  </dd>
                 </div>
-                <div
-                  className="mono text-[0.75rem] mb-1"
-                  style={{ color: 'var(--ink)' }}
-                >
-                  {m.label}
-                </div>
-                <div className="mono text-[0.6875rem] leading-snug" style={{ color: 'var(--ink-4)' }}>
-                  {m.sub}
-                </div>
-              </div>
-            ))}
+              ))}
+            </dl>
           </Reveal>
         </div>
       </div>
