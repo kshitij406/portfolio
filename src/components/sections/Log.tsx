@@ -23,7 +23,7 @@ export default function Log() {
               current job I was handed a reporting stack nobody had written down, and the only way
               through was to read the network traffic and work backwards. That investigation is now
               informing a decision about 300+ reports. That&rsquo;s the pattern I keep coming back
-              to: go one level lower than you strictly have to, and the problem usually stops being
+              to: go one level lower than you have to, and the problem usually stops being
               mysterious.
             </p>
             <p>

@@ -3,6 +3,11 @@ import { Instrument_Serif, IBM_Plex_Mono, IBM_Plex_Sans, Press_Start_2P } from '
 import Nav from '@/components/Nav';
 import SmoothScroll from '@/components/SmoothScroll';
 import DepthRuler from '@/components/DepthRuler';
+import TerminalGate from '@/components/TerminalGate';
+import TabTitle from '@/components/TabTitle';
+import MobileNotice from '@/components/MobileNotice';
+import ShakeCursor from '@/components/ShakeCursor';
+import { DemoProvider } from '@/components/DemoProvider';
 import { PROFILE } from '@/data/site';
 import './globals.css';
 
@@ -68,8 +73,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <SmoothScroll />
         <DepthRuler />
+        <TabTitle />
+        <MobileNotice />
+        <ShakeCursor />
         <Nav />
-        {children}
+        <DemoProvider>
+          {children}
+          <TerminalGate />
+        </DemoProvider>
       </body>
     </html>
   );

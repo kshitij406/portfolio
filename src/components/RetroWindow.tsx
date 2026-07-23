@@ -4,12 +4,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createTimeline, animate, stagger, utils } from 'animejs';
 import { X, Maximize2, Minimize2, ExternalLink } from 'lucide-react';
+import { sound } from '@/lib/sound';
 
 type RetroWindowProps = {
   title: string;
   url: string;
   onClose: () => void;
 };
+
+const LOADING_STRINGS = ['LOADING', 'BOOTING', 'INITIALIZING', 'BUFFERING'];
 
 /**
  * An 8-bit desktop window that frames the real deployment in an iframe.
@@ -29,6 +32,9 @@ export default function RetroWindow({ title, url, onClose }: RetroWindowProps) {
   const [blocked, setBlocked] = useState(false);
   const [maximised, setMaximised] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loadingText] = useState(
+    () => LOADING_STRINGS[Math.floor(Math.random() * LOADING_STRINGS.length)]
+  );
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -39,6 +45,7 @@ export default function RetroWindow({ title, url, onClose }: RetroWindowProps) {
   const close = useCallback(() => {
     if (closingRef.current) return;
     closingRef.current = true;
+    sound.close();
 
     const win = windowRef.current;
     const backdrop = backdropRef.current;
@@ -132,6 +139,7 @@ export default function RetroWindow({ title, url, onClose }: RetroWindowProps) {
   // Flash the screen once the deployment finishes loading.
   useEffect(() => {
     if (!loaded) return;
+    sound.open();
     const el = windowRef.current?.querySelector('.retro-frame');
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -186,7 +194,7 @@ export default function RetroWindow({ title, url, onClose }: RetroWindowProps) {
           {!loaded && !blocked && (
             <div className="retro-loading">
               <span className="retro-loading__text">
-                LOADING<span className="caret">_</span>
+                {loadingText}<span className="caret">_</span>
               </span>
               <div className="retro-progress">
                 <div className="retro-progress__bar" />

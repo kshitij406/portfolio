@@ -26,7 +26,7 @@ export default function DepthRuler() {
       }
       if (readoutRef.current) {
         const depth = (progress * MAX_DEPTH).toFixed(1);
-        readoutRef.current.textContent = `${depth} m`;
+        readoutRef.current.textContent = progress >= 0.999 ? 'MAX DEPTH' : `${depth} m`;
       }
     };
 

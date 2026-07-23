@@ -9,7 +9,7 @@ export const PROFILE = {
   role: "Software developer",
   // The one-line version. Said plainly, no posturing.
   blurb:
-    "I build backends and the interfaces that sit on top of them. I like the problems where you have to go and read how the thing actually works.",
+    "I build backends and the interfaces that sit on top of them. I like the problems where you have to go and read how the thing works.",
 };
 
 export const SOCIAL_LINKS = {

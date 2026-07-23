@@ -6,7 +6,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import SectionHead from '@/components/SectionHead';
-import RetroWindow from '@/components/RetroWindow';
+import Reveal from '@/components/Reveal';
+import ConcurrencyDiagram from '@/components/ConcurrencyDiagram';
+import { useDemo } from '@/components/DemoProvider';
 import { PROJECTS } from '@/data/content';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -14,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 export default function Built() {
   const root = useRef<HTMLElement>(null);
   const [open, setOpen] = useState<string | null>(PROJECTS[0].name);
-  const [demo, setDemo] = useState<{ title: string; url: string } | null>(null);
+  const { openDemo } = useDemo();
 
   useGSAP(
     () => {
@@ -53,11 +55,24 @@ export default function Built() {
                 style={{ borderBottom: '1px solid var(--rule)' }}
               >
                 {startsSprints && (
-                  <div className="pt-12 pb-2">
-                    <p className="label mb-2">Weekends, hackathons, team builds</p>
+                  <div
+                    className="pt-10 pb-5 pl-5 mb-2"
+                    style={{ borderLeft: '3px solid var(--signal)' }}
+                  >
                     <p
-                      className="text-[0.9375rem] leading-[1.6] m-0 max-w-[58ch]"
-                      style={{ color: 'var(--ink-3)' }}
+                      className="mono uppercase m-0 mb-2"
+                      style={{
+                        fontSize: '0.8125rem',
+                        letterSpacing: '0.13em',
+                        color: 'var(--signal)',
+                        fontWeight: 600,
+                      }}
+                    >
+                      Weekends, hackathons, team builds
+                    </p>
+                    <p
+                      className="text-[1.0625rem] leading-[1.6] m-0 max-w-[58ch]"
+                      style={{ color: 'var(--ink-2)' }}
                     >
                       Shipped fast and with help. Some of it mine, some of it a
                       teammate&rsquo;s, some of it a model&rsquo;s. Worth showing, worth
@@ -171,7 +186,7 @@ export default function Built() {
                             <button
                               type="button"
                               className="retro-trigger"
-                              onClick={() => setDemo({ title: p.name, url: p.live as string })}
+                              onClick={() => openDemo({ title: p.name, url: p.live as string })}
                             >
                               <Play size={9} strokeWidth={3} fill="currentColor" />
                               RUN DEMO
@@ -180,6 +195,12 @@ export default function Built() {
                         </div>
                       </div>
                     </div>
+
+                    {p.name === 'Concurrent TCP Chat Server' && (
+                      <Reveal className="sm:pl-[3.25rem] pb-9">
+                        <ConcurrencyDiagram />
+                      </Reveal>
+                    )}
                   </div>
                 </div>
               </article>
@@ -187,10 +208,6 @@ export default function Built() {
           })}
         </div>
       </div>
-
-      {demo && (
-        <RetroWindow title={demo.title} url={demo.url} onClose={() => setDemo(null)} />
-      )}
     </section>
   );
 }
