@@ -7,25 +7,24 @@ type VantaEffect = { destroy: () => void; p5?: P5Instance };
 type P5Ctor = unknown;
 type TopologyFactory = (opts: Record<string, unknown>) => VantaEffect;
 
-// The topology sketch draws 4,500 particles on a 2D canvas every single
-// frame — real, uncapped work regardless of screen size or GPU, and it's
-// the reason Hero itself stays heavy even with the rest of the page fixed.
-// Capping framerate and pixel density are the only levers available without
-// forking the vendored sketch (particle count is hardcoded upstream). Pushed
-// fairly hard here since it's a barely-visible, faded background, not the
-// subject of the page.
-const TARGET_FPS = 15;
-const PIXEL_DENSITY = 0.75;
+// The upstream sketch drew 4,500 particles on a 2D canvas every frame,
+// uncapped — confirmed as the actual cause of lag on Hero. src/lib/vanta-topology
+// is a local fork (see its topology.js) that cuts that to 450. With the root
+// cost fixed, this cap is just a sensible ceiling, not the primary lever.
+const TARGET_FPS = 30;
+const PIXEL_DENSITY = 1;
 
 function tamePerformance(effect: VantaEffect, tries = 0) {
   const p5 = effect.p5;
-  if (p5) {
+  // Effect.prototype.p5 is a boolean flag the library sets ("this effect
+  // renders via p5"), which is truthy from the start and shadows the real
+  // instance until p.setup() actually runs — checking truthiness alone grabs
+  // that flag instead and crashes calling .frameRate() on `true`.
+  if (p5 && typeof p5.frameRate === 'function') {
     p5.frameRate(TARGET_FPS);
     p5.pixelDensity(PIXEL_DENSITY);
     return;
   }
-  // p5's own setup() runs a tick or two after the effect constructor
-  // returns, so the instance isn't always attached yet.
   if (tries < 10) setTimeout(() => tamePerformance(effect, tries + 1), 50);
 }
 
@@ -35,11 +34,11 @@ function tamePerformance(effect: VantaEffect, tries = 0) {
  * p5 and the effect are both loaded lazily. They're ~900kb combined and
  * nothing above the fold depends on them.
  *
- * p5 draws continuously at 60fps once started, which is real, ongoing CPU
- * cost — not just a one-time load cost. Since this only sits behind the
- * Hero, an IntersectionObserver tears the effect down the moment it scrolls
- * out of view and only rebuilds it if the user scrolls back up, so the draw
- * loop isn't burning cycles for the rest of a long scroll session.
+ * Runs on a local fork (src/lib/vanta-topology) rather than the npm
+ * package — see that folder's topology.js for why. p5 still draws
+ * continuously once started, which is real, ongoing CPU cost, so an
+ * IntersectionObserver tears the effect down the moment Hero scrolls out
+ * of view and only rebuilds it if the user scrolls back up.
  */
 export default function VantaTopology() {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -94,7 +93,7 @@ export default function VantaTopology() {
         const p5mod = await import('p5');
         // vanta reaches for a global rather than taking an injected instance.
         (window as unknown as { p5: unknown }).p5 = p5mod.default;
-        const TOPOLOGY = (await import('vanta/dist/vanta.topology.min')).default as TopologyFactory;
+        const TOPOLOGY = (await import('@/lib/vanta-topology/topology')).default as TopologyFactory;
         modulesRef.current = { p5: p5mod.default, TOPOLOGY };
       }
 

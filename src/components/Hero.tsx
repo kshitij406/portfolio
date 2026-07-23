@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import VantaTopology from './VantaTopology';
 import Magnet from './bits/Magnet';
 import { PROFILE, SOCIAL_LINKS } from '@/data/site';
 
@@ -40,8 +41,7 @@ export default function Hero() {
       id="top"
       className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden lg:pl-[46px]"
     >
-      {/* VantaTopology disabled — diagnosing reported lag. See VantaTopology.tsx,
-          it's untouched and ready to re-enable once we know if it's the cause. */}
+      <VantaTopology />
 
       <div className="shell relative z-10 pt-28 pb-20">
         {/* Chart-style header strip */}
