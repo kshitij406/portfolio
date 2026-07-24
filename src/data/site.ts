@@ -38,4 +38,9 @@ export const SOCIAL_LINKS = {
     href: "https://www.instagram.com/kxitiz_?igsh=enFjbDhxN25uZ2p2&utm_source=qr",
     handle: "kxitiz_",
   },
+  buymeacoffee: {
+    label: "Buy Me a Coffee",
+    href: "https://buymeacoffee.com/kshitijj",
+    handle: "kshitijj",
+  },
 };

@@ -25,6 +25,7 @@ export default function Contact() {
     SOCIAL_LINKS.letterboxd,
     SOCIAL_LINKS.spotify,
     SOCIAL_LINKS.instagram,
+    SOCIAL_LINKS.buymeacoffee,
   ];
 
   return (
