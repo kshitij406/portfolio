@@ -71,6 +71,9 @@ export default function SiteFooter() {
           <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 mt-2" style={{ color: 'var(--ink-4)' }}>
             Built with Next.js, GSAP, Lenis and Vanta. Typeset in Instrument Serif &amp; IBM Plex.
           </p>
+          <p className="mono text-[0.6875rem] tracking-[0.1em] m-0 mt-1 normal-case" style={{ color: 'var(--ink-4)' }}>
+            Chart: UK Admiralty No. 662 (1876), public domain, via Wikimedia Commons. Gazebo still: NASA–JSC Space Robotics Challenge, CC BY-SA 4.0.
+          </p>
         </div>
 
         <div className="text-left sm:text-right">

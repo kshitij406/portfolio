@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { FaGithub } from 'react-icons/fa6';
 import VantaTopology from './VantaTopology';
 import Magnet from './bits/Magnet';
 import { PROFILE, SOCIAL_LINKS } from '@/data/site';
@@ -164,6 +165,7 @@ export default function Hero() {
                     rel="noopener noreferrer"
                     className="btn"
                   >
+                    <FaGithub size={13} aria-hidden="true" />
                     GitHub ↗
                   </a>
                 </Magnet>

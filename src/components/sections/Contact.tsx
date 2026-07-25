@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { FaGithub, FaLinkedin, FaInstagram, FaSpotify, FaLetterboxd } from 'react-icons/fa6';
+import { SiBuymeacoffee } from 'react-icons/si';
 import Reveal from '@/components/Reveal';
 import SectionHead from '@/components/SectionHead';
 import Magnet from '@/components/bits/Magnet';
@@ -20,12 +22,12 @@ export default function Contact() {
   };
 
   const links = [
-    SOCIAL_LINKS.github,
-    SOCIAL_LINKS.linkedin,
-    SOCIAL_LINKS.letterboxd,
-    SOCIAL_LINKS.spotify,
-    SOCIAL_LINKS.instagram,
-    SOCIAL_LINKS.buymeacoffee,
+    { ...SOCIAL_LINKS.github, Icon: FaGithub },
+    { ...SOCIAL_LINKS.linkedin, Icon: FaLinkedin },
+    { ...SOCIAL_LINKS.letterboxd, Icon: FaLetterboxd },
+    { ...SOCIAL_LINKS.spotify, Icon: FaSpotify },
+    { ...SOCIAL_LINKS.instagram, Icon: FaInstagram },
+    { ...SOCIAL_LINKS.buymeacoffee, Icon: SiBuymeacoffee },
   ];
 
   return (
@@ -102,15 +104,16 @@ export default function Contact() {
               </div>
               <div>
                 <dt className="label mb-2.5">Elsewhere</dt>
-                <dd className="m-0 flex flex-col gap-1.5">
+                <dd className="m-0 flex flex-col gap-2">
                   {links.map((l) => (
                     <a
                       key={l.label}
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="link mono text-[0.8125rem]"
+                      className="link mono text-[0.8125rem] inline-flex items-center gap-2"
                     >
+                      <l.Icon size={13} aria-hidden="true" />
                       {l.label} / {l.handle} ↗
                     </a>
                   ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import { Play } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -147,6 +148,20 @@ export default function Built() {
                   }}
                 >
                   <div className="overflow-hidden">
+                    {p.shot && (
+                      <div className="sm:pl-[3.25rem] pb-8">
+                        <div className="plate plate--ticked" style={{ boxShadow: 'none' }}>
+                          <Image
+                            src={p.shot}
+                            alt={`${p.name} — live interface`}
+                            width={1000}
+                            height={499}
+                            className="block w-full h-auto"
+                          />
+                        </div>
+                        <p className="label mt-2 mb-0">Fig. {String(i + 1).padStart(2, '0')} — live capture</p>
+                      </div>
+                    )}
                     <div className="pb-9 sm:pl-[3.25rem] grid lg:grid-cols-2 gap-8 lg:gap-14">
                       <div>
                         <p className="label mb-2">Why</p>

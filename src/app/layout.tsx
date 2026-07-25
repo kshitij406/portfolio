@@ -71,6 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${display.variable} ${mono.variable} ${body.variable} ${pixel.variable}`}
     >
       <body>
+        <div className="chart-backdrop" aria-hidden="true" />
         <SmoothScroll />
         <DepthRuler />
         <TabTitle />
