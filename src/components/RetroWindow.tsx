@@ -65,7 +65,7 @@ export default function RetroWindow({ title, url, onClose }: RetroWindowProps) {
 
   // The overlay portals to body. Section elements set `position: relative;
   // z-index: 1`, which creates a stacking context that would trap this
-  // underneath the nav and the depth ruler no matter how high its z-index.
+  // underneath the nav no matter how high its z-index.
   useEffect(() => setMounted(true), []);
 
   // Boot sequence: a horizontal line snaps open, then the tube blooms.

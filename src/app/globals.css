@@ -3,36 +3,64 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════════════
-   Bathymetric chart / engineering paper.
-   Bone stock, ink linework, one vermilion signal, sea-green depth.
-   Single committed theme — no light/dark toggle.
+   Light / dark, plain backgrounds, vibrant accents.
+   Toggled via [data-theme] on <html>, set pre-hydration by the inline
+   script in layout.tsx so there's no flash. Desktop mode (a Linux
+   desktop emulation) is a planned third mode, parked until the light
+   and dark passes are done. See README "Roadmap".
    ══════════════════════════════════════════════════════════════════ */
 
 :root {
-  --paper: #efebe2;
-  --paper-2: #e7e2d7;
-  --paper-3: #dcd6c8;
-  --ink: #16130f;
-  --ink-2: #3d3830;
-  --ink-3: #6b6459;
-  --ink-4: #97907f;
+  --paper: #ffffff;
+  --paper-2: #f6f6f7;
+  --paper-3: #ececee;
+  --ink: #0b0b0d;
+  --ink-2: #333338;
+  --ink-3: #67676f;
+  --ink-4: #9a9aa1;
 
-  --rule: #cdc6b5;
-  --rule-soft: rgba(22, 19, 15, 0.09);
+  --rule: #e2e2e6;
+  --rule-soft: rgba(11, 11, 13, 0.08);
 
-  --signal: #c2402a;
-  --signal-deep: #96301f;
-  --signal-wash: rgba(194, 64, 42, 0.09);
+  --signal: #ff4623;
+  --signal-deep: #d43318;
+  --signal-wash: rgba(255, 70, 35, 0.1);
 
-  --deep: #1d5c52;
-  --deep-wash: rgba(29, 92, 82, 0.1);
+  --deep: #00a884;
+  --deep-wash: rgba(0, 168, 132, 0.1);
 
-  --shadow-plate: 0 1px 0 rgba(22, 19, 15, 0.06), 0 12px 28px -18px rgba(22, 19, 15, 0.4);
+  --plate-1: rgba(255, 255, 255, 0.9);
+  --plate-2: rgba(240, 240, 242, 0.7);
+  --shadow-plate: 0 1px 0 rgba(11, 11, 13, 0.04), 0 12px 28px -18px rgba(11, 11, 13, 0.22);
 
   --gutter: clamp(1.25rem, 5vw, 5rem);
   --measure: 68ch;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --paper: #000000;
+  --paper-2: #0d0d0f;
+  --paper-3: #19191c;
+  --ink: #f5f5f7;
+  --ink-2: #cfcfd4;
+  --ink-3: #97979f;
+  --ink-4: #67676f;
+
+  --rule: #2a2a2e;
+  --rule-soft: rgba(255, 255, 255, 0.09);
+
+  --signal: #ff6347;
+  --signal-deep: #ff4623;
+  --signal-wash: rgba(255, 99, 71, 0.14);
+
+  --deep: #1fe3b8;
+  --deep-wash: rgba(31, 227, 184, 0.14);
+
+  --plate-1: rgba(255, 255, 255, 0.06);
+  --plate-2: rgba(255, 255, 255, 0.02);
+  --shadow-plate: 0 1px 0 rgba(0, 0, 0, 0.4), 0 12px 28px -18px rgba(0, 0, 0, 0.8);
 }
 
 * {
@@ -68,35 +96,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-}
-
-/* Graph-paper substrate: fine grid + a heavier 5th line, like plotting paper. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--rule-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rule-soft) 1px, transparent 1px),
-    linear-gradient(rgba(22, 19, 15, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22, 19, 15, 0.04) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-  opacity: 0.55;
-}
-
-/* Paper tooth. Keeps the flat colour from reading as digital. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.4;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
-  background-size: 220px 220px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {
@@ -112,10 +112,17 @@ body::after {
 /* ── Type ───────────────────────────────────────────────────────── */
 
 .display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-display), Arial Black, sans-serif;
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.94;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+/* Full-caps poster treatment. Only for short headline-length text (names,
+   titles, section heads). Anton set in caps across a whole sentence is
+   unreadable, so this is opt-in rather than baked into .display. */
+.display-caps {
+  text-transform: uppercase;
 }
 
 .mono {
@@ -123,7 +130,7 @@ body::after {
   font-variant-ligatures: none;
 }
 
-/* Small-caps structural label — the chart annotation voice. */
+/* Small-caps structural label. */
 .label {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
@@ -155,10 +162,11 @@ body::after {
 }
 
 .section-head__title {
-  font-family: var(--font-display), serif;
-  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  text-transform: uppercase;
   flex: 1;
 }
 
@@ -202,16 +210,16 @@ body::after {
   margin-top: 1.1em;
 }
 
-/* ── Plates (cards, but they read as mounted chart panels) ──────── */
+/* ── Plates (cards) ─────────────────────────────────────────────── */
 
 .plate {
   position: relative;
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.82), rgba(231, 226, 215, 0.6));
+  background: linear-gradient(180deg, var(--plate-1), var(--plate-2));
   border: 1px solid var(--rule);
   box-shadow: var(--shadow-plate);
 }
 
-/* Corner registration ticks — surveyor's crop marks. */
+/* Corner registration ticks, the printer's crop-mark convention. */
 .plate--ticked::before,
 .plate--ticked::after {
   content: "";
@@ -320,13 +328,35 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+/* ── Theme toggle ───────────────────────────────────────────────── */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink-2);
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s var(--ease-out);
+}
+
+.theme-toggle:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+  transform: rotate(-12deg);
+}
+
 /* ── Chips ──────────────────────────────────────────────────────── */
 
 .chip {
   display: inline-block;
   padding: 0.25rem 0.6rem;
   border: 1px solid var(--rule);
-  background: rgba(255, 253, 248, 0.5);
+  background: var(--paper-2);
   font-family: var(--font-mono), monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.04em;
@@ -353,40 +383,6 @@ button:focus-visible {
   height: 1px;
   background: var(--ink);
   width: 100%;
-}
-
-/* ── Depth ruler: the left-margin scroll indicator ──────────────── */
-
-.depth-ruler {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 46px;
-  z-index: 40;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid var(--rule);
-  background: rgba(239, 235, 226, 0.6);
-  backdrop-filter: blur(3px);
-}
-
-@media (max-width: 900px) {
-  .depth-ruler {
-    display: none;
-  }
-}
-
-.depth-ruler__readout {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  color: var(--signal);
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
 }
 
 /* ── Marquee ────────────────────────────────────────────────────── */
@@ -426,45 +422,6 @@ button:focus-visible {
 
 .caret {
   animation: caret 1.1s step-end infinite;
-}
-
-/* ── Chart backdrop ─────────────────────────────────────────────────
-   The actual 1876 Admiralty survey of the Tanzanian coast (Kilwa Point to
-   Zanzibar Channel), pinned behind every section — not just the hero — so
-   the whole page reads as one document rather than a hero with a photo
-   and five empty sections after it. Sits under the paper grid (body::before,
-   z-index 0) via a negative z-index, and under Vanta's own mask in the hero.
-   ─────────────────────────────────────────────────────────────────── */
-
-.chart-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: url('/resources/chart-dar-es-salaam-1876.jpg');
-  background-size: cover;
-  background-position: 60% 35%;
-  background-repeat: no-repeat;
-  opacity: 0.1;
-  mix-blend-mode: multiply;
-}
-
-@media (max-width: 768px) {
-  .chart-backdrop {
-    background-position: 68% 35%;
-    opacity: 0.07;
-  }
-}
-
-/* ── Vanta host ─────────────────────────────────────────────────── */
-
-.vanta-host {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  /* Vanta topology renders dark strokes; knock it back so type stays first. */
-  opacity: 0.42;
-  mask-image: radial-gradient(ellipse 78% 72% at 50% 45%, #000 35%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 72% at 50% 45%, #000 35%, transparent 100%);
 }
 
 /* ── Retro demo window ──────────────────────────────────────────────
@@ -526,7 +483,7 @@ button:focus-visible {
   font-size: clamp(0.5rem, 1.6vw, 0.6875rem);
   line-height: 1.5;
   color: var(--paper);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45); /* unslop-ignore: hard pixel-art drop shadow, retro window chrome */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -598,7 +555,7 @@ button:focus-visible {
     transparent 1px,
     transparent 3px
   );
-  /* Vignette the corners so it reads as a CRT. */
+  /* Vignette the corners so it reads as a CRT. unslop-ignore: retro window chrome. */
   box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.5);
 }
 
@@ -618,7 +575,7 @@ button:focus-visible {
   font-family: var(--font-pixel), monospace;
   font-size: 0.6875rem;
   color: #6de8b0;
-  text-shadow: 0 0 8px rgba(109, 232, 176, 0.6);
+  text-shadow: 0 0 8px rgba(109, 232, 176, 0.6); /* unslop-ignore: CRT boot-screen glow, retro window chrome */
 }
 
 .retro-loading__hint {
@@ -731,60 +688,41 @@ button:focus-visible {
 
 /* ── Dev console ─────────────────────────────────────────────────────
    Hidden terminal, summoned with backtick or the Konami code. Same CRT
-   bevel-and-scanline language as the retro window, but green-on-black —
+   bevel-and-scanline language as the retro window, but green-on-black:
    a distinct instrument, not a second demo window.
    ─────────────────────────────────────────────────────────────────── */
 
+/* Full-bleed takeover, not a floating window: it reads as dropping into a
+   real shell, not opening a widget. */
 .term-backdrop {
   position: fixed;
   inset: 0;
   z-index: 210;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(0.75rem, 3vw, 2.5rem);
-  background: rgba(12, 20, 18, 0.82);
-  backdrop-filter: blur(2px);
+  background: #000;
 }
 
 .term-panel {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: min(640px, 92vw);
-  height: min(460px, 72vh);
-  background: #0d1412;
-  border-top: 3px solid #6de8b0;
-  border-left: 3px solid #6de8b0;
-  border-right: 3px solid #123028;
-  border-bottom: 3px solid #123028;
-  box-shadow: 8px 8px 0 rgba(12, 20, 18, 0.5);
+  width: 100%;
+  height: 100%;
   font-family: var(--font-mono), monospace;
-  overflow: hidden;
-}
-
-.term-titlebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  background: #123028;
-  border-bottom: 3px solid #0d1412;
-  font-family: var(--font-pixel), monospace;
-  font-size: 0.5625rem;
-  color: #6de8b0;
-  text-shadow: 0 0 6px rgba(109, 232, 176, 0.5);
-  flex-shrink: 0;
+  padding: clamp(1.25rem, 4vw, 3rem);
 }
 
 .term-close {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
   background: transparent;
   border: 0;
   color: #6de8b0;
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
-  padding: 2px 8px;
+  padding: 4px 8px;
+  z-index: 1;
 }
 
 .term-close:hover {
@@ -795,15 +733,22 @@ button:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 10px 12px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
+  line-height: 1.8;
   color: #a9f0c9;
 }
 
+/* Every line reads as a shell reply: one leading '>' from CSS, so the
+   component only ever deals with the text itself. */
 .term-line {
   white-space: pre-wrap;
   word-break: break-word;
+  margin-bottom: 1em;
+}
+
+.term-line::before {
+  content: '> ';
+  color: #6de8b0;
 }
 
 .term-line--error {
@@ -815,16 +760,15 @@ button:focus-visible {
 }
 
 .term-line--dim {
-  color: rgba(169, 240, 201, 0.5);
+  color: rgba(169, 240, 201, 0.6);
 }
 
 .term-inputrow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-top: 1px solid rgba(109, 232, 176, 0.25);
+  gap: 8px;
   flex-shrink: 0;
+  padding-top: 0.5em;
 }
 
 .term-prompt {
@@ -839,37 +783,53 @@ button:focus-visible {
   outline: 0;
   color: #e8fff2;
   font-family: inherit;
-  font-size: 0.8125rem;
-}
-
-.term-scanlines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.16) 0px,
-    rgba(0, 0, 0, 0.16) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.5);
-}
-
-@media (max-width: 640px) {
-  .term-panel {
-    width: 94vw;
-    height: 78vh;
-  }
+  font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
 }
 
 .off-clock-tile {
   transition: transform 0.3s var(--ease-out), border-color 0.3s ease;
 }
 
-.off-clock-tile:hover {
+.off-clock-tile:hover:not(.is-unlinked) {
   border-color: var(--signal);
   transform: translateY(-3px);
+}
+
+/* ── Card unlink/drag mode ────────────────────────────────────────────
+   Nav's unlink toggle fires a CustomEvent that CardDragMode.tsx (mounted
+   once, root layout) listens for. It grabs every `.plate` on the page,
+   every card and any section, then jiggles them in place (iOS-springboard style)
+   to signal they're now draggable, and does the pointer-drag math itself,
+   writing the translate directly to each card's inline style.
+   ─────────────────────────────────────────────────────────────────── */
+
+.plate.is-unlinked {
+  cursor: grab;
+  touch-action: none;
+  border-color: var(--signal);
+  animation: tile-wiggle 0.24s ease-in-out infinite;
+}
+
+.plate.is-unlinked:nth-of-type(odd) {
+  animation-delay: -0.12s;
+}
+
+.plate.is-dragging {
+  cursor: grabbing;
+  animation: none;
+  z-index: 50;
+  box-shadow: var(--shadow-plate), 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes tile-wiggle {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50% { transform: rotate(0.6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate.is-unlinked {
+    animation: none;
+  }
 }
 
 /* ── Off-the-clock tile effects ─────────────────────────────────────
@@ -956,7 +916,7 @@ button:focus-visible {
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   color: #ffd8ad;
-  text-shadow: 0 0 10px rgba(255, 140, 60, 0.6);
+  text-shadow: 0 0 10px rgba(255, 140, 60, 0.6); /* unslop-ignore: bonfire-rest tile easter egg */
 }
 
 @keyframes fx-glow-pulse {
@@ -1006,7 +966,7 @@ button:focus-visible {
   font-family: var(--font-pixel), monospace;
   font-size: clamp(0.625rem, 2vw, 0.875rem);
   color: var(--signal);
-  text-shadow: 0 0 8px rgba(194, 64, 42, 0.7);
+  text-shadow: 0 0 8px rgba(194, 64, 42, 0.7); /* unslop-ignore: e-stop flicker tile easter egg */
   text-align: center;
   padding: 0 1rem;
 }
@@ -1116,40 +1076,6 @@ button:focus-visible {
   inset: 24px;
 }
 
-/* ── Mobile notice ───────────────────────────────────────────────── */
-
-.mobile-notice {
-  position: fixed;
-  left: 50%;
-  bottom: 1rem;
-  transform: translateX(-50%);
-  z-index: 230;
-  width: min(340px, calc(100vw - 2rem));
-  background: var(--paper-2);
-  border: 1px solid var(--ink);
-  box-shadow: var(--shadow-plate);
-  padding: 0.9rem 1rem;
-}
-
-.mobile-notice p {
-  margin: 0 0 0.6rem;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--ink-2);
-}
-
-.mobile-notice button {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--signal);
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
 /* ── Accessibility ──────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1168,9 +1094,5 @@ button:focus-visible {
 
   .drift-track {
     animation: none;
-  }
-
-  .vanta-host {
-    display: none;
   }
 }

@@ -58,13 +58,17 @@ export default function Reveal({
       gsap.to(targets, {
         opacity: 1,
         y: 0,
-        duration: 0.9,
+        duration: 0.5,
         delay,
         ease: 'power3.out',
         stagger: stagger ?? 0,
         scrollTrigger: {
+          // Was 0.9s starting at 'top 88%', which meant a normal-speed
+          // scroller kept catching paragraphs still part-way faded in. The
+          // content is the product, so it should not have to chase the
+          // viewport: start earlier and finish quicker.
           trigger: el,
-          start: 'top 88%',
+          start: 'top 95%',
           once: true,
         },
       });

@@ -9,8 +9,8 @@ type DemoContextValue = { openDemo: (demo: Demo) => void };
 const DemoContext = createContext<DemoContextValue | null>(null);
 
 /**
- * Owns the single live RetroWindow instance so anything on the page — the
- * project list, the hidden terminal — can open a demo without wiring props
+ * Owns the single live RetroWindow instance so anything on the page (the
+ * project list, the hidden terminal) can open a demo without wiring props
  * through every layer in between.
  */
 export function DemoProvider({ children }: { children: ReactNode }) {

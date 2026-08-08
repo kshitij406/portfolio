@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { FaGithub, FaLinkedin, FaInstagram, FaSpotify, FaLetterboxd } from 'react-icons/fa6';
-import { SiBuymeacoffee } from 'react-icons/si';
 import Reveal from '@/components/Reveal';
 import SectionHead from '@/components/SectionHead';
 import Magnet from '@/components/bits/Magnet';
-import { PROFILE, SOCIAL_LINKS } from '@/data/site';
+import { PROFILE } from '@/data/site';
 
-export default function Contact() {
+export default function Status() {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -21,26 +19,20 @@ export default function Contact() {
     }
   };
 
-  const links = [
-    { ...SOCIAL_LINKS.github, Icon: FaGithub },
-    { ...SOCIAL_LINKS.linkedin, Icon: FaLinkedin },
-    { ...SOCIAL_LINKS.letterboxd, Icon: FaLetterboxd },
-    { ...SOCIAL_LINKS.spotify, Icon: FaSpotify },
-    { ...SOCIAL_LINKS.instagram, Icon: FaInstagram },
-    { ...SOCIAL_LINKS.buymeacoffee, Icon: SiBuymeacoffee },
-  ];
-
   return (
     <section
-      id="contact"
-      className="section lg:pl-[46px]"
+      id="status"
+      className="section"
       style={{ paddingBottom: 'clamp(2rem, 4vw, 3.5rem)' }}
     >
       <div className="shell">
-        <SectionHead no="06" title="Get in touch" />
+        <SectionHead no="07" title="Status" />
 
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-start">
           <Reveal>
+            {/* Availability, then the invitation, then the visa detail. The
+                visa paragraph is the least interesting of the three and used
+                to sit between the other two. */}
             <p
               className="display leading-[1.08] mb-7"
               style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}
@@ -49,13 +41,17 @@ export default function Contact() {
               <span style={{ color: 'var(--signal)', fontStyle: 'italic' }}>
                 12-month placement
               </span>{' '}
-              starting July 2027, and I&rsquo;ll answer anything before then.
+              starting July 2027.
             </p>
 
-            <p className="prose text-[1rem] leading-[1.65] mb-8">
-              Student visa holder from September 2026, eligible for full-time employment
-              during the assessed placement year. If you want to talk about backends, Go
+            <p className="prose text-[1rem] leading-[1.65] mb-5">
+              Questions are welcome long before then. If you want to talk about backends, Go
               concurrency, diving, or why a boss fight feels good, that also works.
+            </p>
+
+            <p className="prose text-[1rem] leading-[1.65] mb-8" style={{ color: 'var(--ink-3)' }}>
+              Student visa holder from September 2026, eligible for full-time employment
+              during the assessed placement year.
             </p>
 
             <div className="flex flex-wrap gap-3">
@@ -76,7 +72,7 @@ export default function Contact() {
                   rel="noopener noreferrer"
                   className="btn"
                 >
-                  Download CV ↗
+                  View CV ↗
                 </a>
               </Magnet>
             </div>
@@ -97,26 +93,7 @@ export default function Contact() {
                 <dd className="m-0 mono text-[0.875rem]" style={{ color: 'var(--ink-2)' }}>
                   {PROFILE.from}
                   <br />
-                  <span style={{ color: 'var(--ink-4)' }}>
-                    → {PROFILE.to}, {PROFILE.movingOn}
-                  </span>
-                </dd>
-              </div>
-              <div>
-                <dt className="label mb-2.5">Elsewhere</dt>
-                <dd className="m-0 flex flex-col gap-2">
-                  {links.map((l) => (
-                    <a
-                      key={l.label}
-                      href={l.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link mono text-[0.8125rem] inline-flex items-center gap-2"
-                    >
-                      <l.Icon size={13} aria-hidden="true" />
-                      {l.label} / {l.handle} ↗
-                    </a>
-                  ))}
+                  <span style={{ color: 'var(--ink-4)' }}>University of Kent, stage 2</span>
                 </dd>
               </div>
             </dl>

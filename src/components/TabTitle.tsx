@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
-// Ties back to the depth ruler that runs down the left edge of the page —
-// a nod specific to this site's own instrument, not a generic "come back!".
-const AWAY_TITLE = 'Kshitij Jha — still logging depth';
+// A quiet nod in this site's own voice, not a generic "come back!".
+const AWAY_TITLE = 'Kshitij Jha, still building';
 
 export default function TabTitle() {
   const original = useRef<string | null>(null);

@@ -15,8 +15,8 @@ export const RESUME_CONTACT = {
   email: "kshitij.j615@gmail.com",
   github: "github.com/kshitij406",
   linkedin: "linkedin.com/in/kshitij-jha2006",
-  location: "Dar es Salaam, Tanzania",
-  relocating: "Relocating to Canterbury, UK, September 2026",
+  location: "Canterbury, UK",
+  relocating: "Available for a 12-month placement from July 2027",
 };
 
 export const RESUME_SUMMARY =
@@ -25,7 +25,7 @@ export const RESUME_SUMMARY =
 export const RESUME_EXPERIENCE = [
   {
     org: "Imatic Technologies Limited (ITL)",
-    role: "Software Developer Intern, Dar es Salaam, Tanzania",
+    role: "Software Developer Intern, remote (Dar es Salaam, Tanzania)",
     period: "June 2026 - Present",
     points: [
       "Built 9 REST endpoints across 6 resources in C#/.NET 8, then rebuilt the same API in Node.js so the team could compare stacks when evaluating a migration off ASP.NET MVC",
@@ -51,7 +51,16 @@ export const RESUME_EDUCATION = [
     role: "BSc Computer Science (Hons) with a Year in Industry",
     period: "September 2026 - 2029",
     points: [
-      "Stage 2. Placement year 2027-28, available for a 12-month contract from July 2027",
+      "Entering at stage 2 on direct second-year entry. Placement year 2027-28, available for a 12-month contract from July 2027",
+      "Kent International Scholarship holder",
+    ],
+  },
+  {
+    org: "Middlesex University Mauritius",
+    role: "Certificate of Higher Education",
+    period: "2025 - 2026",
+    points: [
+      "The qualification carrying the direct second-year entry to Kent",
     ],
   },
 ];
