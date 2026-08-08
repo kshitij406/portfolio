@@ -6,8 +6,8 @@
 export const EXPERIENCE = [
   {
     company: "Imatic Technologies Limited",
-    role: "Software Developer Intern",
-    location: "Dar es Salaam, Tanzania",
+    role: "Software Developer Intern, remote",
+    location: "Dar es Salaam, Tanzania (remote from Canterbury)",
     period: "Jun 2026 to now",
     current: true,
     // The thing that actually mattered about the job.
@@ -42,13 +42,13 @@ export const EDUCATION = [
     school: "University of Kent, Canterbury",
     qualification: "BSc Computer Science (Hons) with a Year in Industry",
     period: "Sept 2026 to 2029",
-    note: "Stage 2. Kent International Scholarship holder. Placement year runs 2027 to 28, so I am free for a 12 month contract from July 2027.",
+    note: "Starting at stage 2 on direct second-year entry, off the Mauritius certificate. Kent International Scholarship holder. Placement year runs 2027 to 28, so I am free for a 12 month contract from July 2027.",
   },
   {
     school: "Middlesex University Mauritius",
     qualification: "Certificate of Higher Education",
     period: "2025 to 2026",
-    note: null,
+    note: "The qualification that carried the direct second-year entry to Kent.",
   },
 ];
 
@@ -66,6 +66,8 @@ export const PROJECTS = [
     href: "https://github.com/kshitij406/TCP",
     live: null,
     slug: null,
+    // No shot: this has no interface. It carries ConcurrencyDiagram instead.
+    // See the PROJECT_DIAGRAM note in Built.tsx.
     shot: null,
     badge: null,
     tier: "deep",
@@ -157,6 +159,22 @@ export const PROJECTS = [
     what: "A ride sharing platform pairing verified student drivers with riders. Driver verification, a dashboard with listings and analytics, route filtering, ratings, all on Firebase Auth, Firestore and Storage. Built with Harshil Patel and shipped to a live campus audience.",
     stack: ["Next.js", "TypeScript", "Firebase", "Tailwind", "Vercel"],
   },
+  {
+    name: "Platformer",
+    lang: "GDScript",
+    year: "2026",
+    href: null,
+    live: "/games/platformer/Platformer.html",
+    slug: "platformer",
+    shot: null,
+    badge: null,
+    tier: "sprint",
+    // TODO: replace with your own line, this is a placeholder rather than
+    // an invented motivation.
+    why: "An excuse to learn Godot outside a browser tab, in an engine built for exactly this.",
+    what: "A small 2D platformer in Godot 4.7: a player controller, an enemy, collectible coins, killzones, and a game manager tying the run together. Exported to WebAssembly, so it runs in the browser with no engine install.",
+    stack: ["Godot 4.7", "GDScript", "WebAssembly"],
+  },
 ];
 
 export const STACK = [
@@ -238,34 +256,17 @@ export const OFF_CLOCK = [
 export type TileEffectKind = "flood" | "bonfire" | "reinstall" | "estop" | "letterbox" | "waveform";
 
 /**
- * Three places, with their actual coordinates.
- *
- * On a chart the lat/long grid is the substrate everything else is plotted
- * against, so putting real fixes on the page makes the bathymetric direction
- * literal rather than decorative. These are the three named in the opening
- * paragraph, in the order they happened. Nothing invented: each one is where I
- * actually was.
- */
-export const STATIONS = [
-  { place: "Dar es Salaam", lat: "6.7924° S", lon: "39.2083° E", note: "Grew up" },
-  { place: "Port Louis", lat: "20.1609° S", lon: "57.5012° E", note: "Studied" },
-  { place: "Canterbury", lat: "51.2802° N", lon: "1.0789° E", note: "From Sept 2026" },
-];
-
-/**
  * The facts strip. This replaced a band of counted numbers, because a number
  * set large invites an interviewer to test it, and endpoint counts are a task
  * list rather than an achievement. What sits here instead is the information a
- * recruiter actually needs and cannot get anywhere else on the page.
- *
- * `emphasis` marks the one line that carries the signal colour. Availability
- * is the answer most visitors are here for, so it gets it.
+ * recruiter actually needs and cannot get anywhere else on the page. Availability
+ * itself lives only in the Status section, not here.
  */
 export const FACTS = [
   {
     label: "Based",
-    value: "Dar es Salaam, Tanzania",
-    sub: "Canterbury, UK from September 2026",
+    value: "Canterbury, UK",
+    sub: "",
   },
   {
     label: "Currently",
@@ -276,11 +277,5 @@ export const FACTS = [
     label: "Reading",
     value: "BSc Computer Science with a Year in Industry",
     sub: "University of Kent, stage 2",
-  },
-  {
-    label: "Available",
-    value: "12 month placement from July 2027",
-    sub: "UK, full time, right to work from September 2026",
-    emphasis: true,
   },
 ];

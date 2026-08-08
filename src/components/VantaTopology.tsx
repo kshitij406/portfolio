@@ -29,8 +29,11 @@ function tamePerformance(effect: VantaEffect, tries = 0) {
 }
 
 /**
- * Vanta TOPOLOGY, recoloured to read as a bathymetric chart rather than
- * the usual dark-mode particle field: sea-green contours on bone paper.
+ * Vanta TOPOLOGY, recoloured to a vibrant teal mesh on plain white rather
+ * than the usual dark-mode particle field. Not yet theme-aware: it always
+ * renders the light-mode colours, even with dark mode on. Pinning it to
+ * --paper/--deep on theme change is a later pass, once dark mode gets its
+ * own look at the Hero section.
  * p5 and the effect are both loaded lazily. They're ~900kb combined and
  * nothing above the fold depends on them.
  *
@@ -114,8 +117,11 @@ export default function VantaTopology() {
           minHeight: 200,
           minWidth: 200,
           scale: 1,
-          color: 0x1d5c52,
-          backgroundColor: 0xefebe2,
+          // Matches --deep and --paper (light mode). Vanta takes a raw hex
+          // number, not a CSS var, so this needs updating by hand if those
+          // tokens change again.
+          color: 0x00a884,
+          backgroundColor: 0xffffff,
         });
       } catch {
         setFailed(true);

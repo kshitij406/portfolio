@@ -81,7 +81,7 @@ export default function TileEffect({ kind, onDone }: Props) {
 
       {kind === 'estop' && (
         <div className="fx-estop">
-          <span className="fx-estop__text">SIMULATION — E-STOP TRIGGERED</span>
+          <span className="fx-estop__text">SIMULATION: E-STOP TRIGGERED</span>
         </div>
       )}
 

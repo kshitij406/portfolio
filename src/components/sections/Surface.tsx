@@ -10,9 +10,9 @@ export default function Surface() {
   const [firing, setFiring] = useState<TileEffectKind | null>(null);
 
   return (
-    <section id="surface" className="section lg:pl-[46px]">
+    <section id="surface" className="section">
       <div className="shell">
-        <SectionHead no="05" title="Off the clock" meta="The non-CV half" />
+        <SectionHead no="06" title="Off the clock" meta="The non-CV half" />
 
         <Reveal className="grid md:grid-cols-2 xl:grid-cols-3 gap-3" stagger={0.07} y={22}>
           {OFF_CLOCK.map((item) => (
@@ -24,7 +24,7 @@ export default function Surface() {
               style={{ boxShadow: 'none' }}
             >
               <h3
-                className="display leading-none mb-3"
+                className="display display-caps leading-none mb-3"
                 style={{ fontSize: '1.5rem' }}
               >
                 {item.heading}

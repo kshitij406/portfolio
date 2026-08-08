@@ -1,5 +1,5 @@
 /**
- * Synthesized UI sound — no audio files, just oscillator/noise envelopes.
+ * Synthesized UI sound, no audio files, just oscillator/noise envelopes.
  *
  * Two independent volume gates:
  * - `sound.*` (terminal, RetroWindow): off by default, opt in only via the
@@ -50,7 +50,7 @@ function playTone({ freq, duration, type = 'square', gain = 0.05 }: Tone) {
 
 type Noise = { duration: number; gain?: number; freq?: number; q?: number };
 
-/** A filtered noise swell — the building block for wave/wind/crackle/static. */
+/** A filtered noise swell, the building block for wave/wind/crackle/static. */
 function playNoise({ duration, gain = 0.08, freq = 600, q = 0.6 }: Noise) {
   const audio = getContext();
   if (!audio) return;

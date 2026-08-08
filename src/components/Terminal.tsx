@@ -4,14 +4,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createTimeline, utils } from 'animejs';
 import { useDemo } from '@/components/DemoProvider';
-import { PROJECTS } from '@/data/content';
+import { PROJECTS, EXPERIENCE, STACK, FACTS } from '@/data/content';
 import { PROFILE, SOCIAL_LINKS } from '@/data/site';
 import { isSoundOn, setSoundOn, sound } from '@/lib/sound';
 import { getLenis } from '@/lib/lenis';
 
 type Line = { text: string; tone?: 'error' | 'signal' | 'dim' };
 
-const SECTIONS = ['log', 'work', 'built', 'stack', 'surface', 'contact'];
+const SECTIONS = ['log', 'work', 'education', 'built', 'stack', 'surface', 'status', 'elsewhere'];
 const DEMO_SLUGS = PROJECTS.filter((p) => p.slug).map((p) => p.slug);
 
 const KONAMI = [
@@ -28,14 +28,15 @@ const KONAMI = [
 ];
 
 const BOOT_LINES: Line[] = [
-  { text: `${PROFILE.name.toUpperCase()} // DEV CONSOLE`, tone: 'signal' },
-  { text: "type 'help' if you're lost." },
+  { text: `${PROFILE.name}: hey. type 'help' for a list of commands.`, tone: 'signal' },
 ];
 
 /**
  * A hidden dev console, summoned with backtick (the Quake/Source convention).
- * Reuses RetroWindow's CRT visual language so it reads as the same system
- * rather than a second unrelated widget.
+ * Full-bleed green-on-black takeover, not a windowed CRT panel. Commands
+ * that dump content (about, work, projects, stack, social) read straight
+ * off the same data files the real sections render from, so nothing here
+ * can drift out of sync with the page.
  */
 export default function Terminal() {
   const { openDemo } = useDemo();
@@ -51,6 +52,9 @@ export default function Terminal() {
   const inputRef = useRef<HTMLInputElement>(null);
   const closingRef = useRef(false);
   const konamiProgress = useRef(0);
+  // Bash-style history: -1 means "not browsing", typing resets it.
+  const historyRef = useRef<string[]>([]);
+  const historyIndexRef = useRef(-1);
 
   useEffect(() => setMounted(true), []);
 
@@ -109,8 +113,13 @@ export default function Terminal() {
   const runCommand = useCallback(
     (raw: string) => {
       const trimmed = raw.trim();
-      print({ text: `> ${trimmed}`, tone: 'dim' });
+      print({ text: trimmed, tone: 'dim' });
       if (!trimmed) return;
+
+      if (historyRef.current[historyRef.current.length - 1] !== trimmed) {
+        historyRef.current.push(trimmed);
+      }
+      historyIndexRef.current = -1;
 
       const [cmd, ...rest] = trimmed.toLowerCase().split(/\s+/);
       const arg = rest.join(' ');
@@ -125,13 +134,14 @@ export default function Terminal() {
         case 'help':
           print([
             { text: 'help, clear, exit, whoami, ls' },
+            { text: 'about, contact, work, projects, stack, social' },
             { text: 'cat resume.txt / download cv' },
             { text: 'open <github|linkedin|letterboxd|spotify>' },
             { text: `play <project-slug>  (try: ${DEMO_SLUGS.join(', ')})` },
             { text: `goto <section>  (${SECTIONS.join(', ')})` },
             { text: `mute / unmute  (sound is ${isSoundOn() ? 'on' : 'off'})` },
             ...(mgsUnlocked
-              ? [{ text: 'codec traffic detected — try snake, box, !', tone: 'signal' as const }]
+              ? [{ text: 'codec traffic detected. try snake, box, !', tone: 'signal' as const }]
               : []),
           ]);
           return;
@@ -151,14 +161,55 @@ export default function Terminal() {
           sound.open();
           return;
         case 'whoami':
-          print({ text: "guest — same as everyone who hasn't emailed me yet" });
+          print({ text: "guest, same as everyone who hasn't emailed me yet" });
           return;
         case 'ls':
           print({ text: SECTIONS.map((s) => `${s}/`).join('  ') });
           return;
+        case 'about':
+          print([
+            { text: PROFILE.blurb },
+            { text: `${PROFILE.from}, University of Kent, stage 2.` },
+            ...FACTS.map((f) => ({ text: `${f.label}: ${f.value}` })),
+          ]);
+          return;
+        case 'contact':
+          print([
+            { text: `email: ${PROFILE.email}` },
+            { text: `based: ${PROFILE.from}` },
+            { text: "type 'goto status' for availability." },
+          ]);
+          return;
+        case 'work':
+        case 'experience':
+          EXPERIENCE.forEach((job) => {
+            print({ text: `${job.company}: ${job.role} (${job.period})`, tone: 'signal' });
+            print({ text: job.lede });
+            print({ text: `stack: ${job.stack.join(', ')}` });
+          });
+          return;
+        case 'projects':
+        case 'built':
+          PROJECTS.forEach((p) => {
+            print({ text: `${p.name} [${p.lang}, ${p.year}]`, tone: 'signal' });
+            print({ text: p.why });
+            print({ text: `stack: ${p.stack.join(', ')}${p.live ? `  live: ${p.live}` : ''}` });
+          });
+          return;
+        case 'stack':
+        case 'skills':
+          print(STACK.map((s) => ({ text: `${s.group}: ${s.items.join(', ')}` })));
+          return;
+        case 'social':
+          print(
+            Object.values(SOCIAL_LINKS).map((l) => ({
+              text: `${l.label} (${l.handle}): ${l.href}`,
+            }))
+          );
+          return;
         case 'cat':
           if (arg === 'resume.txt' || arg === 'cv' || arg === 'resume') {
-            print({ text: `${PROFILE.name} — ${PROFILE.role}. Full CV incoming.` });
+            print({ text: `${PROFILE.name}, ${PROFILE.role}. Full CV incoming.` });
             window.open('/resume', '_blank', 'noopener,noreferrer');
           } else {
             print({ text: `cat: ${arg || '(missing operand)'}: No such file` });
@@ -176,7 +227,7 @@ export default function Terminal() {
           print({ text: "permission denied: you're not root here either.", tone: 'error' });
           return;
         case 'ssh':
-          print({ text: 'connection refused (all ports closed — try email instead).', tone: 'error' });
+          print({ text: 'connection refused (all ports closed, try email instead).', tone: 'error' });
           return;
         case 'rest':
         case 'light':
@@ -260,7 +311,7 @@ export default function Terminal() {
 
   // Backtick toggles the console open and closed. The Konami code, tracked
   // only while the console is closed, force-opens it with codec traffic
-  // unlocked — a real thing to find, not a second way to do what backtick
+  // unlocked, a real thing to find, not a second way to do what backtick
   // already does.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -314,12 +365,9 @@ export default function Terminal() {
       }}
     >
       <div ref={panelRef} className="term-panel" role="dialog" aria-modal="true" aria-label="Dev console">
-        <div className="term-titlebar">
-          <span>guest@kshitijj:~$</span>
-          <button type="button" className="term-close" onClick={close} aria-label="Close console">
-            ×
-          </button>
-        </div>
+        <button type="button" className="term-close" onClick={close} aria-label="Close console">
+          ×
+        </button>
 
         <div ref={scrollRef} className="term-output">
           {lines.map((l, i) => (
@@ -344,13 +392,33 @@ export default function Terminal() {
             className="term-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              const hist = historyRef.current;
+              if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (!hist.length) return;
+                const i = historyIndexRef.current === -1 ? hist.length - 1 : Math.max(0, historyIndexRef.current - 1);
+                historyIndexRef.current = i;
+                setInput(hist[i]);
+              } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndexRef.current === -1) return;
+                const i = historyIndexRef.current + 1;
+                if (i >= hist.length) {
+                  historyIndexRef.current = -1;
+                  setInput('');
+                } else {
+                  historyIndexRef.current = i;
+                  setInput(hist[i]);
+                }
+              }
+            }}
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}
             aria-label="Console input"
           />
         </form>
-        <div className="term-scanlines" aria-hidden="true" />
       </div>
     </div>,
     document.body

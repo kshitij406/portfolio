@@ -15,7 +15,7 @@ const MIN_TRAVEL = 220;
  *
  * mousemove can fire far faster than the screen repaints (some mice/trackpads
  * report at 100s of Hz), so the listener itself only records the latest
- * point — the actual DOM write and shake-detection math run at most once per
+ * point; the actual DOM write and shake-detection math run at most once per
  * animation frame via rAF batching, not once per raw event.
  */
 export default function ShakeCursor() {

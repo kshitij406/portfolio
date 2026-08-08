@@ -7,9 +7,9 @@ import { STACK, AWARDS } from '@/data/content';
 
 export default function Stack() {
   return (
-    <section id="stack" className="section lg:pl-[46px]">
+    <section id="stack" className="section">
       <div className="shell">
-        <SectionHead no="04" title="Tools" meta="What I actually reach for" />
+        <SectionHead no="05" title="Tools" meta="What I actually reach for" />
 
         <div className="grid lg:grid-cols-[1.3fr_0.7fr] gap-12 lg:gap-20 items-start">
           <Reveal stagger={0.08} className="flex flex-col">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { PROFILE } from '@/data/site';
+import { PROFILE, SOCIAL_LINKS } from '@/data/site';
 
 const MARQUEE = [
   'Go',
@@ -14,8 +14,7 @@ const MARQUEE = [
   'goroutines',
   'stored procedures',
   'ATR stops',
-  '18 m visibility',
-  'Instrument Serif',
+  'Anton',
 ];
 
 export default function SiteFooter() {
@@ -27,7 +26,7 @@ export default function SiteFooter() {
         new Intl.DateTimeFormat('en-GB', {
           hour: '2-digit',
           minute: '2-digit',
-          timeZone: 'Africa/Dar_es_Salaam',
+          timeZone: 'Europe/London',
           hour12: false,
         }).format(new Date())
       );
@@ -37,7 +36,7 @@ export default function SiteFooter() {
   }, []);
 
   return (
-    <footer className="relative z-10 lg:pl-[46px]">
+    <footer className="relative z-10">
       {/* Drifting keyword band, the chart legend */}
       <div
         className="py-4 overflow-hidden"
@@ -65,22 +64,39 @@ export default function SiteFooter() {
 
       <div className="shell py-10 flex flex-col sm:flex-row gap-5 justify-between items-start sm:items-end">
         <div>
-          <p className="display m-0 leading-none" style={{ fontSize: '1.75rem' }}>
+          <p className="display display-caps m-0 leading-none" style={{ fontSize: '1.75rem' }}>
             {PROFILE.name}
           </p>
           <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 mt-2" style={{ color: 'var(--ink-4)' }}>
-            Built with Next.js, GSAP, Lenis and Vanta. Typeset in Instrument Serif &amp; IBM Plex.
+            Built with Next.js, GSAP and Lenis. Typeset in Anton, Inter and Martian Mono.
           </p>
           <p className="mono text-[0.6875rem] tracking-[0.1em] m-0 mt-1 normal-case" style={{ color: 'var(--ink-4)' }}>
-            Chart: UK Admiralty No. 662 (1876), public domain, via Wikimedia Commons. Gazebo still: NASA–JSC Space Robotics Challenge, CC BY-SA 4.0.
+            Gazebo still: NASA–JSC Space Robotics Challenge, CC BY-SA 4.0.
           </p>
         </div>
 
-        <div className="text-left sm:text-right">
-          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0" style={{ color: 'var(--ink-4)' }}>
-            Dar es Salaam, {time ?? '--:--'} EAT
+        <div className="text-left sm:text-right flex flex-col sm:items-end gap-1">
+          {/*
+            The terminal was unfindable: nothing on the page said it existed.
+            One line here keeps the surprise but gives it a door. Desktop only,
+            matching TerminalGate, which never binds the key on touch.
+          */}
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 hidden md:block" style={{ color: 'var(--ink-4)' }}>
+            Press <kbd style={{ color: 'var(--signal)', font: 'inherit' }}>`</kbd> for a terminal
           </p>
-          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0 mt-1" style={{ color: 'var(--ink-4)' }}>
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0" style={{ color: 'var(--ink-4)' }}>
+            Canterbury, {time ?? '--:--'} UK
+          </p>
+          <a
+            href={SOCIAL_LINKS.buymeacoffee.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mono text-[0.6875rem] tracking-[0.14em] uppercase no-underline"
+            style={{ color: 'var(--ink-4)' }}
+          >
+            Buy me a coffee ↗
+          </a>
+          <p className="mono text-[0.6875rem] tracking-[0.14em] uppercase m-0" style={{ color: 'var(--ink-4)' }}>
             © {new Date().getFullYear()}
           </p>
         </div>

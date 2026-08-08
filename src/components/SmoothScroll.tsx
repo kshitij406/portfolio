@@ -31,7 +31,12 @@ export default function SmoothScroll() {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
 
-    // Anchor links need to go through Lenis or they snap.
+    // Anchor links need to go through Lenis or they snap. Because we
+    // preventDefault, the browser never updates location.hash itself, so do
+    // it here: without this every section is unlinkable and the URL keeps
+    // whatever hash it loaded with. replaceState rather than pushState, so a
+    // reader does not have to walk back through every section they clicked
+    // in order to leave the site.
     const onClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement)?.closest?.('a[href^="#"]');
       if (!anchor) return;
@@ -40,7 +45,10 @@ export default function SmoothScroll() {
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target as HTMLElement, { offset: -24 });
+      lenis.scrollTo(target as HTMLElement, {
+        offset: -24,
+        onComplete: () => history.replaceState(null, '', id),
+      });
     };
     document.addEventListener('click', onClick);
 

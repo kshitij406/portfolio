@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { FaGithub } from 'react-icons/fa6';
-import VantaTopology from './VantaTopology';
 import Magnet from './bits/Magnet';
 import { PROFILE, SOCIAL_LINKS } from '@/data/site';
 
@@ -40,30 +39,34 @@ export default function Hero() {
     <section
       ref={root}
       id="top"
-      className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden lg:pl-[46px]"
+      className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden"
     >
-      <VantaTopology />
+      {/* Vanta topology mesh removed: background is now plain white, no
+          animated backdrop. VantaTopology.tsx is kept for later re-use. */}
 
       <div className="shell relative z-10 pt-28 pb-20">
-        {/* Chart-style header strip */}
+        {/*
+          The one line a placement recruiter is scanning for, before the name.
+          It used to live only in Status, roughly 11,000px down the page.
+        */}
         <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-8">
           <span data-hero-meta className="label label-signal">
-            Sheet 01
+            Available July 2027
+          </span>
+          <span data-hero-meta className="label">
+            12-month placement
           </span>
           <span data-hero-meta className="label">
             {PROFILE.from}
           </span>
-          <span data-hero-meta className="label">
-            06°49′S 39°17′E
-          </span>
         </div>
 
         {/*
-          Each line is masked so the glyphs can slide up from nothing.
-          The mask would guillotine descenders (the j in Kshitij), so the
-          inner span is padded and the wrapper pulls the same amount back.
+          Each line is masked so the glyphs can slide up from nothing. The
+          inner span is padded and the wrapper pulls the same amount back,
+          so the mask has slack for any descender a future name might have.
         */}
-        <h1 className="display text-[clamp(3.2rem,13vw,10.5rem)] mb-0">
+        <h1 className="display display-caps text-[clamp(3.2rem,13vw,10.5rem)] mb-0">
           <span
             data-hero-line
             className="block overflow-hidden"
@@ -113,26 +116,7 @@ export default function Hero() {
               <div data-hero-meta>
                 <dt className="label mb-1">Next</dt>
                 <dd className="mono text-[0.8125rem] m-0" style={{ color: 'var(--ink)' }}>
-                  Kent, {PROFILE.movingOn}
-                </dd>
-              </div>
-              <div data-hero-meta>
-                <dt className="label mb-1">Seeking</dt>
-                <dd className="mono text-[0.8125rem] m-0" style={{ color: 'var(--ink)' }}>
-                  12-mo placement, 2027
-                </dd>
-              </div>
-              <div data-hero-meta>
-                <dt className="label mb-1">Status</dt>
-                <dd
-                  className="mono text-[0.8125rem] m-0 flex items-center gap-2"
-                  style={{ color: 'var(--ink)' }}
-                >
-                  <span
-                    className="inline-block w-[6px] h-[6px] rounded-full"
-                    style={{ background: 'var(--signal)' }}
-                  />
-                  Open
+                  Placement, July 2027
                 </dd>
               </div>
             </dl>
@@ -180,9 +164,9 @@ export default function Hero() {
         className="absolute bottom-6 left-0 right-0 z-10 pointer-events-none"
       >
         <div className="shell flex items-center justify-between gap-6">
-          <span className="label">Scroll to sound the depth</span>
+          <span className="label">Scroll</span>
           <span className="label hidden sm:inline">
-            {PROFILE.from} → {PROFILE.to}
+            {PROFILE.from}
           </span>
         </div>
       </div>
