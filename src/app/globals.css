@@ -3,36 +3,65 @@
 @tailwind utilities;
 
 /* ══════════════════════════════════════════════════════════════════
-   Bathymetric chart / engineering paper.
-   Bone stock, ink linework, one vermilion signal, sea-green depth.
-   Single committed theme — no light/dark toggle.
+   Light / dark, plain backgrounds, vibrant accents.
+   Toggled via [data-theme] on <html>, set pre-hydration by the inline
+   script in layout.tsx so there's no flash. Desktop mode (a KDE
+   Plasma/Fedora emulation, data-theme="desktop") is the third mode; it
+   doesn't use these tokens at all, see the "Desktop mode" section
+   near the end of this file and src/components/Desktop.tsx.
    ══════════════════════════════════════════════════════════════════ */
 
 :root {
-  --paper: #efebe2;
-  --paper-2: #e7e2d7;
-  --paper-3: #dcd6c8;
-  --ink: #16130f;
-  --ink-2: #3d3830;
-  --ink-3: #6b6459;
-  --ink-4: #97907f;
+  --paper: #ffffff;
+  --paper-2: #f6f6f7;
+  --paper-3: #ececee;
+  --ink: #0b0b0d;
+  --ink-2: #333338;
+  --ink-3: #67676f;
+  --ink-4: #9a9aa1;
 
-  --rule: #cdc6b5;
-  --rule-soft: rgba(22, 19, 15, 0.09);
+  --rule: #e2e2e6;
+  --rule-soft: rgba(11, 11, 13, 0.08);
 
-  --signal: #c2402a;
-  --signal-deep: #96301f;
-  --signal-wash: rgba(194, 64, 42, 0.09);
+  --signal: #ff4623;
+  --signal-deep: #d43318;
+  --signal-wash: rgba(255, 70, 35, 0.1);
 
-  --deep: #1d5c52;
-  --deep-wash: rgba(29, 92, 82, 0.1);
+  --deep: #00a884;
+  --deep-wash: rgba(0, 168, 132, 0.1);
 
-  --shadow-plate: 0 1px 0 rgba(22, 19, 15, 0.06), 0 12px 28px -18px rgba(22, 19, 15, 0.4);
+  --plate-1: rgba(255, 255, 255, 0.9);
+  --plate-2: rgba(240, 240, 242, 0.7);
+  --shadow-plate: 0 1px 0 rgba(11, 11, 13, 0.04), 0 12px 28px -18px rgba(11, 11, 13, 0.22);
 
   --gutter: clamp(1.25rem, 5vw, 5rem);
   --measure: 68ch;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --paper: #000000;
+  --paper-2: #0d0d0f;
+  --paper-3: #19191c;
+  --ink: #f5f5f7;
+  --ink-2: #cfcfd4;
+  --ink-3: #97979f;
+  --ink-4: #67676f;
+
+  --rule: #2a2a2e;
+  --rule-soft: rgba(255, 255, 255, 0.09);
+
+  --signal: #ff6347;
+  --signal-deep: #ff4623;
+  --signal-wash: rgba(255, 99, 71, 0.14);
+
+  --deep: #1fe3b8;
+  --deep-wash: rgba(31, 227, 184, 0.14);
+
+  --plate-1: rgba(255, 255, 255, 0.06);
+  --plate-2: rgba(255, 255, 255, 0.02);
+  --shadow-plate: 0 1px 0 rgba(0, 0, 0, 0.4), 0 12px 28px -18px rgba(0, 0, 0, 0.8);
 }
 
 * {
@@ -68,35 +97,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-}
-
-/* Graph-paper substrate: fine grid + a heavier 5th line, like plotting paper. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--rule-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rule-soft) 1px, transparent 1px),
-    linear-gradient(rgba(22, 19, 15, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(22, 19, 15, 0.04) 1px, transparent 1px);
-  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-  opacity: 0.55;
-}
-
-/* Paper tooth. Keeps the flat colour from reading as digital. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.4;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
-  background-size: 220px 220px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {
@@ -112,10 +113,17 @@ body::after {
 /* ── Type ───────────────────────────────────────────────────────── */
 
 .display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-display), Arial Black, sans-serif;
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.94;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+/* Full-caps poster treatment. Only for short headline-length text (names,
+   titles, section heads). Anton set in caps across a whole sentence is
+   unreadable, so this is opt-in rather than baked into .display. */
+.display-caps {
+  text-transform: uppercase;
 }
 
 .mono {
@@ -123,7 +131,7 @@ body::after {
   font-variant-ligatures: none;
 }
 
-/* Small-caps structural label — the chart annotation voice. */
+/* Small-caps structural label. */
 .label {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
@@ -155,10 +163,11 @@ body::after {
 }
 
 .section-head__title {
-  font-family: var(--font-display), serif;
-  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  text-transform: uppercase;
   flex: 1;
 }
 
@@ -202,16 +211,16 @@ body::after {
   margin-top: 1.1em;
 }
 
-/* ── Plates (cards, but they read as mounted chart panels) ──────── */
+/* ── Plates (cards) ─────────────────────────────────────────────── */
 
 .plate {
   position: relative;
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.82), rgba(231, 226, 215, 0.6));
+  background: linear-gradient(180deg, var(--plate-1), var(--plate-2));
   border: 1px solid var(--rule);
   box-shadow: var(--shadow-plate);
 }
 
-/* Corner registration ticks — surveyor's crop marks. */
+/* Corner registration ticks, the printer's crop-mark convention. */
 .plate--ticked::before,
 .plate--ticked::after {
   content: "";
@@ -320,13 +329,35 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+/* ── Theme toggle ───────────────────────────────────────────────── */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink-2);
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s var(--ease-out);
+}
+
+.theme-toggle:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+  transform: rotate(-12deg);
+}
+
 /* ── Chips ──────────────────────────────────────────────────────── */
 
 .chip {
   display: inline-block;
   padding: 0.25rem 0.6rem;
   border: 1px solid var(--rule);
-  background: rgba(255, 253, 248, 0.5);
+  background: var(--paper-2);
   font-family: var(--font-mono), monospace;
   font-size: 0.6875rem;
   letter-spacing: 0.04em;
@@ -353,40 +384,6 @@ button:focus-visible {
   height: 1px;
   background: var(--ink);
   width: 100%;
-}
-
-/* ── Depth ruler: the left-margin scroll indicator ──────────────── */
-
-.depth-ruler {
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 46px;
-  z-index: 40;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid var(--rule);
-  background: rgba(239, 235, 226, 0.6);
-  backdrop-filter: blur(3px);
-}
-
-@media (max-width: 900px) {
-  .depth-ruler {
-    display: none;
-  }
-}
-
-.depth-ruler__readout {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.1em;
-  color: var(--signal);
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
 }
 
 /* ── Marquee ────────────────────────────────────────────────────── */
@@ -426,33 +423,6 @@ button:focus-visible {
 
 .caret {
   animation: caret 1.1s step-end infinite;
-}
-
-/* ── Chart backdrop ─────────────────────────────────────────────────
-   The actual 1876 Admiralty survey of the Tanzanian coast (Kilwa Point to
-   Zanzibar Channel), pinned behind every section — not just the hero — so
-   the whole page reads as one document rather than a hero with a photo
-   and five empty sections after it. Sits under the paper grid (body::before,
-   z-index 0) via a negative z-index, and under Vanta's own mask in the hero.
-   ─────────────────────────────────────────────────────────────────── */
-
-.chart-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: url('/resources/chart-dar-es-salaam-1876.jpg');
-  background-size: cover;
-  background-position: 60% 35%;
-  background-repeat: no-repeat;
-  opacity: 0.1;
-  mix-blend-mode: multiply;
-}
-
-@media (max-width: 768px) {
-  .chart-backdrop {
-    background-position: 68% 35%;
-    opacity: 0.07;
-  }
 }
 
 /* ── Vanta host ─────────────────────────────────────────────────── */
@@ -526,7 +496,7 @@ button:focus-visible {
   font-size: clamp(0.5rem, 1.6vw, 0.6875rem);
   line-height: 1.5;
   color: var(--paper);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45); /* unslop-ignore: hard pixel-art drop shadow, retro window chrome */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -598,7 +568,7 @@ button:focus-visible {
     transparent 1px,
     transparent 3px
   );
-  /* Vignette the corners so it reads as a CRT. */
+  /* Vignette the corners so it reads as a CRT. unslop-ignore: retro window chrome. */
   box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.5);
 }
 
@@ -618,7 +588,7 @@ button:focus-visible {
   font-family: var(--font-pixel), monospace;
   font-size: 0.6875rem;
   color: #6de8b0;
-  text-shadow: 0 0 8px rgba(109, 232, 176, 0.6);
+  text-shadow: 0 0 8px rgba(109, 232, 176, 0.6); /* unslop-ignore: CRT boot-screen glow, retro window chrome */
 }
 
 .retro-loading__hint {
@@ -731,60 +701,41 @@ button:focus-visible {
 
 /* ── Dev console ─────────────────────────────────────────────────────
    Hidden terminal, summoned with backtick or the Konami code. Same CRT
-   bevel-and-scanline language as the retro window, but green-on-black —
+   bevel-and-scanline language as the retro window, but green-on-black:
    a distinct instrument, not a second demo window.
    ─────────────────────────────────────────────────────────────────── */
 
+/* Full-bleed takeover, not a floating window: it reads as dropping into a
+   real shell, not opening a widget. */
 .term-backdrop {
   position: fixed;
   inset: 0;
   z-index: 210;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(0.75rem, 3vw, 2.5rem);
-  background: rgba(12, 20, 18, 0.82);
-  backdrop-filter: blur(2px);
+  background: #000;
 }
 
 .term-panel {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: min(640px, 92vw);
-  height: min(460px, 72vh);
-  background: #0d1412;
-  border-top: 3px solid #6de8b0;
-  border-left: 3px solid #6de8b0;
-  border-right: 3px solid #123028;
-  border-bottom: 3px solid #123028;
-  box-shadow: 8px 8px 0 rgba(12, 20, 18, 0.5);
+  width: 100%;
+  height: 100%;
   font-family: var(--font-mono), monospace;
-  overflow: hidden;
-}
-
-.term-titlebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  background: #123028;
-  border-bottom: 3px solid #0d1412;
-  font-family: var(--font-pixel), monospace;
-  font-size: 0.5625rem;
-  color: #6de8b0;
-  text-shadow: 0 0 6px rgba(109, 232, 176, 0.5);
-  flex-shrink: 0;
+  padding: clamp(1.25rem, 4vw, 3rem);
 }
 
 .term-close {
+  position: absolute;
+  top: clamp(1rem, 3vw, 2rem);
+  right: clamp(1rem, 3vw, 2rem);
   background: transparent;
   border: 0;
   color: #6de8b0;
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
-  padding: 2px 8px;
+  padding: 4px 8px;
+  z-index: 1;
 }
 
 .term-close:hover {
@@ -795,15 +746,22 @@ button:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 10px 12px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
+  line-height: 1.8;
   color: #a9f0c9;
 }
 
+/* Every line reads as a shell reply: one leading '>' from CSS, so the
+   component only ever deals with the text itself. */
 .term-line {
   white-space: pre-wrap;
   word-break: break-word;
+  margin-bottom: 1em;
+}
+
+.term-line::before {
+  content: '> ';
+  color: #6de8b0;
 }
 
 .term-line--error {
@@ -815,16 +773,15 @@ button:focus-visible {
 }
 
 .term-line--dim {
-  color: rgba(169, 240, 201, 0.5);
+  color: rgba(169, 240, 201, 0.6);
 }
 
 .term-inputrow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-top: 1px solid rgba(109, 232, 176, 0.25);
+  gap: 8px;
   flex-shrink: 0;
+  padding-top: 0.5em;
 }
 
 .term-prompt {
@@ -839,28 +796,7 @@ button:focus-visible {
   outline: 0;
   color: #e8fff2;
   font-family: inherit;
-  font-size: 0.8125rem;
-}
-
-.term-scanlines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.16) 0px,
-    rgba(0, 0, 0, 0.16) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.5);
-}
-
-@media (max-width: 640px) {
-  .term-panel {
-    width: 94vw;
-    height: 78vh;
-  }
+  font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
 }
 
 .off-clock-tile {
@@ -956,7 +892,7 @@ button:focus-visible {
   font-size: 0.625rem;
   letter-spacing: 0.08em;
   color: #ffd8ad;
-  text-shadow: 0 0 10px rgba(255, 140, 60, 0.6);
+  text-shadow: 0 0 10px rgba(255, 140, 60, 0.6); /* unslop-ignore: bonfire-rest tile easter egg */
 }
 
 @keyframes fx-glow-pulse {
@@ -1006,7 +942,7 @@ button:focus-visible {
   font-family: var(--font-pixel), monospace;
   font-size: clamp(0.625rem, 2vw, 0.875rem);
   color: var(--signal);
-  text-shadow: 0 0 8px rgba(194, 64, 42, 0.7);
+  text-shadow: 0 0 8px rgba(194, 64, 42, 0.7); /* unslop-ignore: e-stop flicker tile easter egg */
   text-align: center;
   padding: 0 1rem;
 }
@@ -1116,40 +1052,6 @@ button:focus-visible {
   inset: 24px;
 }
 
-/* ── Mobile notice ───────────────────────────────────────────────── */
-
-.mobile-notice {
-  position: fixed;
-  left: 50%;
-  bottom: 1rem;
-  transform: translateX(-50%);
-  z-index: 230;
-  width: min(340px, calc(100vw - 2rem));
-  background: var(--paper-2);
-  border: 1px solid var(--ink);
-  box-shadow: var(--shadow-plate);
-  padding: 0.9rem 1rem;
-}
-
-.mobile-notice p {
-  margin: 0 0 0.6rem;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--ink-2);
-}
-
-.mobile-notice button {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--signal);
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
 /* ── Accessibility ──────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1173,4 +1075,655 @@ button:focus-visible {
   .vanta-host {
     display: none;
   }
+}
+
+/* ── Desktop mode (KDE Plasma / Fedora emulation) ─────────────────────
+   The third theme. Unlike light/dark this doesn't touch --paper/--ink at
+   all: it's a fixed simulated OS chrome, same reasoning RetroWindow and
+   the terminal use their own hardcoded palettes instead of the site
+   tokens. Colours below are lifted from Breeze Dark. */
+
+.kde-desktop {
+  --kbg: #1b1e20;
+  --kpanel: #232629;
+  --ktext: #eff0f1;
+  --ktext-dim: #9ea3a8;
+  --kaccent: #3daee9;
+  --kborder: rgba(255, 255, 255, 0.09);
+  --kred: #da4453;
+
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  overflow: hidden;
+  font-family: var(--font-noto), 'Noto Sans', sans-serif;
+  color: var(--ktext);
+  user-select: none;
+  z-index: 40;
+  animation: kde-boot 0.25s ease;
+}
+
+@keyframes kde-boot {
+  from {
+    opacity: 0;
+  }
+}
+
+.kde-wallpaper {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 18% 10%, rgba(255, 255, 255, 0.1), transparent 60%),
+    radial-gradient(70% 60% at 88% 92%, rgba(9, 34, 74, 0.55), transparent 65%),
+    radial-gradient(95% 70% at 50% 105%, rgba(15, 58, 110, 0.65), transparent 70%),
+    linear-gradient(160deg, #0c2f63 0%, #124a86 45%, #1c6faf 100%);
+}
+
+.kde-fedora-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #294172;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-noto), 'Noto Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ── Desktop icons ─────────────────────────────────────────────── */
+
+.kde-icons {
+  position: absolute;
+  inset: 0;
+  height: calc(100% - 48px);
+  padding: 14px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(auto-fill, 92px);
+  justify-content: start;
+  gap: 2px;
+}
+
+.kde-icon {
+  width: 82px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  font-family: inherit;
+}
+
+.kde-icon:hover,
+.kde-icon:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+
+.kde-icon__badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.kde-icon__label {
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  overflow-wrap: break-word;
+}
+
+.kde-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 64px;
+  transform: translateX(-50%);
+  background: var(--kpanel);
+  border: 1px solid var(--kborder);
+  color: var(--ktext);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 70;
+  max-width: min(320px, 80vw);
+}
+
+/* ── Windows ───────────────────────────────────────────────────── */
+
+.kde-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--kbg);
+  border: 1px solid var(--kborder);
+  border-radius: 7px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  animation: kde-win-in 0.12s var(--ease-out);
+}
+
+@keyframes kde-win-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.kde-window--active {
+  border-color: rgba(61, 174, 233, 0.5);
+}
+
+.kde-window__titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 6px 0 10px;
+  background: #2a2e32;
+  flex-shrink: 0;
+  touch-action: none;
+}
+
+.kde-window--active .kde-window__titlebar {
+  background: linear-gradient(#33383d, #2a2e32);
+}
+
+.kde-window__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kde-window__btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--ktext-dim);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.kde-window__btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ktext);
+}
+
+.kde-window__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.kde-window__btn--close:hover {
+  background: var(--kred);
+  color: #fff;
+}
+
+.kde-window__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px;
+  font-family: var(--font-noto), 'Noto Sans', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  user-select: text;
+}
+
+.kde-app h3 {
+  font-family: var(--font-noto), 'Noto Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0 0 10px;
+  color: #fff;
+}
+
+.kde-app p {
+  margin: 0 0 12px;
+  color: var(--ktext-dim);
+}
+
+.kde-app .kde-row {
+  padding: 12px 0;
+  border-top: 1px solid var(--kborder);
+}
+
+.kde-app .kde-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.kde-app .kde-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--kaccent);
+  margin-bottom: 4px;
+}
+
+.kde-app .kde-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.kde-app .kde-chip {
+  font-size: 0.6875rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(61, 174, 233, 0.14);
+  color: #8fd3f4;
+}
+
+.kde-app .kde-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.kde-app .kde-btn {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: 1px solid var(--kborder);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ktext);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.kde-app .kde-btn:hover {
+  border-color: var(--kaccent);
+  color: var(--kaccent);
+}
+
+.kde-app .kde-btn--accent {
+  background: var(--kaccent);
+  border-color: var(--kaccent);
+  color: #08222f;
+  font-weight: 600;
+}
+
+.kde-app .kde-btn--accent:hover {
+  color: #08222f;
+  opacity: 0.9;
+}
+
+.kde-fetch {
+  display: flex;
+  gap: 18px;
+}
+
+.kde-fetch__badge {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  background: var(--kaccent);
+  color: #08222f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-noto), 'Noto Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+/* neofetch-style output is the one spot in desktop mode that's genuinely
+   monospaced content, not UI chrome, so it gets Plasma's actual default
+   fixed-width font instead of the UI one. */
+.kde-fetch__specs {
+  font-family: var(--font-noto-mono), 'Noto Sans Mono', ui-monospace, monospace;
+}
+
+.kde-fetch__specs dt {
+  color: var(--kaccent);
+  font-size: 0.75rem;
+}
+
+.kde-fetch__specs dd {
+  margin: 0 0 8px;
+  color: var(--ktext-dim);
+  font-size: 0.8125rem;
+}
+
+/* ── Taskbar ───────────────────────────────────────────────────── */
+
+.kde-taskbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: color-mix(in srgb, var(--kpanel) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--kborder);
+}
+
+.kde-start-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ktext);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.kde-start-btn:hover,
+.kde-start-btn[aria-expanded='true'] {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.kde-pinned {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 4px;
+  margin-left: 2px;
+  border-left: 1px solid var(--kborder);
+  flex-shrink: 0;
+}
+
+.kde-pinned-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.kde-pinned-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.kde-tasklist {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.kde-task-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  max-width: 180px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ktext);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.kde-task-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kde-task-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.kde-task-btn--active {
+  background: rgba(61, 174, 233, 0.22);
+  border-color: rgba(61, 174, 233, 0.4);
+}
+
+.kde-tray {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 6px;
+  color: var(--ktext-dim);
+  flex-shrink: 0;
+}
+
+.kde-tray button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  padding: 4px;
+}
+
+.kde-tray button:hover {
+  color: var(--ktext);
+}
+
+.kde-clock {
+  font-size: 0.6875rem;
+  color: var(--ktext);
+  text-align: right;
+  line-height: 1.25;
+  padding-left: 8px;
+  border-left: 1px solid var(--kborder);
+}
+
+/* ── Start menu (Kickoff) ──────────────────────────────────────── */
+
+.kde-start {
+  position: absolute;
+  left: 8px;
+  bottom: 56px;
+  width: min(380px, 92vw);
+  max-height: min(560px, 78dvh);
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--kpanel) 97%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--kborder);
+  border-radius: 8px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 61;
+  animation: kde-start-in 0.12s var(--ease-out);
+}
+
+@keyframes kde-start-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.kde-start__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--kborder);
+}
+
+.kde-start__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--kaccent);
+  color: #08222f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
+.kde-start__name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.kde-start__role {
+  font-size: 0.6875rem;
+  color: var(--ktext-dim);
+}
+
+.kde-start__search {
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--kborder);
+  border-radius: 5px;
+  color: var(--ktext);
+  font-family: inherit;
+  font-size: 0.8125rem;
+}
+
+.kde-start__search:focus {
+  outline: 1px solid var(--kaccent);
+}
+
+.kde-start__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 6px 6px;
+}
+
+.kde-start__group {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ktext-dim);
+  padding: 10px 10px 4px;
+}
+
+.kde-start__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  color: var(--ktext);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kde-start__row:hover,
+.kde-start__row:focus-visible {
+  background: rgba(61, 174, 233, 0.18);
+  outline: none;
+}
+
+.kde-start__row-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kde-start__row-text {
+  min-width: 0;
+}
+
+.kde-start__row-name {
+  font-size: 0.8125rem;
+  line-height: 1.25;
+}
+
+.kde-start__row-sub {
+  font-size: 0.6875rem;
+  color: var(--ktext-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kde-start__empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--ktext-dim);
+  font-size: 0.8125rem;
+}
+
+.kde-start__footer {
+  border-top: 1px solid var(--kborder);
+  padding: 8px;
+}
+
+.kde-start__leave {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  color: var(--ktext-dim);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.kde-start__leave:hover {
+  background: rgba(218, 68, 83, 0.16);
+  color: #ff8b95;
 }
