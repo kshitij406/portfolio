@@ -6,8 +6,8 @@
 export const EXPERIENCE = [
   {
     company: "Imatic Technologies Limited",
-    role: "Software Developer Intern, remote",
-    location: "Dar es Salaam, Tanzania (remote from Canterbury)",
+    role: "Software Developer Intern",
+    location: "Dar es Salaam, Tanzania (on site)",
     period: "Jun 2026 to now",
     current: true,
     // The thing that actually mattered about the job.

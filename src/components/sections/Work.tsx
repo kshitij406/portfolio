@@ -2,6 +2,7 @@
 
 import SectionHead from '@/components/SectionHead';
 import CaseStudyBlock, { type CaseStudyBg } from '@/components/CaseStudyBlock';
+import Fold from '@/components/Fold';
 import { EXPERIENCE } from '@/data/content';
 
 // Two entries, most-recent first: current job gets the signal (attention)
@@ -28,17 +29,21 @@ export default function Work() {
               <p className="m-0 mb-3" style={{ fontStyle: 'italic' }}>
                 {job.lede}
               </p>
-              <ul className="list-none m-0 p-0 flex flex-col gap-2">
-                {job.points.map((point) => (
-                  <li key={point} className="relative pl-5 text-[0.9375rem] leading-[1.55]">
-                    <span
-                      className="absolute left-0 top-[0.65em] w-[9px]"
-                      style={{ height: '1px', background: 'currentColor', opacity: 0.6 }}
-                    />
-                    {point}
-                  </li>
-                ))}
-              </ul>
+              {/* Four dense bullets per job is most of the mobile scroll, so
+                  the lede carries the block and the detail folds. */}
+              <Fold lines={4} color="#ffffff">
+                <ul className="list-none m-0 p-0 flex flex-col gap-2">
+                  {job.points.map((point) => (
+                    <li key={point} className="relative pl-5 text-[0.9375rem] leading-[1.55]">
+                      <span
+                        className="absolute left-0 top-[0.65em] w-[9px]"
+                        style={{ height: '1px', background: 'currentColor', opacity: 0.6 }}
+                      />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </Fold>
             </>
           }
           chips={job.stack}

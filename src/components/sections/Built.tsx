@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Network, TrendingUp, ShoppingCart, Disc3, ScanSearch, CloudSun, Car, type LucideIcon } from 'lucide-react';
 import SectionHead from '@/components/SectionHead';
+import Fold from '@/components/Fold';
 import CaseStudyBlock, { type CaseStudyBg } from '@/components/CaseStudyBlock';
 import ConcurrencyDiagram from '@/components/ConcurrencyDiagram';
 import { AtrDiagram, EnsembleDiagram, TwoProcessDiagram } from '@/components/ProjectDiagrams';
@@ -100,7 +101,12 @@ export default function Built() {
                 <p className="m-0 mb-3" style={{ fontStyle: 'italic' }}>
                   {p.why}
                 </p>
-                <p className="m-0">{p.what}</p>
+                {/* The 'why' line is the hook and always shows. The build
+                    detail folds away on phones, so a block reads as a title, a
+                    sentence and a picture rather than an essay. */}
+                <Fold lines={3} color={diagramAccent}>
+                  <p className="m-0">{p.what}</p>
+                </Fold>
               </>
             }
             figure={Diagram ? <Diagram accent={diagramAccent} /> : undefined}

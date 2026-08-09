@@ -25,7 +25,7 @@ export const RESUME_SUMMARY =
 export const RESUME_EXPERIENCE = [
   {
     org: "Imatic Technologies Limited (ITL)",
-    role: "Software Developer Intern, remote (Dar es Salaam, Tanzania)",
+    role: "Software Developer Intern (Dar es Salaam, Tanzania)",
     period: "June 2026 - Present",
     points: [
       "Built 9 REST endpoints across 6 resources in C#/.NET 8, then rebuilt the same API in Node.js so the team could compare stacks when evaluating a migration off ASP.NET MVC",

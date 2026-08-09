@@ -2,6 +2,7 @@
 
 import Reveal from '@/components/Reveal';
 import SectionHead from '@/components/SectionHead';
+import Fold from '@/components/Fold';
 import { FACTS } from '@/data/content';
 
 export default function Log() {
@@ -19,20 +20,24 @@ export default function Log() {
               before the degree rather than after it, which was not the plan but turned out to be
               the useful order.
             </p>
-            <p>
-              The work I like is the kind where the answer isn&rsquo;t in the documentation. At my
-              current job, a remote internship with a software house in Dar es Salaam, I was handed
-              a reporting stack nobody had written down, and the only way through was to read the
-              network traffic and work backwards. That investigation is now informing a decision
-              about 300+ reports. That&rsquo;s the pattern I keep coming back to: go one level lower
-              than you have to, and the problem usually stops being mysterious.
-            </p>
-            <p>
-              I write backends in C#, Go, Python and a lot of SQL, then build the interfaces on top
-              of them in Next.js because I don&rsquo;t enjoy handing off an API and never seeing it
-              used. Outside of that I dive, I lose to FromSoftware bosses, and I reinstall Fedora
-              more often than I need to.
-            </p>
+            {/* The opening paragraph always shows. The two that follow are the
+                detail, and on a phone they are what turns this into a wall. */}
+            <Fold lines={4}>
+              <p>
+                The work I like is the kind where the answer isn&rsquo;t in the documentation. At my
+                current job, an internship with a software house in Dar es Salaam, I was
+                handed a reporting stack nobody had written down, and the only way through was to
+                read the network traffic and work backwards. That investigation is now informing a
+                decision about 300+ reports. That&rsquo;s the pattern I keep coming back to: go one
+                level lower than you have to, and the problem usually stops being mysterious.
+              </p>
+              <p>
+                I write backends in C#, Go, Python and a lot of SQL, then build the interfaces on
+                top of them in Next.js because I don&rsquo;t enjoy handing off an API and never
+                seeing it used. Outside of that I dive, I lose to FromSoftware bosses, and I
+                reinstall Fedora more often than I need to.
+              </p>
+            </Fold>
           </Reveal>
 
           {/* Facts strip: ruled rows, label left, value set plainly. No counted numbers. */}

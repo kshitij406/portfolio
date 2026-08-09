@@ -207,7 +207,10 @@ body {
   color: var(--ink-2);
 }
 
-.prose p + p {
+/* A Fold wrapper sits between paragraphs, so it needs the same run-on gap
+   a bare <p> would have got. */
+.prose p + p,
+.prose p + .fold {
   margin-top: 1.1em;
 }
 
@@ -797,6 +800,53 @@ button:focus-visible {
   color: #e8fff2;
   font-family: inherit;
   font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
+}
+
+/* ── Folded prose (phones only) ─────────────────────────────────────
+   See Fold.tsx. The clamp and the toggle both exist only below md; at md+
+   the paragraph renders in full and the button disappears, so the desktop
+   page is what it always was.
+   ─────────────────────────────────────────────────────────────────── */
+
+.fold {
+  overflow: hidden;
+  /* --fold-lines is set per use in Fold.tsx. 1.6em is the body line-height. */
+  max-height: calc(var(--fold-lines, 3) * 1.6em);
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
+.fold--open {
+  max-height: none;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.fold-btn {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--signal);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .fold {
+    max-height: none;
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .fold-btn {
+    display: none;
+  }
 }
 
 .off-clock-tile {
