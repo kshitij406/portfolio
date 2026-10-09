@@ -6,10 +6,6 @@ import TestGrid from "@/components/TestGrid";
 import VesselMap from "@/components/VesselMap";
 import Deadlock from "@/components/Deadlock";
 import CopyEmail from "@/components/CopyEmail";
-import Decode from "@/components/Decode";
-import Ticker from "@/components/Ticker";
-import SkillPit from "@/components/SkillPit";
-import OffClock from "@/components/OffClock";
 import {
   CLIENTS,
   EDUCATION,
@@ -18,28 +14,12 @@ import {
   OFF_CLOCK,
   PROFILE,
   RECOGNITION,
+  SKILLS,
   SMALLER,
   WORK,
 } from "@/data/content";
 
 const ext = { target: "_blank", rel: "noreferrer" } as const;
-
-// Signal codes in the FraudLens style, one per real fault on this page plus
-// the ones the detectors actually look for.
-const SIGNALS = [
-  { code: "OTP_REQUEST" },
-  { code: "HOMOGLYPH_HOST", flag: true },
-  { code: "LOOKALIKE_DOMAIN" },
-  { code: "AIS_GAP_PROTECTED_ZONE", flag: true },
-  { code: "TRANSSHIPMENT_PROXIMITY" },
-  { code: "DUPLICATE_KEY_DROPPED", flag: true },
-  { code: "URGENCY_PRESSURE" },
-  { code: "LOCK_ORDER_INVERSION", flag: true },
-  { code: "CLOCK_SKEW", flag: true },
-  { code: "TEST_418_FAILING", flag: true },
-  { code: "KREOL_NEGATION" },
-  { code: "RISKY_TLD" },
-];
 
 export default function Page() {
   const [itl, cubestone] = WORK;
@@ -49,11 +29,12 @@ export default function Page() {
       <Nav />
       <main>
         <Hero />
-        <Ticker items={SIGNALS} />
 
         {/* Work */}
         <section className="sec" id="work" aria-labelledby="work-h">
-          <Decode className="sec-h" id="work-h" text="Two internships, both in Dar es Salaam, both shipped." />
+          <h2 className="sec-h" id="work-h">
+            Two internships, both in Dar es Salaam, both shipped.
+          </h2>
 
           <article className="job">
             <aside className="job-meta">
@@ -113,7 +94,9 @@ export default function Page() {
 
         {/* Projects */}
         <section className="sec" id="projects" aria-labelledby="projects-h">
-          <Decode className="sec-h" id="projects-h" text="Two hackathon teams I led, and one server I built to understand concurrency." />
+          <h2 className="sec-h" id="projects-h">
+            Two hackathon teams I led, and one server I built to understand concurrency.
+          </h2>
 
           <article className="project">
             <header className="project-head">
@@ -229,7 +212,9 @@ export default function Page() {
 
         {/* Clients */}
         <section className="sec sec-tight" id="clients" aria-labelledby="clients-h">
-          <Decode className="sec-h" id="clients-h" text="Paid client work, on the side." />
+          <h2 className="sec-h" id="clients-h">
+            Paid client work, on the side.
+          </h2>
           <ul className="clients">
             {CLIENTS.map((c) => (
               <li key={c.name}>
@@ -248,8 +233,10 @@ export default function Page() {
         </section>
 
         {/* Recognition */}
-        <section className="sec sec-tight" id="prizes" aria-labelledby="rec-h">
-          <Decode className="sec-h" id="rec-h" text="Prizes, mostly for things built in a weekend." />
+        <section className="sec sec-tight" aria-labelledby="rec-h">
+          <h2 className="sec-h" id="rec-h">
+            Prizes, mostly for things built in a weekend.
+          </h2>
           <ul className="recog">
             {RECOGNITION.map((r) => (
               <li key={r.title}>
@@ -270,7 +257,9 @@ export default function Page() {
 
         {/* About */}
         <section className="sec" id="about" aria-labelledby="about-h">
-          <Decode className="sec-h" id="about-h" text="Second year at Kent, and the rest of me." />
+          <h2 className="sec-h" id="about-h">
+            Second year at Kent, and the rest of me.
+          </h2>
           <div className="about">
             <div className="edu">
               {EDUCATION.map((e) => (
@@ -282,15 +271,29 @@ export default function Page() {
                   <p className="muted">{e.note}</p>
                 </div>
               ))}
-              <p className="spoken">{LANGUAGES}</p>
+              <dl className="skills">
+                {SKILLS.map((s) => (
+                  <div key={s.group}>
+                    <dt>{s.group}</dt>
+                    <dd>{s.items.join(", ")}</dd>
+                  </div>
+                ))}
+                <div>
+                  <dt>Spoken</dt>
+                  <dd>{LANGUAGES}</dd>
+                </div>
+              </dl>
             </div>
-            <OffClock />
+            <ul className="offclock">
+              {OFF_CLOCK.map((o) => (
+                <li key={o.title}>
+                  <h3>{o.title}</h3>
+                  <p>{o.body}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-          <h3 className="pit-h">The stack, loosely sorted</h3>
-          <SkillPit />
         </section>
-
-        <Ticker items={SIGNALS} reverse speed={0.03} />
 
         {/* Contact */}
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
@@ -316,16 +319,8 @@ export default function Page() {
       </main>
 
       <footer className="foot">
-        <p className="foot-name" aria-hidden>
-          Kshitij Jha
-        </p>
-        <div className="foot-row">
-          <p>Designed and built by Kshitij in Canterbury, 2026.</p>
-          <p className="muted">Try the Konami code.</p>
-          <a href="#top" className="btn btn-ghost magnetic">
-            Back to the top
-          </a>
-        </div>
+        <p>Designed and built by Kshitij in Canterbury, 2026.</p>
+        <p className="muted">Next.js, two canvases, and nothing generated from a template.</p>
       </footer>
     </>
   );

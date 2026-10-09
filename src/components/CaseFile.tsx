@@ -43,10 +43,7 @@ export default function CaseFile() {
     return () => removeEventListener("keydown", onKey);
   }, [verdict, open]);
 
-  // Keep the last message rendered while the toast slides out.
-  const lastToast = useRef<string | null>(null);
-  if (toast) lastToast.current = toast;
-  const t = lastToast.current ? ANOMALIES.find((a) => a.id === lastToast.current) : null;
+  const t = toast ? ANOMALIES.find((a) => a.id === toast) : null;
 
   return (
     <>
@@ -83,7 +80,7 @@ export default function CaseFile() {
         )}
         <button
           type="button"
-          className="cf-pill magnetic"
+          className="cf-pill"
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
@@ -94,7 +91,7 @@ export default function CaseFile() {
         </button>
       </div>
 
-      <div className={`toast${toast ? " show" : ""}`} role="status" aria-live="polite">
+      <div className={`toast${t ? " show" : ""}`} role="status" aria-live="polite">
         {t && (
           <>
             <span className="toast-n">{n}/6</span>

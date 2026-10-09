@@ -31,7 +31,7 @@ export default function Nav() {
 
   return (
     <header className="nav">
-      <a href="#top" className="mark magnetic" aria-label="Kshitij Jha, back to top">
+      <a href="#top" className="mark" aria-label="Kshitij Jha, back to top">
         <svg viewBox="0 0 40 40" width="34" height="34" aria-hidden>
           <circle cx="20" cy="20" r="18.5" className="mark-ring" />
           <path d="M13 11v18M13 21l9-10M16.5 18l6.5 11M27 11v13.5c0 3-1.6 4.5-4.4 4.5" className="mark-path" />
@@ -46,7 +46,7 @@ export default function Nav() {
       </nav>
       <button
         type="button"
-        className="theme magnetic"
+        className="theme"
         onClick={toggle}
         aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
       >

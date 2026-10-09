@@ -86,7 +86,7 @@ export default function PunchDemo() {
             <span className="k">WITH</span> (IGNORE_DUP_KEY = <span className="k">ON</span>);
           </code>
         </pre>
-        <button type="button" className="btn magnetic" onClick={() => flag("punches")} disabled={fixed}>
+        <button type="button" className="btn" onClick={() => flag("punches")} disabled={fixed}>
           {fixed ? "Checkpoint added to the index" : "Add checkpoint to the index"}
         </button>
       </div>
