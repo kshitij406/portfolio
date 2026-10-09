@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CARDS } from "@/data/content";
 import Card, { type CardHandle } from "./Card";
 
@@ -9,8 +9,9 @@ import Card, { type CardHandle } from "./Card";
  * sticky, so scrolling turns the wheel: each card in turn swings up to the
  * top, stands upright and lifts, and its foil catches the light as it
  * passes. On phones the page scrolls normally and the wheel is turned by
- * swiping instead: drag sideways, let go, and it snaps to the nearest card
- * (a quick flick carries further). Vertical swipes still scroll the page.
+ * swiping instead: drag sideways, let go, and a spring carries the finger's
+ * speed into the nearest card (a quick flick carries further). Vertical
+ * swipes still scroll the page.
  *
  * Transforms are written straight to the slots on scroll (no re-render per
  * frame). Dealing and shuffling switch on CSS transitions for a moment so
@@ -35,8 +36,9 @@ export default function Deck() {
   const pile = useRef(true);
   const layout = useRef<() => void>(() => {});
   const wheel = useRef<HTMLDivElement>(null);
-  // Phone swipe state: the wheel's position as a float card index.
-  const swipe = useRef({ f: 0, target: 0, raf: 0 });
+  // Phone swipe state: the wheel's position as a float card index, and its
+  // velocity in cards per second.
+  const swipe = useRef({ f: 0, v: 0, target: 0, raf: 0, t: 0 });
   const moved = useRef(false);
   const [mobile, setMobile] = useState(false);
   const n = order.length;
@@ -60,10 +62,13 @@ export default function Deck() {
       // Same test as the CSS. innerWidth can report the layout viewport on
       // phones, which disagrees with the media query and breaks the swipe.
       const step = mobile ? STEP_MOBILE : STEP_DESKTOP;
-      const r = el.getBoundingClientRect();
-      const span = r.height - innerHeight;
-      const p = reduce || span <= 0 ? 0.5 : Math.max(0, Math.min(1, -r.top / span));
-      const f = mobile ? swipe.current.f : p * (n - 1);
+      let f = swipe.current.f;
+      if (!mobile) {
+        const r = el.getBoundingClientRect();
+        const span = r.height - innerHeight;
+        const p = reduce || span <= 0 ? 0.5 : Math.max(0, Math.min(1, -r.top / span));
+        f = p * (n - 1);
+      }
       slots.current.forEach((slot, i) => {
         if (!slot) return;
         const d = pile.current ? 0 : i - f;
@@ -110,20 +115,37 @@ export default function Deck() {
     // Phones: swipe sideways to turn the wheel.
     const w = wheel.current!;
     const PX = Math.min(innerWidth * 0.55, 240); // finger travel for one card
-    let drag: { x: number; y: number; f0: number; t: number; lastX: number; lastT: number; on: boolean } | null = null;
-    const settle = () => {
+    let drag: { x: number; y: number; f0: number; on: boolean; samples: { x: number; t: number }[] } | null = null;
+    // A critically damped spring, stepped by real frame time so it moves the
+    // same on 60 and 120 Hz screens and starts at the finger's speed.
+    const settle = (now: number) => {
       const sw = swipe.current;
-      sw.f += (sw.target - sw.f) * 0.16;
-      if (Math.abs(sw.target - sw.f) < 0.002) sw.f = sw.target;
+      const dt = Math.min(0.032, (now - sw.t) / 1000 || 0.016);
+      sw.t = now;
+      const k = 160;
+      sw.v += (-k * (sw.f - sw.target) - 2 * Math.sqrt(k) * sw.v) * dt;
+      sw.f += sw.v * dt;
+      const done = Math.abs(sw.f - sw.target) < 0.0015 && Math.abs(sw.v) < 0.02;
+      if (done) {
+        sw.f = sw.target;
+        sw.v = 0;
+      }
       apply();
-      sw.raf = sw.f === sw.target ? 0 : requestAnimationFrame(settle);
+      sw.raf = done ? 0 : requestAnimationFrame(settle);
+    };
+    // Finger moves are coalesced to one layout per frame.
+    let moveRaf = 0;
+    const frame = () => {
+      moveRaf = 0;
+      apply();
     };
     const onDown = (e: PointerEvent) => {
       if (!mobile || pile.current) return;
       cancelAnimationFrame(swipe.current.raf);
       swipe.current.raf = 0;
+      swipe.current.v = 0;
       moved.current = false;
-      drag = { x: e.clientX, y: e.clientY, f0: swipe.current.f, t: e.timeStamp, lastX: e.clientX, lastT: e.timeStamp, on: false };
+      drag = { x: e.clientX, y: e.clientY, f0: swipe.current.f, on: false, samples: [] };
     };
     const onMove = (e: PointerEvent) => {
       if (!drag) return;
@@ -131,26 +153,39 @@ export default function Deck() {
       const dy = e.clientY - drag.y;
       if (!drag.on) {
         if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+        // Start from here so the wheel doesn't jump by the dead zone.
         drag.on = true;
+        drag.x = e.clientX;
         moved.current = true;
       }
-      drag.lastX = e.clientX;
-      drag.lastT = e.timeStamp;
+      drag.samples.push({ x: e.clientX, t: e.timeStamp });
+      if (drag.samples.length > 8) drag.samples.shift();
       // A little resistance past either end.
-      let f = drag.f0 - dx / PX;
+      let f = drag.f0 - (e.clientX - drag.x) / PX;
       if (f < 0) f *= 0.35;
       if (f > n - 1) f = n - 1 + (f - (n - 1)) * 0.35;
       swipe.current.f = f;
-      apply();
+      if (!moveRaf) moveRaf = requestAnimationFrame(frame);
     };
     const onUp = (e: PointerEvent) => {
       if (!drag) return;
       if (drag.on) {
-        const dt = Math.max(16, e.timeStamp - drag.t);
-        const v = (e.clientX - drag.x) / dt; // px per ms
-        const fling = Math.abs(v) > 0.5 ? -v * 1.6 : 0;
-        swipe.current.target = Math.max(0, Math.min(n - 1, Math.round(swipe.current.f + fling)));
-        if (!swipe.current.raf) swipe.current.raf = requestAnimationFrame(settle);
+        // Release speed from the last ~100ms, so a finger that stopped
+        // before lifting doesn't fling.
+        const recent = drag.samples.filter((p) => e.timeStamp - p.t < 100);
+        let v = 0;
+        if (recent.length > 1) {
+          const a = recent[0];
+          const b = recent[recent.length - 1];
+          v = (-(b.x - a.x) / Math.max(1, b.t - a.t)) * (1000 / PX); // cards per second
+        }
+        const sw = swipe.current;
+        sw.v = v;
+        sw.target = Math.max(0, Math.min(n - 1, Math.round(sw.f + v * 0.22)));
+        cancelAnimationFrame(moveRaf);
+        moveRaf = 0;
+        sw.t = performance.now();
+        if (!sw.raf) sw.raf = requestAnimationFrame(settle);
       }
       drag = null;
     };
@@ -165,6 +200,7 @@ export default function Deck() {
       removeEventListener("pointerup", onUp);
       removeEventListener("pointercancel", onUp);
       cancelAnimationFrame(swipe.current.raf);
+      cancelAnimationFrame(moveRaf);
       removeEventListener("scroll", onScroll);
       removeEventListener("resize", onScroll);
       io.disconnect();
@@ -216,29 +252,37 @@ export default function Deck() {
 
   const current = CARDS[order[Math.max(0, Math.min(n - 1, focus))]];
 
+  // The cards only change with the order, so the caption updating as the
+  // wheel turns doesn't re-render them. inspect reads only refs and setters.
+  const hand = useMemo(
+    () =>
+      order.map((ci, slot) => (
+        <div
+          className="deck-slot"
+          key={CARDS[ci].id}
+          ref={(el) => {
+            slots.current[slot] = el;
+          }}
+        >
+          <Card
+            ref={(h) => {
+              refs.current[slot] = h;
+            }}
+            card={CARDS[ci]}
+            interactive={false}
+            tabIndex={0}
+            onClick={() => inspect(ci, slot)}
+          />
+        </div>
+      )),
+    [order],
+  );
+
   return (
     <div className="deck-scroll" ref={scroller} style={{ ["--cards" as string]: n }}>
       <div className="deck-stage">
         <div className="deck-wheel" ref={wheel}>
-          {order.map((ci, slot) => (
-            <div
-              className="deck-slot"
-              key={CARDS[ci].id}
-              ref={(el) => {
-                slots.current[slot] = el;
-              }}
-            >
-              <Card
-                ref={(h) => {
-                  refs.current[slot] = h;
-                }}
-                card={CARDS[ci]}
-                interactive={false}
-                tabIndex={0}
-                onClick={() => inspect(ci, slot)}
-              />
-            </div>
-          ))}
+          {hand}
         </div>
         <div className="deck-caption" aria-live="polite">
           <p className="deck-count">
