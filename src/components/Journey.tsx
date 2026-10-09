@@ -10,7 +10,7 @@ import { MAP } from "@/data/map";
  * swaps the story beside the map. Real coastlines, real coordinates.
  */
 
-const { dar, mauritius, canterbury } = MAP.places;
+const { dar, mauritius, canterbury, india } = MAP.places;
 const STOPS = [dar, mauritius, canterbury].map(([x, y]) => ({ x, y }));
 // Curves, not great circles, but they bow the way the real flights do.
 const LEG1 = `M${dar[0]} ${dar[1]} Q ${dar[0] + 70} ${dar[1] + 10}, ${mauritius[0]} ${mauritius[1]}`;
@@ -96,6 +96,7 @@ export default function Journey() {
             <path key={i} d={`M0 ${(i + 0.5) * (MAP.h / 9)} H${MAP.w}`} className="jm-lat" />
           ))}
           <path className="jm-land" d={MAP.land} />
+          <path className="jm-india" d={MAP.india} />
           <path className="jm-route-ghost" d={LEG1} />
           <path className="jm-route-ghost" d={LEG2} />
           <path className="jm-route" d={LEG1} ref={leg1} />
@@ -109,6 +110,14 @@ export default function Journey() {
               </text>
             </g>
           ))}
+          {/* Marked, not a stop: where I was born. */}
+          <g className="jm-born" transform={`translate(${india[0]} ${india[1]})`}>
+            <circle r="5" />
+            <text x="10" y="-2">India</text>
+            <text x="10" y="12" className="jm-born-sub">
+              Born here
+            </text>
+          </g>
           <g ref={plane} className="jm-plane">
             <path d="M12 0 L-6 -4 L-10 -12 L-14 -12 L-10 -2 L-16 -1 L-18 -5 L-21 -5 L-19 0 L-21 5 L-18 5 L-16 1 L-10 2 L-14 12 L-10 12 L-6 4z" />
           </g>

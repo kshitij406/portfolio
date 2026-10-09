@@ -3631,3 +3631,30 @@ html.no-scroll .toast {
     display: none;
   }
 }
+
+/* India: on the map, not on the route. */
+.jm-india {
+  fill: color-mix(in srgb, var(--sodium) 34%, var(--paper-2));
+  stroke: color-mix(in srgb, var(--sodium) 60%, var(--line));
+  stroke-width: 0.8;
+}
+
+.jm-born circle {
+  fill: var(--sodium);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.jm-born text {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 14px;
+  fill: var(--ink);
+}
+
+.jm-born .jm-born-sub {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 11px;
+  fill: var(--muted);
+}

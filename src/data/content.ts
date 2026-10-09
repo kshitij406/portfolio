@@ -160,6 +160,12 @@ export const EDUCATION = [
     period: "2025 to 2026",
     note: "120 of 120 credits. Grade 1, a First, in every graded module: systems architecture and operating systems, networking, and information in organisations.",
   },
+  {
+    school: "Middlesex University Mauritius",
+    course: "BSc Psychology",
+    period: "one year",
+    note: "A year studying psychology, also at Middlesex.",
+  },
 ];
 
 export const SKILLS = [
