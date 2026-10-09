@@ -104,7 +104,7 @@ export default function Journey() {
             <g key={i} className={`jm-stop${i <= stop ? " on" : ""}`} transform={`translate(${s.x} ${s.y})`}>
               <circle r="16" className="jm-pulse" />
               <circle r="7" className="jm-dot" />
-              <text x={i === 1 ? 0 : 14} y={i === 1 ? 32 : 5} textAnchor={i === 1 ? "end" : "start"}>
+              <text x={i === 0 ? -14 : 14} y={5} textAnchor={i === 0 ? "end" : "start"}>
                 {JOURNEY[i].place}
               </text>
             </g>

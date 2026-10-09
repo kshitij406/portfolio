@@ -177,6 +177,32 @@ const ART: Record<string, React.ReactNode> = {
       <path d="M178 70 v-7 a10 10 0 0 1 20 0 v7" stroke={SODIUM} strokeWidth="4" fill="none" />
     </>
   ),
+  platformer: (
+    <>
+      <rect width="240" height="150" fill="#3a7bd5" />
+      <rect y="40" width="240" height="6" fill="#5a95e0" />
+      {[0, 1, 2, 3, 4, 5].map((k) => (
+        <rect key={`g${k}`} x={20 + k * 22} y="110" width="22" height="40" fill={k % 2 ? "#a86b3c" : "#b97a46"} />
+      ))}
+      {[0, 1, 2, 3, 4, 5].map((k) => (
+        <rect key={`t${k}`} x={20 + k * 22} y="104" width="22" height="8" fill="#5cc25a" />
+      ))}
+      {[0, 1, 2].map((k) => (
+        <g key={`p${k}`}>
+          <rect x={150 + k * 22} y="70" width="22" height="18" fill="#b97a46" />
+          <rect x={150 + k * 22} y="66" width="22" height="6" fill="#5cc25a" />
+        </g>
+      ))}
+      <circle cx="184" cy="50" r="7" fill={SODIUM} stroke="#b8860b" strokeWidth="2" />
+      {/* An original little climber, not anyone's mascot. */}
+      <rect x="62" y="84" width="16" height="20" rx="3" fill={FLAG} />
+      <rect x="60" y="74" width="20" height="14" rx="4" fill="#f4d9b8" />
+      <rect x="66" y="79" width="3" height="3" fill={INK} />
+      <rect x="73" y="79" width="3" height="3" fill={INK} />
+      <path d="M60 76 q10 -10 20 0z" fill={INK} />
+      <path d="M96 92 q14 -24 30 -8" stroke={PAPER} strokeWidth="2" strokeDasharray="3 4" fill="none" />
+    </>
+  ),
   oracle: (
     <>
       <rect width="240" height="150" fill="#f0e2e2" />

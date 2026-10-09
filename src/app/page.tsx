@@ -10,6 +10,7 @@ import Deck from "@/components/deck/Deck";
 import ScamGame from "@/components/ScamGame";
 import Patrol from "@/components/Patrol";
 import Journey from "@/components/Journey";
+import Demos from "@/components/Demos";
 import {
   EDUCATION,
   LANGUAGES,
@@ -225,6 +226,14 @@ export default function Page() {
           </div>
         </section>
 
+
+        {/* Demos */}
+        <section className="sec" id="demos" aria-labelledby="demos-h">
+          <h2 className="sec-h" id="demos-h">
+            Don&rsquo;t take my word for it. Try the real things.
+          </h2>
+          <Demos />
+        </section>
 
         <Journey />
 
