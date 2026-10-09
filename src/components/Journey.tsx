@@ -2,20 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import { JOURNEY } from "@/data/content";
+import { MAP } from "@/data/map";
 
 /**
  * Three places, one route. The section is tall and its inside is sticky, so
  * scrolling draws the route and flies a little plane along it; each stop
- * swaps the story beside the map. Not to scale, on purpose.
+ * swaps the story beside the map. Real coastlines, real coordinates.
  */
 
-const STOPS = [
-  { x: 214, y: 300 }, // Dar es Salaam
-  { x: 402, y: 392 }, // Mauritius
-  { x: 168, y: 58 }, // Canterbury
-];
-const LEG1 = `M${STOPS[0].x} ${STOPS[0].y} C 300 300, 360 330, ${STOPS[1].x} ${STOPS[1].y}`;
-const LEG2 = `M${STOPS[1].x} ${STOPS[1].y} C 470 300, 380 90, ${STOPS[2].x} ${STOPS[2].y}`;
+const { dar, mauritius, canterbury } = MAP.places;
+const STOPS = [dar, mauritius, canterbury].map(([x, y]) => ({ x, y }));
+// Curves, not great circles, but they bow the way the real flights do.
+const LEG1 = `M${dar[0]} ${dar[1]} Q ${dar[0] + 70} ${dar[1] + 10}, ${mauritius[0]} ${mauritius[1]}`;
+const LEG2 = `M${mauritius[0]} ${mauritius[1]} Q ${mauritius[0] - 90} ${(mauritius[1] + canterbury[1]) / 2 - 60}, ${canterbury[0]} ${canterbury[1]}`;
 
 export default function Journey() {
   const sec = useRef<HTMLElement>(null);
@@ -92,19 +91,11 @@ export default function Journey() {
           </ol>
         </div>
 
-        <svg className="journey-map" viewBox="0 0 520 450" aria-hidden>
+        <svg className="journey-map" viewBox={`0 0 ${MAP.w} ${MAP.h}`} aria-hidden>
           {Array.from({ length: 9 }, (_, i) => (
-            <path key={i} d={`M0 ${30 + i * 50} H520`} className="jm-lat" />
+            <path key={i} d={`M0 ${(i + 0.5) * (MAP.h / 9)} H${MAP.w}`} className="jm-lat" />
           ))}
-          {/* Very rough land, enough to read as a map. */}
-          {/* Britain, the edge of Europe, Africa's east coast, Madagascar. */}
-          <path className="jm-land" d="M150 14 Q166 8 170 24 Q176 40 186 52 Q192 66 176 70 Q158 74 150 64 Q160 50 148 40 Q140 26 150 14z" />
-          <path className="jm-land" d="M206 72 Q222 58 248 62 Q270 50 300 58 Q340 54 372 70 Q410 66 440 80 V0 H214 Q200 30 206 72z" />
-          <path
-            className="jm-land"
-            d="M0 120 Q60 108 120 116 Q170 112 204 130 Q236 150 268 166 Q296 172 318 176 Q308 200 286 224 Q258 252 236 278 Q216 304 222 336 Q230 368 216 400 Q204 428 196 450 H0z"
-          />
-          <path className="jm-land" d="M300 322 Q318 330 314 368 Q308 400 290 412 Q280 384 286 354 Q290 330 300 322z" />
+          <path className="jm-land" d={MAP.land} />
           <path className="jm-route-ghost" d={LEG1} />
           <path className="jm-route-ghost" d={LEG2} />
           <path className="jm-route" d={LEG1} ref={leg1} />
@@ -113,7 +104,7 @@ export default function Journey() {
             <g key={i} className={`jm-stop${i <= stop ? " on" : ""}`} transform={`translate(${s.x} ${s.y})`}>
               <circle r="16" className="jm-pulse" />
               <circle r="7" className="jm-dot" />
-              <text x={i === 0 ? -14 : 14} y={i === 1 ? 28 : 5} textAnchor={i === 0 ? "end" : "start"}>
+              <text x={i === 1 ? 0 : 14} y={i === 1 ? 32 : 5} textAnchor={i === 1 ? "end" : "start"}>
                 {JOURNEY[i].place}
               </text>
             </g>

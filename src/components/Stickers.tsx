@@ -12,12 +12,15 @@ import { useEffect, useRef, useState } from "react";
 type S = { id: string; label: string; caption: string; x: number; y: number; mx: number; my: number; r: number; w: number };
 
 const STICKERS: S[] = [
-  { id: "mask", label: "Dive mask", caption: "I dive. Tanzanian coast first, Mauritius after.", x: 76, y: 12, mx: 18, my: 24, r: -10, w: 112 },
-  { id: "mu", label: "Mauritius flag", caption: "Mauritius: first year of uni, both hackathons, first clients.", x: 91, y: 24, mx: 52, my: 16, r: 8, w: 92 },
-  { id: "tz", label: "Tanzania flag", caption: "Tanzania: where I grew up, and both internships.", x: 72, y: 36, mx: 84, my: 28, r: -6, w: 92 },
-  { id: "kreol", label: "Speech bubble saying Ki manier?", caption: "'Ki manier?' is Kreol for 'how's it going?'. FraudLens reads Kreol too.", x: 89, y: 44, mx: 28, my: 72, r: 6, w: 120 },
-  { id: "pad", label: "Game controller", caption: "Souls-likes, mostly. I like games that let you lose.", x: 74, y: 57, mx: 62, my: 74, r: 12, w: 104 },
-  { id: "film", label: "Film clapperboard", caption: "Every film I watch goes on Letterboxd.", x: 92, y: 61, mx: 88, my: 74, r: -12, w: 84 },
+  { id: "mask", label: "Dive mask", caption: "I dive. Tanzanian coast first, Mauritius after.", x: 76, y: 9, mx: 16, my: 16, r: -10, w: 108 },
+  { id: "uk", label: "Union Jack", caption: "The UK, since September 2026. Second year at Kent.", x: 92, y: 14, mx: 50, my: 12, r: 7, w: 96 },
+  { id: "mu", label: "Mauritius flag", caption: "Mauritius: first year of uni, both hackathons, first clients.", x: 70, y: 25, mx: 84, my: 16, r: -6, w: 86 },
+  { id: "tz", label: "Tanzania flag", caption: "Tanzania: where I grew up, and both internships.", x: 88, y: 30, mx: 18, my: 50, r: 8, w: 86 },
+  { id: "phonebox", label: "Red telephone box", caption: "Placement from summer 2027. Ring me. Or email, which is quicker.", x: 73, y: 43, mx: 50, my: 50, r: -5, w: 60 },
+  { id: "bus", label: "Red double-decker bus", caption: "Canterbury now. New city, same laptop.", x: 90, y: 47, mx: 84, my: 52, r: 4, w: 112 },
+  { id: "tea", label: "Cup of tea", caption: "A UK sticker set needed one of these.", x: 70, y: 60, mx: 18, my: 84, r: 10, w: 78 },
+  { id: "pad", label: "Game controller", caption: "Souls-likes, mostly. I like games that let you lose.", x: 86, y: 61, mx: 52, my: 84, r: -10, w: 96 },
+  { id: "film", label: "Film clapperboard", caption: "Every film I watch goes on Letterboxd.", x: 96, y: 60, mx: 85, my: 85, r: -12, w: 76 },
 ];
 
 export default function Stickers() {
@@ -157,13 +160,77 @@ function StickerArt({ id }: { id: string }) {
           </g>
         </svg>
       );
-    case "kreol":
+    case "uk":
       return (
-        <svg viewBox="0 0 130 84">
-          <path d="M14 6 H116 Q126 6 126 16 V52 Q126 62 116 62 H44 L22 80 L26 62 H14 Q4 62 4 52 V16 Q4 6 14 6z" fill="#ffc63d" stroke="#fff" strokeWidth="5" paintOrder="stroke" />
-          <text x="65" y="42" textAnchor="middle" fontFamily="system-ui, sans-serif" fontWeight="800" fontSize="21" fill="#0f1d2c">
-            Ki manier?
-          </text>
+        <svg viewBox="0 0 96 66">
+          <rect x="3" y="3" width="90" height="60" rx="6" fill="#fff" />
+          <g transform="translate(8 8)">
+            <clipPath id="ukc">
+              <rect width="80" height="50" />
+            </clipPath>
+            <g clipPath="url(#ukc)">
+              <rect width="80" height="50" fill="#012169" />
+              <path d="M0 0 L80 50 M80 0 L0 50" stroke="#fff" strokeWidth="10" />
+              <path d="M0 0 L80 50 M80 0 L0 50" stroke="#c8102e" strokeWidth="3.4" />
+              <path d="M40 0 V50 M0 25 H80" stroke="#fff" strokeWidth="16" />
+              <path d="M40 0 V50 M0 25 H80" stroke="#c8102e" strokeWidth="9" />
+            </g>
+          </g>
+        </svg>
+      );
+    case "phonebox":
+      return (
+        <svg viewBox="0 0 60 110">
+          <g stroke="#fff" strokeWidth="5" paintOrder="stroke">
+            <path d="M8 104 V20 Q8 6 30 4 Q52 6 52 20 V104z" fill="#c8102e" />
+          </g>
+          <rect x="12" y="16" width="36" height="7" rx="1.5" fill="#0f1d2c" />
+          <rect x="15" y="17.5" width="30" height="4" fill="#f4f7f5" />
+          {[0, 1, 2].map((r) =>
+            [0, 1, 2].map((c) => (
+              <rect key={`${r}-${c}`} x={15 + c * 10.5} y={30 + r * 13} width="9" height="11" rx="1" fill="#f7e7c9" opacity="0.9" />
+            )),
+          )}
+          <rect x="14" y="72" width="32" height="26" rx="2" fill="#a50d26" />
+          <rect x="44" y="82" width="3" height="8" rx="1" fill="#ffc63d" />
+        </svg>
+      );
+    case "bus":
+      return (
+        <svg viewBox="0 0 120 84">
+          <g stroke="#fff" strokeWidth="5" paintOrder="stroke">
+            <rect x="6" y="6" width="104" height="64" rx="10" fill="#d0202f" />
+            <circle cx="30" cy="72" r="9" fill="#0f1d2c" />
+            <circle cx="88" cy="72" r="9" fill="#0f1d2c" />
+          </g>
+          <circle cx="30" cy="72" r="3.5" fill="#c9d3d8" />
+          <circle cx="88" cy="72" r="3.5" fill="#c9d3d8" />
+          {[0, 1, 2, 3].map((k) => (
+            <rect key={`u${k}`} x={14 + k * 22} y="13" width="18" height="15" rx="2.5" fill="#cfe6f0" />
+          ))}
+          {[0, 1, 2].map((k) => (
+            <rect key={`l${k}`} x={36 + k * 22} y="38" width="18" height="15" rx="2.5" fill="#cfe6f0" />
+          ))}
+          <rect x="13" y="38" width="17" height="26" rx="2.5" fill="#8c1520" />
+          <rect x="6" y="32" width="104" height="3" fill="#ffc63d" />
+        </svg>
+      );
+    case "tea":
+      return (
+        <svg viewBox="0 0 90 80">
+          <g stroke="#fff" strokeWidth="5" paintOrder="stroke">
+            <ellipse cx="42" cy="70" rx="38" ry="7" fill="#e6ece8" />
+            <path d="M14 30 H70 V52 Q70 68 42 68 Q14 68 14 52z" fill="#f4f7f5" />
+            <path d="M70 36 q16 0 16 12 q0 12 -16 12" fill="none" stroke="#f4f7f5" strokeWidth="6" />
+          </g>
+          <path d="M70 36 q16 0 16 12 q0 12 -16 12" fill="none" stroke="#0f1d2c" strokeWidth="2.5" />
+          <path d="M14 30 H70 V52 Q70 68 42 68 Q14 68 14 52z" fill="none" stroke="#0f1d2c" strokeWidth="2.5" />
+          <ellipse cx="42" cy="31" rx="27" ry="4" fill="#9a5b2e" />
+          <path d="M22 44 h40" stroke="#24838a" strokeWidth="5" strokeLinecap="round" />
+          <g fill="none" stroke="#4d5d69" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M32 22 q-5 -6 0 -11 q5 -5 0 -10" />
+            <path d="M48 22 q-5 -6 0 -11 q5 -5 0 -10" />
+          </g>
         </svg>
       );
     case "pad":

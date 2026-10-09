@@ -5,87 +5,129 @@ import { CARDS } from "@/data/content";
 import Card, { type CardHandle } from "./Card";
 
 /**
- * Desktop: a hand of cards fanned in an arc. Hover lifts one, click pulls it
- * out to inspect, Shuffle gathers them into a pile and deals them back out.
- * Phones: a swipeable row; the foil shifts as each card slides past centre.
- * Inspecting: the card flies from where it was to the middle of the screen,
- * tilts under a finger or the pointer, and flips on tap.
+ * The deck sits on a wheel. Its section is tall and the stage inside it is
+ * sticky, so scrolling turns the wheel: each card in turn swings up to the
+ * top, stands upright and lifts, and its foil catches the light as it
+ * passes. Same mechanic on phones, with bigger cards and a tighter wheel.
+ *
+ * Transforms are written straight to the slots on scroll (no re-render per
+ * frame). Dealing and shuffling switch on CSS transitions for a moment so
+ * the cards glide instead of jumping.
+ *
+ * Click or tap any card to pick it up: it flies to the middle of the screen,
+ * tilts under a finger or the pointer, and flips.
  */
 
-type Phase = "fan" | "gather" | "deal";
+const STEP_DESKTOP = 10.5;
+const STEP_MOBILE = 13;
 
 export default function Deck() {
   const [order, setOrder] = useState(() => CARDS.map((_, i) => i));
-  const [phase, setPhase] = useState<Phase>("deal");
   const [open, setOpen] = useState<number | null>(null);
   const [fromRect, setFromRect] = useState<DOMRect | null>(null);
-  const [mobile, setMobile] = useState(false);
-  const [dealt, setDealt] = useState(false);
-  const [width, setWidth] = useState(1200);
-  const wrap = useRef<HTMLDivElement>(null);
-  const row = useRef<HTMLDivElement>(null);
+  const [focus, setFocus] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const scroller = useRef<HTMLDivElement>(null);
+  const slots = useRef<(HTMLDivElement | null)[]>([]);
   const refs = useRef<(CardHandle | null)[]>([]);
+  const pile = useRef(true);
+  const layout = useRef<() => void>(() => {});
+  const n = order.length;
 
   useEffect(() => {
-    const mq = matchMedia("(max-width: 760px)");
-    const set = () => setMobile(mq.matches);
-    set();
-    mq.addEventListener("change", set);
-    return () => mq.removeEventListener("change", set);
-  }, []);
+    const el = scroller.current!;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+    let lastFocus = -1;
 
-  useEffect(() => {
-    const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width));
-    ro.observe(wrap.current!);
-    return () => ro.disconnect();
-  }, []);
+    const apply = () => {
+      raf = 0;
+      const mobile = innerWidth <= 760;
+      const step = mobile ? STEP_MOBILE : STEP_DESKTOP;
+      const r = el.getBoundingClientRect();
+      const span = r.height - innerHeight;
+      const p = reduce || span <= 0 ? 0.5 : Math.max(0, Math.min(1, -r.top / span));
+      const f = p * (n - 1);
+      slots.current.forEach((slot, i) => {
+        if (!slot) return;
+        const d = pile.current ? 0 : i - f;
+        const ad = Math.abs(d);
+        const lift = Math.max(0, 1 - ad);
+        const jitter = pile.current ? ((i * 7) % 5) - 2 : 0;
+        slot.style.transform = `translate(-50%, ${-lift * (mobile ? 22 : 34)}px) rotate(${d * step + jitter}deg) scale(${1 + lift * 0.1})`;
+        slot.style.zIndex = String(100 - Math.round(ad * 10));
+        slot.style.opacity = String(ad > 5 ? Math.max(0, 1 - (ad - 5)) : 1);
+        const h = refs.current[i];
+        if (h) {
+          if (ad < 1.6 && !pile.current) h.setTilt(Math.max(15, Math.min(85, 50 - d * 45)), 42, Math.max(0.35, lift));
+          else h.setTilt(50, 50, 0);
+        }
+      });
+      const fi = Math.round(f);
+      if (fi !== lastFocus) {
+        lastFocus = fi;
+        setFocus(fi);
+      }
+    };
+    layout.current = apply;
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    apply();
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
 
-  // Deal the hand the first time it scrolls into view.
-  useEffect(() => {
+    // Deal out of the pile the first time the deck is on screen.
     const io = new IntersectionObserver(
       ([e]) => {
         if (!e.isIntersecting) return;
         io.disconnect();
-        setDealt(true);
-        setTimeout(() => setPhase("fan"), 60);
+        glide(() => {
+          pile.current = false;
+          apply();
+        });
       },
-      { threshold: 0.3 },
+      { threshold: 0.2 },
     );
-    io.observe(wrap.current!);
-    return () => io.disconnect();
-  }, []);
+    io.observe(el);
 
-  // Phones: foil follows each card's position in the scrolling row.
-  useEffect(() => {
-    if (!mobile) return;
-    const r = row.current!;
-    const update = () => {
-      const mid = r.getBoundingClientRect().left + r.clientWidth / 2;
-      refs.current.forEach((h) => {
-        if (!h?.el) return;
-        const b = h.el.getBoundingClientRect();
-        const off = (b.left + b.width / 2 - mid) / r.clientWidth;
-        h.setTilt(50 + off * 120, 40);
-      });
+    return () => {
+      removeEventListener("scroll", onScroll);
+      removeEventListener("resize", onScroll);
+      io.disconnect();
+      cancelAnimationFrame(raf);
     };
-    update();
-    r.addEventListener("scroll", update, { passive: true });
-    return () => r.removeEventListener("scroll", update);
-  }, [mobile]);
+  }, [n, order]);
+
+  // Turn transitions on briefly so a layout change animates.
+  const glide = (fn: () => void, ms = 900) => {
+    scroller.current?.classList.add("gliding");
+    fn();
+    setTimeout(() => scroller.current?.classList.remove("gliding"), ms);
+  };
 
   const shuffle = () => {
-    setPhase("gather");
+    setBusy(true);
+    glide(() => {
+      pile.current = true;
+      layout.current();
+    }, 700);
     setTimeout(() => {
       setOrder((o) => {
-        const n = [...o];
-        for (let i = n.length - 1; i > 0; i--) {
+        const next = [...o];
+        for (let i = next.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [n[i], n[j]] = [n[j], n[i]];
+          [next[i], next[j]] = [next[j], next[i]];
         }
-        return n;
+        return next;
       });
-      setPhase("deal");
-      setTimeout(() => setPhase("fan"), 40);
+      setTimeout(() => {
+        glide(() => {
+          pile.current = false;
+          layout.current();
+        });
+        setBusy(false);
+      }, 60);
     }, 650);
   };
 
@@ -94,53 +136,55 @@ export default function Deck() {
     setOpen(cardIndex);
   };
 
-  const n = order.length;
-  const fanStyle = (slot: number): React.CSSProperties => {
-    if (mobile) return {};
-    const mid = (n - 1) / 2;
-    const d = slot - mid;
-    if (phase !== "fan" || !dealt)
-      return {
-        transform: `translate(-50%, ${phase === "gather" ? 0 : 60}px) rotate(${(slot % 3) - 1}deg)`,
-        transitionDelay: phase === "gather" ? `${slot * 25}ms` : "0ms",
-        zIndex: slot,
-      };
-    // Fit the outermost cards inside the container, rotation included.
-    const spread = Math.min(118, (width - 300) / (n - 1));
-    return {
-      transform: `translate(calc(-50% + ${d * spread}px), ${Math.abs(d) ** 1.8 * 6}px) rotate(${d * 5}deg)`,
-      transitionDelay: `${slot * 55}ms`,
-      zIndex: slot,
-    };
-  };
+  const current = CARDS[order[Math.max(0, Math.min(n - 1, focus))]];
 
   return (
-    <div className="deck-wrap" ref={wrap}>
-      <div className={`deck${mobile ? " deck-row" : " deck-fan"} phase-${phase}`} ref={row}>
-        {order.map((ci, slot) => (
-          <div className="deck-slot" key={CARDS[ci].id} style={fanStyle(slot)}>
-            <Card
-              ref={(h) => {
-                refs.current[slot] = h;
+    <div className="deck-scroll" ref={scroller} style={{ ["--cards" as string]: n }}>
+      <div className="deck-stage">
+        <div className="deck-wheel">
+          {order.map((ci, slot) => (
+            <div
+              className="deck-slot"
+              key={CARDS[ci].id}
+              ref={(el) => {
+                slots.current[slot] = el;
               }}
-              card={CARDS[ci]}
-              interactive={!mobile}
-              tabIndex={0}
-              onClick={() => inspect(ci, slot)}
-            />
+            >
+              <Card
+                ref={(h) => {
+                  refs.current[slot] = h;
+                }}
+                card={CARDS[ci]}
+                interactive={false}
+                tabIndex={0}
+                onClick={() => inspect(ci, slot)}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="deck-caption" aria-live="polite">
+          <p className="deck-count">
+            {String(focus + 1).padStart(2, "0")} <span>of {String(n).padStart(2, "0")}</span>
+          </p>
+          <p className="deck-now">
+            <strong>{current.name}</strong>
+            <span>{current.badge}</span>
+          </p>
+          <div className="deck-actions">
+            <button type="button" className="btn" onClick={shuffle} disabled={busy}>
+              Shuffle
+            </button>
+            <p className="deck-hint">Scroll to turn the deck. Tap a card to pick it up.</p>
           </div>
-        ))}
-      </div>
-      <div className="deck-actions">
-        <button type="button" className="btn" onClick={shuffle} disabled={phase !== "fan"}>
-          Shuffle the deck
-        </button>
-        <p className="deck-hint">
-          {mobile ? "Swipe through, tap one to pick it up." : "Hover to lift a card. Click to pick it up."}
-        </p>
+        </div>
       </div>
       {open !== null && (
-        <Inspector index={open} from={fromRect} onClose={() => setOpen(null)} onStep={(d) => setOpen((o) => ((o ?? 0) + d + n) % n)} />
+        <Inspector
+          index={open}
+          from={fromRect}
+          onClose={() => setOpen(null)}
+          onStep={(d) => setOpen((o) => ((o ?? 0) + d + n) % n)}
+        />
       )}
     </div>
   );

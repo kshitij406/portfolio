@@ -26,7 +26,7 @@ type Props = {
   tabIndex?: number;
 };
 
-export type CardHandle = { el: HTMLDivElement | null; setTilt: (px: number, py: number) => void };
+export type CardHandle = { el: HTMLDivElement | null; setTilt: (px: number, py: number, on?: number) => void };
 
 const Card = forwardRef<CardHandle, Props>(function Card(
   { card, flipped = false, interactive = true, className = "", style, onClick, tabIndex },
@@ -64,7 +64,7 @@ const Card = forwardRef<CardHandle, Props>(function Card(
     kick();
   };
 
-  useImperativeHandle(ref, () => ({ el: el.current, setTilt: (px, py) => setTilt(px, py) }));
+  useImperativeHandle(ref, () => ({ el: el.current, setTilt: (px, py, on = 1) => setTilt(px, py, on) }));
   useEffect(() => () => cancelAnimationFrame(raf.current), []);
 
   const onMove = (e: React.PointerEvent) => {
