@@ -2248,6 +2248,17 @@ h1.name .g-fixed {
 }
 
 @media (max-width: 760px) {
+  /* Phones swipe the wheel instead of scrolling it, so no pinned section. */
+  .deck-scroll {
+    height: auto;
+  }
+  .deck-stage {
+    position: relative;
+    height: min(82svh, 700px);
+  }
+  .deck-wheel {
+    touch-action: pan-y;
+  }
   .deck-slot {
     bottom: 10%;
     transform-origin: 50% 300%;

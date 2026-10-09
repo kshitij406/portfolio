@@ -8,7 +8,9 @@ import Card, { type CardHandle } from "./Card";
  * The deck sits on a wheel. Its section is tall and the stage inside it is
  * sticky, so scrolling turns the wheel: each card in turn swings up to the
  * top, stands upright and lifts, and its foil catches the light as it
- * passes. Same mechanic on phones, with bigger cards and a tighter wheel.
+ * passes. On phones the page scrolls normally and the wheel is turned by
+ * swiping instead: drag sideways, let go, and it snaps to the nearest card
+ * (a quick flick carries further). Vertical swipes still scroll the page.
  *
  * Transforms are written straight to the slots on scroll (no re-render per
  * frame). Dealing and shuffling switch on CSS transitions for a moment so
@@ -32,7 +34,20 @@ export default function Deck() {
   const refs = useRef<(CardHandle | null)[]>([]);
   const pile = useRef(true);
   const layout = useRef<() => void>(() => {});
+  const wheel = useRef<HTMLDivElement>(null);
+  // Phone swipe state: the wheel's position as a float card index.
+  const swipe = useRef({ f: 0, target: 0, raf: 0 });
+  const moved = useRef(false);
+  const [mobile, setMobile] = useState(false);
   const n = order.length;
+
+  useEffect(() => {
+    const mq = matchMedia("(max-width: 760px)");
+    const set = () => setMobile(mq.matches);
+    set();
+    mq.addEventListener("change", set);
+    return () => mq.removeEventListener("change", set);
+  }, []);
 
   useEffect(() => {
     const el = scroller.current!;
@@ -42,12 +57,13 @@ export default function Deck() {
 
     const apply = () => {
       raf = 0;
-      const mobile = innerWidth <= 760;
+      // Same test as the CSS. innerWidth can report the layout viewport on
+      // phones, which disagrees with the media query and breaks the swipe.
       const step = mobile ? STEP_MOBILE : STEP_DESKTOP;
       const r = el.getBoundingClientRect();
       const span = r.height - innerHeight;
       const p = reduce || span <= 0 ? 0.5 : Math.max(0, Math.min(1, -r.top / span));
-      const f = p * (n - 1);
+      const f = mobile ? swipe.current.f : p * (n - 1);
       slots.current.forEach((slot, i) => {
         if (!slot) return;
         const d = pile.current ? 0 : i - f;
@@ -91,13 +107,70 @@ export default function Deck() {
     );
     io.observe(el);
 
+    // Phones: swipe sideways to turn the wheel.
+    const w = wheel.current!;
+    const PX = Math.min(innerWidth * 0.55, 240); // finger travel for one card
+    let drag: { x: number; y: number; f0: number; t: number; lastX: number; lastT: number; on: boolean } | null = null;
+    const settle = () => {
+      const sw = swipe.current;
+      sw.f += (sw.target - sw.f) * 0.16;
+      if (Math.abs(sw.target - sw.f) < 0.002) sw.f = sw.target;
+      apply();
+      sw.raf = sw.f === sw.target ? 0 : requestAnimationFrame(settle);
+    };
+    const onDown = (e: PointerEvent) => {
+      if (!mobile || pile.current) return;
+      cancelAnimationFrame(swipe.current.raf);
+      swipe.current.raf = 0;
+      moved.current = false;
+      drag = { x: e.clientX, y: e.clientY, f0: swipe.current.f, t: e.timeStamp, lastX: e.clientX, lastT: e.timeStamp, on: false };
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x;
+      const dy = e.clientY - drag.y;
+      if (!drag.on) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+        drag.on = true;
+        moved.current = true;
+      }
+      drag.lastX = e.clientX;
+      drag.lastT = e.timeStamp;
+      // A little resistance past either end.
+      let f = drag.f0 - dx / PX;
+      if (f < 0) f *= 0.35;
+      if (f > n - 1) f = n - 1 + (f - (n - 1)) * 0.35;
+      swipe.current.f = f;
+      apply();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!drag) return;
+      if (drag.on) {
+        const dt = Math.max(16, e.timeStamp - drag.t);
+        const v = (e.clientX - drag.x) / dt; // px per ms
+        const fling = Math.abs(v) > 0.5 ? -v * 1.6 : 0;
+        swipe.current.target = Math.max(0, Math.min(n - 1, Math.round(swipe.current.f + fling)));
+        if (!swipe.current.raf) swipe.current.raf = requestAnimationFrame(settle);
+      }
+      drag = null;
+    };
+    w.addEventListener("pointerdown", onDown);
+    addEventListener("pointermove", onMove, { passive: true });
+    addEventListener("pointerup", onUp);
+    addEventListener("pointercancel", onUp);
+
     return () => {
+      w.removeEventListener("pointerdown", onDown);
+      removeEventListener("pointermove", onMove);
+      removeEventListener("pointerup", onUp);
+      removeEventListener("pointercancel", onUp);
+      cancelAnimationFrame(swipe.current.raf);
       removeEventListener("scroll", onScroll);
       removeEventListener("resize", onScroll);
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [n, order]);
+  }, [n, order, mobile]);
 
   // Turn transitions on briefly so a layout change animates.
   const glide = (fn: () => void, ms = 900) => {
@@ -132,6 +205,11 @@ export default function Deck() {
   };
 
   const inspect = (cardIndex: number, slot: number) => {
+    // A swipe ends with a click on whatever card was under the finger.
+    if (moved.current) {
+      moved.current = false;
+      return;
+    }
     setFromRect(refs.current[slot]?.el?.getBoundingClientRect() ?? null);
     setOpen(cardIndex);
   };
@@ -141,7 +219,7 @@ export default function Deck() {
   return (
     <div className="deck-scroll" ref={scroller} style={{ ["--cards" as string]: n }}>
       <div className="deck-stage">
-        <div className="deck-wheel">
+        <div className="deck-wheel" ref={wheel}>
           {order.map((ci, slot) => (
             <div
               className="deck-slot"
@@ -174,7 +252,9 @@ export default function Deck() {
             <button type="button" className="btn" onClick={shuffle} disabled={busy}>
               Shuffle
             </button>
-            <p className="deck-hint">Scroll to turn the deck. Tap a card to pick it up.</p>
+            <p className="deck-hint">
+              {mobile ? "Swipe to turn the deck. Tap a card to pick it up." : "Scroll to turn the deck. Click a card to pick it up."}
+            </p>
           </div>
         </div>
       </div>
