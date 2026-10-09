@@ -90,9 +90,14 @@ export default function Hero() {
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerdown", move);
     el.addEventListener("pointerleave", leave);
-    startSweep(1.1);
+    // Wait for the preloader, if it is running, before choreographing.
+    const begin = () => startSweep(1.1);
+    const loading = document.documentElement.classList.contains("is-loading");
+    if (loading) addEventListener("kj:ready", begin, { once: true });
+    else begin();
 
     return () => {
+      removeEventListener("kj:ready", begin);
       sweep?.kill();
       cancelAnimationFrame(raf);
       el.removeEventListener("pointermove", move);
@@ -124,7 +129,7 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top">
-      <div className={`name-wrap${lensOn ? " lens-on" : ""}`} ref={wrap}>
+      <div className={`name-wrap${lensOn ? " lens-on" : ""}`} ref={wrap} data-cursor="lens">
         <h1 className="name" aria-label="Kshitij Jha">
           {render(false)}
         </h1>

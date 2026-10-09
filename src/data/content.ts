@@ -129,18 +129,22 @@ export const RECOGNITION = [
 export const OFF_CLOCK = [
   {
     title: "Underwater",
+    effect: "bubbles" as const,
     body: "I dive. Growing up on the Tanzanian coast and then living in Mauritius does that. The whole skill is staying calm and breathing slowly.",
   },
   {
     title: "Souls-likes",
+    effect: "stamina" as const,
     body: "A lot of FromSoftware, and a lot of time in game engines trying to work out why their combat feels the way it does.",
   },
   {
     title: "Fedora, KDE",
+    effect: "dnf" as const,
     body: "Daily driver, reinstalled more often than necessary. I learn systems by taking them apart.",
   },
   {
     title: "Films",
+    effect: "letterbox" as const,
     body: "Everything I watch gets logged on Letterboxd, because otherwise I forget it.",
   },
 ];

@@ -26,10 +26,25 @@ deterministic score, every point listed next to its evidence.
 
 Progress lives in `localStorage` under `kj-anomalies`.
 
+## The rest of the play
+
+| Thing | Component | Notes |
+| --- | --- | --- |
+| Scan preloader that counts back from 98 to 97 | `Preloader` | Once per session, skipped for reduced motion |
+| Custom cursor: labels links, crosshair on the map, idles into a scan | `Cursor` | Fine pointers only. `.magnetic` elements lean towards it |
+| Headings that decode from Cyrillic and Greek lookalikes | `Decode` | Runs once per heading as it scrolls in |
+| Signal-code ticker that speeds up and leans with scroll | `Ticker` | Reads `scroll.velocity` from `lib/scroll.ts` |
+| Skills you can drag and throw | `SkillPit` | matter-js. Touch taps kick a chip so the page still scrolls |
+| Hobby hover moments: bubbles, stamina, dnf, letterbox | `OffClock` | Tap to toggle on touch |
+| Email whose weight bulges towards the cursor | `WaveText` | Variable font axis. Sweeps by itself on touch |
+| Night dive: marine snow and a dive torch | `NightDive` | Dark theme only |
+| Section pill with scroll progress | `SectionPill` | |
+| Konami code debug mode, devtools note, tab title | `Extras` | |
+
 ## Stack
 
 Next.js 16 (App Router, static export of a single route), React 19, plain CSS
-in `src/app/globals.css`, GSAP for the hero lens sweep, Lenis for scrolling.
+in `src/app/globals.css`, GSAP for the hero lens sweep, Lenis for scrolling, matter-js for the skills pit.
 Two canvases (punch grid, vessel map) share `src/lib/useCanvas.ts`, which only
 animates while they are on screen and re-reads the palette when the theme
 changes.
@@ -68,4 +83,4 @@ npm run build
 
 `next dev` and `next build` share `.next`. Don't build while a server is running.
 
-`prefers-reduced-motion` turns off the lens sweep, Lenis and CSS animation.
+`prefers-reduced-motion` turns off the preloader, lens sweep, cursor, Lenis, physics and CSS animation.

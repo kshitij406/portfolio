@@ -177,6 +177,8 @@ export default function VesselMap() {
       <canvas
         ref={ref}
         className="vessel-canvas"
+        data-cursor="scan"
+        data-cursor-label="Scan"
         onClick={onClick}
         aria-label="Vessel traffic around Mauritius. One vessel stops transmitting inside the protected zone."
       />
