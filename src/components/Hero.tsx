@@ -1,175 +1,158 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { FaGithub } from 'react-icons/fa6';
-import Magnet from './bits/Magnet';
-import { PROFILE, SOCIAL_LINKS } from '@/data/site';
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useAnomalies } from "@/lib/anomalies";
+import { PROFILE } from "@/data/content";
+import Clock from "./Clock";
 
-gsap.registerPlugin(useGSAP);
+// "Kshіtij": the fourth letter is U+0456, CYRILLIC SMALL LETTER
+// BYELORUSSIAN-UKRAINIAN I. It renders identically to a Latin i.
+const IMPOSTOR = "і";
+const LINES = [["K", "s", "h", IMPOSTOR, "t", "i", "j"], ["J", "h", "a"]];
+
+const cp = (c: string) => "U+" + c.codePointAt(0)!.toString(16).toUpperCase().padStart(4, "0");
 
 export default function Hero() {
-  const root = useRef<HTMLElement>(null);
+  const { found, flag } = useAnomalies();
+  const fixed = found.has("glyph");
+  const wrap = useRef<HTMLDivElement>(null);
+  const impostorRef = useRef<HTMLSpanElement>(null);
+  const [lensOn, setLensOn] = useState(false);
 
-  useGSAP(
-    () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        gsap.set('[data-hero]', { opacity: 1, y: 0 });
-        return;
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pos = { x: -200, y: 0 };
+    const target = { x: -200, y: 0 };
+    const apply = () => {
+      el.style.setProperty("--lx", `${pos.x}px`);
+      el.style.setProperty("--ly", `${pos.y}px`);
+    };
+
+    let following = false;
+    let sweep: gsap.core.Timeline | null = null;
+
+    const impostorCentre = () => {
+      const r = impostorRef.current!.getBoundingClientRect();
+      const w = el.getBoundingClientRect();
+      return { x: r.left - w.left + r.width / 2, y: r.top - w.top + r.height * 0.55 };
+    };
+
+    // The one choreographed moment on the page: the lens crosses the name,
+    // stops on the impostor long enough to show its code point, and moves on.
+    const startSweep = (delay: number) => {
+      if (reduce) return;
+      const w = el.getBoundingClientRect();
+      const c = impostorCentre();
+      const line2 = w.height * 0.78;
+      setLensOn(true);
+      sweep = gsap
+        .timeline({ delay, onUpdate: apply, repeat: -1, repeatDelay: 2.5 })
+        .set(pos, { x: -160, y: c.y })
+        .to(pos, { x: c.x, duration: 1.4, ease: "power3.out" })
+        .to(pos, { x: c.x + 4, duration: 1.5, ease: "none" })
+        .to(pos, { x: w.width * 0.95, y: c.y + 20, duration: 1.8, ease: "power2.inOut" })
+        .to(pos, { x: w.width * 0.25, y: line2, duration: 1.6, ease: "power2.inOut" })
+        .to(pos, { x: -200, duration: 1.2, ease: "power2.in" });
+    };
+
+    let raf = 0;
+    const tick = () => {
+      pos.x += (target.x - pos.x) * 0.2;
+      pos.y += (target.y - pos.y) * 0.2;
+      apply();
+      if (following) raf = requestAnimationFrame(tick);
+    };
+
+    const move = (e: PointerEvent) => {
+      if (e.pointerType === "touch" && e.buttons === 0) return;
+      const r = el.getBoundingClientRect();
+      target.x = e.clientX - r.left;
+      target.y = e.clientY - r.top;
+      if (!following) {
+        sweep?.kill();
+        sweep = null;
+        following = true;
+        setLensOn(true);
+        pos.x = target.x;
+        pos.y = target.y;
+        raf = requestAnimationFrame(tick);
       }
+    };
+    const leave = () => {
+      following = false;
+      cancelAnimationFrame(raf);
+      setLensOn(false);
+    };
 
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerdown", move);
+    el.addEventListener("pointerleave", leave);
+    startSweep(1.1);
 
-      tl.from('[data-hero-line] span', {
-        yPercent: 115,
-        duration: 1.15,
-        stagger: 0.09,
-      })
-        .from('[data-hero-rule]', { scaleX: 0, duration: 1, ease: 'power3.inOut' }, '-=0.7')
-        .from('[data-hero-meta]', { opacity: 0, y: 14, duration: 0.8, stagger: 0.08 }, '-=0.65')
-        .from('[data-hero-body]', { opacity: 0, y: 18, duration: 0.9 }, '-=0.6')
-        .from('[data-hero-cta]', { opacity: 0, y: 14, duration: 0.7, stagger: 0.08 }, '-=0.55')
-        .from('[data-hero-scroll]', { opacity: 0, duration: 0.8 }, '-=0.3');
-    },
-    { scope: root }
-  );
+    return () => {
+      sweep?.kill();
+      cancelAnimationFrame(raf);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerdown", move);
+      el.removeEventListener("pointerleave", leave);
+    };
+  }, []);
+
+  const render = (xray: boolean) =>
+    LINES.map((line, li) => (
+      <span className="name-line" key={li}>
+        {line.map((ch, ci) => {
+          const bad = ch === IMPOSTOR;
+          const shown = bad && fixed ? "i" : ch;
+          return (
+            <span
+              key={ci}
+              ref={bad && !xray ? impostorRef : undefined}
+              className={`g${bad ? " g-bad" : ""}${bad && fixed ? " g-fixed" : ""}`}
+              onClick={bad && !xray ? () => flag("glyph") : undefined}
+            >
+              {shown}
+              {xray && <i className="cp">{bad && !fixed ? "U+0456 Cyrillic" : cp(shown)}</i>}
+            </span>
+          );
+        })}
+      </span>
+    ));
 
   return (
-    <section
-      ref={root}
-      id="top"
-      className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden"
-    >
-      {/* Vanta topology mesh removed: background is now plain white, no
-          animated backdrop. VantaTopology.tsx is kept for later re-use. */}
-
-      <div className="shell relative z-10 pt-28 pb-20">
-        {/*
-          The one line a placement recruiter is scanning for, before the name.
-          It used to live only in Status, roughly 11,000px down the page.
-        */}
-        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-8">
-          <span data-hero-meta className="label label-signal">
-            Available July 2027
-          </span>
-          <span data-hero-meta className="label">
-            12-month placement
-          </span>
-          <span data-hero-meta className="label">
-            {PROFILE.from}
-          </span>
-        </div>
-
-        {/*
-          Each line is masked so the glyphs can slide up from nothing. The
-          inner span is padded and the wrapper pulls the same amount back,
-          so the mask has slack for any descender a future name might have.
-        */}
-        <h1 className="display display-caps text-[clamp(3.2rem,13vw,10.5rem)] mb-0">
-          <span
-            data-hero-line
-            className="block overflow-hidden"
-            style={{ marginBottom: '-0.18em' }}
-          >
-            <span className="block" style={{ paddingBottom: '0.18em' }}>
-              Kshitij
-            </span>
-          </span>
-          <span
-            data-hero-line
-            className="block overflow-hidden"
-            style={{ marginBottom: '-0.18em' }}
-          >
-            <span
-              className="block"
-              style={{ paddingBottom: '0.18em', fontStyle: 'italic', color: 'var(--deep)' }}
-            >
-              Jha
-            </span>
-          </span>
+    <section className="hero" id="top">
+      <div className={`name-wrap${lensOn ? " lens-on" : ""}`} ref={wrap}>
+        <h1 className="name" aria-label="Kshitij Jha">
+          {render(false)}
         </h1>
+        <div className="name xray" aria-hidden>
+          {render(true)}
+        </div>
+        <div className="lens-ring" aria-hidden />
+      </div>
 
-        <div
-          data-hero-rule
-          className="origin-left my-8"
-          style={{ height: '1px', background: 'var(--ink)' }}
-        />
-
-        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-16 items-start">
-          <p
-            data-hero-body
-            className="text-[clamp(1.05rem,2vw,1.375rem)] leading-[1.5] max-w-[46ch]"
-            style={{ color: 'var(--ink-2)' }}
-          >
-            {PROFILE.blurb}
+      <div className="hero-body">
+        <p className="hero-lede">
+          I build backends and the screens that sit on top of them. The work I&rsquo;m proudest of
+          started with noticing something small that was wrong.
+        </p>
+        <div className="hero-meta">
+          <Clock />
+          <p>{PROFILE.availability}.</p>
+          <p className="hero-links">
+            <a href="/Kshitij_Jha_CV.pdf" target="_blank" rel="noreferrer">Read the CV</a>
+            <a href={`mailto:${PROFILE.email}`}>Email me</a>
           </p>
-
-          <div className="flex flex-col gap-5">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 m-0">
-              <div data-hero-meta>
-                <dt className="label mb-1">Now</dt>
-                <dd className="mono text-[0.8125rem] m-0" style={{ color: 'var(--ink)' }}>
-                  Dev intern, Imatic
-                </dd>
-              </div>
-              <div data-hero-meta>
-                <dt className="label mb-1">Next</dt>
-                <dd className="mono text-[0.8125rem] m-0" style={{ color: 'var(--ink)' }}>
-                  Placement, July 2027
-                </dd>
-              </div>
-            </dl>
-
-            <div className="flex flex-wrap gap-3 pt-1">
-              <span data-hero-cta>
-                <Magnet padding={40} magnetStrength={6}>
-                  <a href="#work" className="btn btn--signal">
-                    See the work
-                  </a>
-                </Magnet>
-              </span>
-              <span data-hero-cta>
-                <Magnet padding={40} magnetStrength={6}>
-                  <a
-                    href="/resume"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn"
-                  >
-                    CV ↗
-                  </a>
-                </Magnet>
-              </span>
-              <span data-hero-cta>
-                <Magnet padding={40} magnetStrength={6}>
-                  <a
-                    href={SOCIAL_LINKS.github.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn"
-                  >
-                    <FaGithub size={13} aria-hidden="true" />
-                    GitHub ↗
-                  </a>
-                </Magnet>
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div
-        data-hero-scroll
-        className="absolute bottom-6 left-0 right-0 z-10 pointer-events-none"
-      >
-        <div className="shell flex items-center justify-between gap-6">
-          <span className="label">Scroll</span>
-          <span className="label hidden sm:inline">
-            {PROFILE.from}
-          </span>
-        </div>
-      </div>
+      <p className="hero-hunt">
+        Six things on this page are broken on purpose, each one a small version of a real bug from
+        the work below. Find them if you like. The counter is in the corner.
+      </p>
     </section>
   );
 }

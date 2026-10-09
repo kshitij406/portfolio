@@ -1,114 +1,73 @@
-import type { Metadata } from 'next';
-import Script from 'next/script';
-import { Anton, Martian_Mono, Inter, Press_Start_2P, Noto_Sans, Noto_Sans_Mono } from 'next/font/google';
-import Nav from '@/components/Nav';
-import SmoothScroll from '@/components/SmoothScroll';
-import TerminalGate from '@/components/TerminalGate';
-import TabTitle from '@/components/TabTitle';
-import ShakeCursor from '@/components/ShakeCursor';
-import { DemoProvider } from '@/components/DemoProvider';
-import { PROFILE } from '@/data/site';
-import './globals.css';
+import type { Metadata, Viewport } from "next";
+import { Funnel_Display, Funnel_Sans, Geist_Mono } from "next/font/google";
+import { AnomalyProvider } from "@/lib/anomalies";
+import SmoothScroll from "@/components/SmoothScroll";
+import CaseFile from "@/components/CaseFile";
+import "./globals.css";
 
-// Anton only ships weight 400; that's the whole point, it's a single-cut
-// poster weight built to run huge.
-const display = Anton({
-  subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['400'],
-  display: 'swap',
+const display = Funnel_Display({
+  subsets: ["latin"],
+  variable: "--f-display",
+  weight: ["300", "400", "600", "800"],
+  display: "swap",
 });
 
-// Martian Mono over the more common JetBrains/Space/Fira/Plex picks: its
-// stenciled, instrument-panel cut matches the labels and section numbering,
-// rather than being "a mono font" for its own sake.
-const mono = Martian_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500'],
-  display: 'swap',
+const sans = Funnel_Sans({
+  subsets: ["latin"],
+  variable: "--f-sans",
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
-const body = Inter({
-  subsets: ['latin'],
-  variable: '--font-body',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
-// Used only inside the retro demo window chrome.
-const pixel = Press_Start_2P({
-  subsets: ['latin'],
-  variable: '--font-pixel',
-  weight: ['400'],
-  display: 'swap',
-});
-
-// Used only inside desktop mode. Noto Sans is KDE Plasma's actual default
-// UI font (and Noto Sans Mono its default fixed-width font), not a stylistic
-// pick like the rest of this file, so it stays out of the site's own type
-// system entirely.
-const noto = Noto_Sans({
-  subsets: ['latin'],
-  variable: '--font-noto',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
-const notoMono = Noto_Sans_Mono({
-  subsets: ['latin'],
-  variable: '--font-noto-mono',
-  weight: ['400', '500'],
-  display: 'swap',
+// Only for real code and code points, never for decorative labels.
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--f-mono",
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 const description =
-  'Kshitij Jha, software developer. Backends in C# and Go, interfaces in Next.js. Based in Canterbury, UK, studying at the University of Kent.';
+  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent. Two internships, two hackathon wins, and a habit of finding the bug nobody noticed.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://kshitijj.me'),
-  title: {
-    default: `${PROFILE.name}, Software Developer`,
-    template: `%s | ${PROFILE.name}`,
-  },
+  metadataBase: new URL("https://kshitijj.me"),
+  title: "Kshitij Jha, software developer",
   description,
   openGraph: {
-    title: `${PROFILE.name}, Software Developer`,
+    title: "Kshitij Jha, software developer",
     description,
-    type: 'profile',
-    locale: 'en_GB',
+    type: "profile",
+    locale: "en_GB",
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: `${PROFILE.name}, Software Developer`,
-    description,
-  },
+  twitter: { card: "summary_large_image", title: "Kshitij Jha", description },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#e6ece8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1522" },
+  ],
+};
+
+const themeInit = `(function(){try{var t=localStorage.getItem('kj-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}})();`;
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // suppressHydrationWarning: the inline script below stamps data-theme on
-    // <html> before React hydrates, so the client markup legitimately differs
-    // from the server's. Scoped to this element only, not its subtree.
     <html
-      lang="en"
+      lang="en-GB"
       suppressHydrationWarning
-      className={`${display.variable} ${mono.variable} ${body.variable} ${pixel.variable} ${noto.variable} ${notoMono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body>
-        {/* Sets data-theme before first paint, from localStorage or OS preference,
-            so there's no light/dark flash on load. */}
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'&&t!=='desktop'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.dataset.theme=t;}catch(e){}})();`}
-        </Script>
-        <SmoothScroll />
-        <TabTitle />
-        <ShakeCursor />
-        <Nav />
-        <DemoProvider>
+        <AnomalyProvider>
+          <SmoothScroll />
           {children}
-          <TerminalGate />
-        </DemoProvider>
+          <CaseFile />
+        </AnomalyProvider>
       </body>
     </html>
   );
