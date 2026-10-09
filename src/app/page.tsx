@@ -6,14 +6,16 @@ import TestGrid from "@/components/TestGrid";
 import VesselMap from "@/components/VesselMap";
 import Deadlock from "@/components/Deadlock";
 import CopyEmail from "@/components/CopyEmail";
+import Deck from "@/components/deck/Deck";
+import ScamGame from "@/components/ScamGame";
+import Patrol from "@/components/Patrol";
+import Journey from "@/components/Journey";
 import {
-  CLIENTS,
   EDUCATION,
   LANGUAGES,
   LINKS,
   OFF_CLOCK,
   PROFILE,
-  RECOGNITION,
   SKILLS,
   SMALLER,
   WORK,
@@ -29,6 +31,14 @@ export default function Page() {
       <Nav />
       <main>
         <Hero />
+
+        {/* The deck */}
+        <section className="sec deck-sec" id="deck" aria-labelledby="deck-h">
+          <h2 className="sec-h" id="deck-h">
+            Pick a card. Each one is something I built or won.
+          </h2>
+          <Deck />
+        </section>
 
         {/* Work */}
         <section className="sec" id="work" aria-labelledby="work-h">
@@ -129,7 +139,7 @@ export default function Page() {
                   return a full answer.
                 </p>
                 <p>
-                  Try a small version of that idea. Eight rules, no model, every point explained.
+                  Before the code, a test for you. Eight real-looking messages. Which ones are scams?
                 </p>
               </div>
               <div className="project-stats">
@@ -142,7 +152,11 @@ export default function Page() {
                 <p className="muted">On 84 test messages, with the model switched off.</p>
               </div>
             </div>
-            <ScamCheck />
+            <ScamGame />
+            <details className="own-check">
+              <summary>Or paste your own message into a small version of the engine</summary>
+              <ScamCheck />
+            </details>
             <TestGrid />
           </article>
 
@@ -166,6 +180,7 @@ export default function Page() {
                 </p>
               </div>
             </div>
+            <Patrol />
             <VesselMap />
           </article>
 
@@ -210,50 +225,8 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Clients */}
-        <section className="sec sec-tight" id="clients" aria-labelledby="clients-h">
-          <h2 className="sec-h" id="clients-h">
-            Paid client work, on the side.
-          </h2>
-          <ul className="clients">
-            {CLIENTS.map((c) => (
-              <li key={c.name}>
-                <h3>{c.name}</h3>
-                <p>{c.what}</p>
-                {c.href ? (
-                  <a href={c.href} {...ext}>
-                    {c.href.replace("https://", "")}
-                  </a>
-                ) : (
-                  <span className="muted">{c.status}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
 
-        {/* Recognition */}
-        <section className="sec sec-tight" aria-labelledby="rec-h">
-          <h2 className="sec-h" id="rec-h">
-            Prizes, mostly for things built in a weekend.
-          </h2>
-          <ul className="recog">
-            {RECOGNITION.map((r) => (
-              <li key={r.title}>
-                <span className="recog-result">{r.result}</span>
-                <span className="recog-title">{r.title}</span>
-                <span className="recog-detail">{r.detail}</span>
-                {r.title.startsWith("Middlesex") && (
-                  <span className="locks" aria-label="6 of 13 problems solved">
-                    {Array.from({ length: 13 }, (_, i) => (
-                      <i key={i} className={i < 6 ? "open" : ""} />
-                    ))}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Journey />
 
         {/* About */}
         <section className="sec" id="about" aria-labelledby="about-h">

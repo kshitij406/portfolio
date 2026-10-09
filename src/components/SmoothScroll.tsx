@@ -13,7 +13,13 @@ export default function SmoothScroll() {
       id = requestAnimationFrame(raf);
     };
     id = requestAnimationFrame(raf);
+    // Overlays (the card inspector, Patrol, the verdict) lock the page.
+    const mo = new MutationObserver(() =>
+      document.documentElement.classList.contains("no-scroll") ? lenis.stop() : lenis.start(),
+    );
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => {
+      mo.disconnect();
       cancelAnimationFrame(id);
       lenis.destroy();
     };

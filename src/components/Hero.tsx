@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useAnomalies } from "@/lib/anomalies";
 import { PROFILE } from "@/data/content";
 import Clock from "./Clock";
+import Stickers from "./Stickers";
 
 // "Kshіtij": the fourth letter is U+0456, CYRILLIC SMALL LETTER
 // BYELORUSSIAN-UKRAINIAN I. It renders identically to a Latin i.
@@ -124,6 +125,7 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top">
+      <Stickers />
       <div className={`name-wrap${lensOn ? " lens-on" : ""}`} ref={wrap}>
         <h1 className="name" aria-label="Kshitij Jha">
           {render(false)}

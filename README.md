@@ -26,6 +26,18 @@ deterministic score, every point listed next to its evidence.
 
 Progress lives in `localStorage` under `kj-anomalies`.
 
+## For everyone else
+
+The anomalies are for technical visitors. The rest is for anyone:
+
+| Piece | Component | What it does |
+| --- | --- | --- |
+| Stickers | `Stickers` | Six hand-drawn stickers on the hero. Peel, drag, tap for a caption |
+| The deck | `deck/Deck`, `deck/Card` | Nine collectible cards with holographic foil by rarity. Fanned hand, shuffle, pick one up, flip it. Swipeable on phones |
+| Scam or legit | `ScamGame` | Swipe eight Mauritian messages. FraudLens's rules take the same test at the end |
+| Patrol | `Patrol` | Full-screen arcade game. Drive the coast guard boat to vessels that go dark |
+| Journey | `Journey` | Scroll-driven route from Dar es Salaam to Mauritius to Canterbury |
+
 ## Stack
 
 Next.js 16 (App Router, static export of a single route), React 19, plain CSS

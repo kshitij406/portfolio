@@ -43,7 +43,10 @@ export default function CaseFile() {
     return () => removeEventListener("keydown", onKey);
   }, [verdict, open]);
 
-  const t = toast ? ANOMALIES.find((a) => a.id === toast) : null;
+  // Keep the last message rendered while the toast slides out.
+  const lastToast = useRef<string | null>(null);
+  if (toast) lastToast.current = toast;
+  const t = lastToast.current ? ANOMALIES.find((a) => a.id === lastToast.current) : null;
 
   return (
     <>
@@ -91,7 +94,7 @@ export default function CaseFile() {
         </button>
       </div>
 
-      <div className={`toast${t ? " show" : ""}`} role="status" aria-live="polite">
+      <div className={`toast${toast ? " show" : ""}`} role="status" aria-live="polite">
         {t && (
           <>
             <span className="toast-n">{n}/6</span>

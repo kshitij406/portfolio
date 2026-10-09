@@ -168,3 +168,161 @@ export const SKILLS = [
   { group: "Frontend", items: ["Next.js", "React", "React Native"] },
   { group: "Infrastructure", items: ["Docker", "Azure", "IIS", "Linux", "GitHub Actions", "Tailscale"] },
 ];
+
+/**
+ * The deck. One card per thing worth collecting. Rarity follows real
+ * results, not taste: the hackathon winner is the only legendary.
+ */
+export type Rarity = "legendary" | "epic" | "rare" | "common";
+
+export const CARDS: {
+  id: string;
+  name: string;
+  kind: string;
+  rarity: Rarity;
+  badge: string;
+  year: string;
+  art: string;
+  line: string;
+  stats: [string, string][];
+  back: string;
+  links?: { label: string; href: string }[];
+}[] = [
+  {
+    id: "fraudlens",
+    name: "FraudLens AI",
+    kind: "Hackathon build, team lead",
+    rarity: "legendary",
+    badge: "Winner, Finnovate 2026",
+    year: "2026",
+    art: "fraudlens",
+    line: "Reads a scam in English, French or Kreol and shows you the exact words that gave it away.",
+    stats: [["Tests", "631"], ["Precision", "100%"], ["Team", "5"]],
+    back: "Led five people over 72 hours. I owned the backend and the Chrome extension. The rules decide the verdict, the AI only reads language, and it still works when the AI is down.",
+    links: [
+      { label: "fraudlens.site", href: "https://fraudlens.site" },
+      { label: "Chrome extension", href: "https://chromewebstore.google.com/detail/ijoefckhnkajhegfegkifedkahdiebdj" },
+    ],
+  },
+  {
+    id: "bluenet",
+    name: "BlueNet",
+    kind: "Hackathon build, team lead",
+    rarity: "epic",
+    badge: "Judge's Choice, Build with Gemma",
+    year: "2026",
+    art: "bluenet",
+    line: "Spots fishing boats that switch off their trackers, and tells three patrol boats where to look first.",
+    stats: [["Sea", "2.3M km²"], ["Patrols", "3"], ["Team", "5"]],
+    back: "Code flags suspicious vessel behaviour, then a Gemma agent investigates each one and ranks the cases for the coast guard. I led the team and built the backend.",
+  },
+  {
+    id: "smarterp",
+    name: "SmartERP Attendance",
+    kind: "Internship, ITL",
+    rarity: "epic",
+    badge: "In user testing",
+    year: "2026",
+    art: "smarterp",
+    line: "Clock-in data for a whole company, processed for the month before you can blink.",
+    stats: [["Punches", "13,487"], ["Run time", "1.5s"], ["Tables", "8"]],
+    back: "Built from the schema up in Next.js and SQL Server, in a team of four. Found and fixed an import that was quietly losing one punch in six.",
+  },
+  {
+    id: "sultan",
+    name: "Sultan Mauritius",
+    kind: "Client work",
+    rarity: "rare",
+    badge: "Live",
+    year: "2026",
+    art: "sultan",
+    line: "A bilingual online shop for a Mauritian brand, built and launched for a paying client.",
+    stats: [["Languages", "2"], ["CMS", "Sanity"], ["Status", "Live"]],
+    back: "Next.js, Prisma and Sanity CMS, so the client edits their own products without calling me.",
+    links: [{ label: "sultanmauritius.com", href: "https://sultanmauritius.com" }],
+  },
+  {
+    id: "country",
+    name: "Country Materials",
+    kind: "Client work",
+    rarity: "rare",
+    badge: "Live",
+    year: "2026",
+    art: "country",
+    line: "The website for a Tanzanian construction materials and recycling company.",
+    stats: [["Built in", "Next.js"], ["ERP sync", "Yes"], ["Status", "Live"]],
+    back: "Includes an endpoint that keeps the product catalogue in step with the company's ERP, and the legal compliance pages.",
+    links: [{ label: "countrymaterial.com", href: "https://countrymaterial.com" }],
+  },
+  {
+    id: "fleet",
+    name: "Fleet Manager",
+    kind: "Internship, CubeStone",
+    rarity: "rare",
+    badge: "Solo build",
+    year: "2026",
+    art: "fleet",
+    line: "Every truck, driver, fuel log and repair job for a fleet, on a phone.",
+    stats: [["Endpoints", "~40"], ["Built by", "Me"], ["Apps", "2"]],
+    back: "A C# API against SAP HANA and the React Native app on top. Bearer-token login and per-person permissions.",
+    links: [{ label: "App code", href: "https://github.com/kshitij406/FleetManagementApp" }],
+  },
+  {
+    id: "speed",
+    name: "Speed Coding",
+    kind: "Competition, pair",
+    rarity: "epic",
+    badge: "1st Runner-Up",
+    year: "2026",
+    art: "speed",
+    line: "13 locked problems, each answer opening the next. Nobody got past six. We got six.",
+    stats: [["Solved", "6 of 13"], ["Best any team", "6"], ["Prize", "Cash"]],
+    back: "Middlesex University's speed coding competition, Python, in a team of two.",
+  },
+  {
+    id: "tcp",
+    name: "TCP Chat Server",
+    kind: "Personal project",
+    rarity: "common",
+    badge: "Go",
+    year: "2026",
+    art: "tcp",
+    line: "A chat server built from raw sockets to learn how many things can talk at once without tripping over each other.",
+    stats: [["Language", "Go"], ["Clients", "Many"], ["Deadlocks", "0 now"]],
+    back: "One goroutine per client, shared state behind a mutex, and a clean shutdown across every connection.",
+    links: [{ label: "Code", href: "https://github.com/kshitij406/TCP" }],
+  },
+  {
+    id: "oracle",
+    name: "Database Foundations",
+    kind: "Certificate",
+    rarity: "common",
+    badge: "Oracle Academy",
+    year: "2026",
+    art: "oracle",
+    line: "The certificate. The stored procedures came later, and there were a lot of them.",
+    stats: [["Issued", "Feb 2026"], ["By", "Oracle"], ["Topic", "SQL"]],
+    back: "Oracle Academy Database Foundations.",
+  },
+];
+
+export const JOURNEY = [
+  {
+    place: "Dar es Salaam",
+    country: "Tanzania",
+    title: "Where it started",
+    body: "I grew up on the Tanzanian coast, which is where the diving started. Years later I came back for both internships: a fleet system at CubeStone, then the attendance module at ITL.",
+  },
+  {
+    place: "Mauritius",
+    country: "Indian Ocean",
+    title: "Where it got serious",
+    body: "First year of Computer Science at Middlesex, with a First in every graded module. Two hackathon teams, two awards, and my first paying clients.",
+  },
+  {
+    place: "Canterbury",
+    country: "United Kingdom",
+    title: "Where I am now",
+    body: "Second year at the University of Kent. Looking for a 12-month placement from summer 2027.",
+  },
+];

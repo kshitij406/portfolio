@@ -45,7 +45,7 @@ const SAMPLES = [
   },
 ];
 
-function analyse(text: string): { hits: Hit[]; score: number } {
+export function analyse(text: string): { hits: Hit[]; score: number } {
   const hits: Hit[] = [];
   for (const p of PHRASES) {
     const m = text.match(p.re);
