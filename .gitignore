@@ -47,3 +47,6 @@ reference.md
 # src/data/resume.ts and served at /resume, which is why that data file carries
 # no phone number or address. Keep stray PDF copies out.
 *.pdf
+
+# The public CV (phone number removed) ships with the site.
+!public/Kshitij_Jha_CV.pdf
