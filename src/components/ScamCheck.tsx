@@ -21,7 +21,7 @@ const OFFICIAL: Record<string, string> = {
 };
 
 const PHRASES: { code: string; label: string; points: number; re: RegExp }[] = [
-  { code: "OTP_REQUEST", label: "Asks for a one-time code", points: 25, re: /\b(otp|one[- ]time (?:code|password)|kod|code de v[ée]rification)\b/i },
+  { code: "OTP_REQUEST", label: "Asks for a one-time code or PIN", points: 25, re: /\b(otp|pin|one[- ]time (?:code|password)|kod|code de v[ée]rification)\b/i },
   { code: "URGENCY", label: "Pushes you to act now", points: 12, re: /\b(urgent|immediately|within 24 ?h(?:ours)?|today only|imedyatman|tou de suite|aster mem)\b/i },
   { code: "ACCOUNT_THREAT", label: "Threatens your account", points: 15, re: /\b(blocked|suspended|bloke|bloqu[ée]e?|suspendu|desactiv[ée])\b/i },
   { code: "PAYMENT_ASK", label: "Asks for a payment or fee", points: 10, re: /\b(pay|payment|fee|frais|peye|transfer)\b/i },
@@ -32,8 +32,8 @@ const PHRASE_CAP = 45;
 
 const SAMPLES = [
   {
-    label: "Bank OTP, in Kreol",
-    text: "MCB: ou kont inn bloke. Pou debloke li imedyatman, avoy nou kod OTP ki ou finn resevwar lor https://mcb-secure.top/verify",
+    label: "Bank OTP",
+    text: "MCB: your account has been blocked. To unblock it immediately, send us the OTP code you received at https://mcb-secure.top/verify",
   },
   {
     label: "Lookalike link",

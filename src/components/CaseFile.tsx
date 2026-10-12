@@ -54,7 +54,7 @@ export default function CaseFile() {
         {open && (
           <div className="cf-panel" role="dialog" aria-label="Anomalies">
             <p className="cf-title">
-              {all ? "All six found." : `${n} of 6 found. Hints for the rest:`}
+              {all ? "All five found." : `${n} of ${ANOMALIES.length} found. Hints for the rest:`}
             </p>
             <ol className="cf-list">
               {ANOMALIES.map((a) => {
@@ -89,7 +89,7 @@ export default function CaseFile() {
         >
           <Ring n={n} />
           <span>
-            {n} of 6 <span className="cf-pill-long">anomalies found</span>
+            {n} of {ANOMALIES.length} <span className="cf-pill-long">anomalies found</span>
           </span>
         </button>
       </div>
@@ -97,7 +97,7 @@ export default function CaseFile() {
       <div className={`toast${toast ? " show" : ""}`} role="status" aria-live="polite">
         {t && (
           <>
-            <span className="toast-n">{n}/6</span>
+            <span className="toast-n">{n}/{ANOMALIES.length}</span>
             <span>
               <strong>{t.name}.</strong> {t.found}
             </span>
@@ -121,7 +121,7 @@ function Ring({ n }: { n: number }) {
         r="9"
         className="cf-ring-fg"
         strokeDasharray={c}
-        strokeDashoffset={c * (1 - n / 6)}
+        strokeDashoffset={c * (1 - n / ANOMALIES.length)}
       />
     </svg>
   );
@@ -171,7 +171,7 @@ function Verdict({ onClose }: { onClose: () => void }) {
           You found everything I hid. I&rsquo;d like to hear what you&rsquo;re working on.
         </p>
         <div className="verdict-actions">
-          <a className="btn" href="mailto:kshitij.j615@gmail.com?subject=Found%20all%20six">
+          <a className="btn" href="mailto:kshitij.j615@gmail.com?subject=Found%20all%20five">
             Email Kshitij
           </a>
           <button type="button" className="link-btn" onClick={onClose} ref={close}>

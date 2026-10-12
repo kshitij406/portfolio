@@ -590,12 +590,6 @@ h1.name .g-fixed {
   border-bottom: 1px dotted transparent;
 }
 
-.clock:not(.clock-fixed):hover .clock-zone {
-  color: var(--flag);
-  border-bottom-color: var(--flag);
-  cursor: pointer;
-}
-
 .clock-dot {
   width: 8px;
   height: 8px;
@@ -1913,23 +1907,82 @@ h1.name .g-fixed {
   -webkit-backface-visibility: hidden;
 }
 
+/* Metal. Every card is a plate of real-looking metal: a brushed bezel whose
+   light turns with the pointer (a conic gradient keyed to --px), a satin
+   face plate set into it, four screws, an art window sunk into the face,
+   and type stamped into the surface. Rarity picks the alloy. */
+
+.card {
+  /* bezel: highlight, mid, shadow, accent */
+  --m1: #c9d0d6;
+  --m2: #5a6670;
+  --m3: #1f272e;
+  --m4: #eef2f5;
+  --face-a: #eceff2;
+  --face-b: #c3c9cf;
+  --bez: 12px;
+  --bevel: inset 1px 1px 0 rgba(255, 255, 255, 0.75), inset -1px -1px 0 rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.card-front,
+.card-back {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, transparent 2px 4px),
+    conic-gradient(
+      from calc(var(--px) * 3.6deg + var(--py) * 0.9deg) at 50% 50%,
+      var(--m1),
+      var(--m3) 14%,
+      var(--m2) 26%,
+      var(--m4) 38%,
+      var(--m2) 52%,
+      var(--m3) 66%,
+      var(--m1) 80%,
+      var(--m2) 90%,
+      var(--m1)
+    );
+}
+
 .card-front {
   display: grid;
   grid-template-rows: auto auto auto 1fr auto auto;
-  padding: 9px;
+  padding: calc(var(--bez) + 7px);
   gap: 6px;
-  background: var(--face);
   color: var(--cink);
-  border: 7px solid var(--frame);
-  box-shadow: 0 calc(10px + var(--on) * 20px) calc(24px + var(--on) * 30px) rgba(15, 29, 44, calc(0.22 + var(--on) * 0.18));
+  box-shadow:
+    var(--bevel),
+    0 calc(10px + var(--on) * 20px) calc(24px + var(--on) * 30px) rgba(15, 29, 44, calc(0.3 + var(--on) * 0.18));
+}
+
+/* The face plate, set into the bezel. */
+.card-front::before,
+.back-pattern {
+  content: "";
+  position: absolute;
+  inset: var(--bez);
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.card-front::before {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 1px, rgba(0, 0, 0, 0.03) 1px 2px, transparent 2px 3px),
+    radial-gradient(120% 60% at calc(var(--px) * 1%) 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    linear-gradient(165deg, var(--face-a), var(--face-b));
+}
+
+.card-front > :not(.foil):not(.glare):not(.sheen):not(.screws) {
+  position: relative;
+  z-index: 1;
 }
 
 .card-back {
   transform: rotateY(180deg);
-  background: var(--frame);
   color: #fff;
-  border: 7px solid var(--frame);
   display: grid;
+  box-shadow: var(--bevel);
 }
 
 .card-top {
@@ -1937,6 +1990,16 @@ h1.name .g-fixed {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+}
+
+/* Stamped into the plate: dark letters with a lit lower lip. */
+.card-name,
+.card-stats dd,
+.card-kind,
+.card-line,
+.card-foot,
+.card-stats dt {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .card-name {
@@ -1953,14 +2016,27 @@ h1.name .g-fixed {
   height: 14px;
   transform: rotate(45deg);
   border-radius: 3px;
-  background: var(--frame);
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  background: radial-gradient(circle at 30% 30%, #fff, var(--m4) 25%, var(--m2) 60%, var(--m3));
+  box-shadow: 0 0 0 1.5px var(--m3), 0 1px 0 2px rgba(255, 255, 255, 0.5);
 }
 
 .card-window {
-  border-radius: 8px;
+  position: relative;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: inset 0 0 0 2px rgba(15, 29, 44, 0.15);
+}
+
+/* Sunk into the face: shadow under the top lip, light on the bottom one. */
+.card-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    inset 0 3px 6px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.4),
+    inset 0 -1px 0 3px rgba(255, 255, 255, 0.12);
 }
 
 .card-art {
@@ -1975,8 +2051,9 @@ h1.name .g-fixed {
   font-size: 0.68rem;
   font-weight: 600;
   padding: 3px 7px;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--frame) 14%, transparent);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.07);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .card-line {
@@ -1988,14 +2065,22 @@ h1.name .g-fixed {
 .card-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-top: 1.5px solid rgba(15, 29, 44, 0.15);
   padding-top: 6px;
   text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.card-stats div + div {
+  border-left: 1px solid rgba(0, 0, 0, 0.16);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.45);
 }
 
 .card-stats dt {
   font-size: 0.58rem;
-  color: #4d5d69;
+  color: color-mix(in srgb, var(--cink) 70%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .card-stats dd {
@@ -2008,17 +2093,49 @@ h1.name .g-fixed {
 .card-foot {
   display: flex;
   justify-content: space-between;
+  gap: 6px;
   font-size: 0.6rem;
   font-weight: 600;
-  color: #4d5d69;
+  color: color-mix(in srgb, var(--cink) 75%, transparent);
 }
 
-/* Foil: a rainbow band that slides with the pointer, blended over the face. */
+.card-serial {
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Four screws, one in each corner of the bezel. */
+.screws {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.screws i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--sr, 35deg), transparent 42%, rgba(0, 0, 0, 0.7) 43% 57%, transparent 58%),
+    radial-gradient(circle at 35% 30%, #fff, var(--m1) 35%, var(--m2) 70%, var(--m3));
+  box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.6), inset 0 -0.5px 1px rgba(0, 0, 0, 0.5);
+}
+
+.screws i:nth-child(1) { top: 5px; left: 5px; --sr: 20deg; }
+.screws i:nth-child(2) { top: 5px; right: 5px; --sr: 110deg; }
+.screws i:nth-child(3) { bottom: 5px; left: 5px; --sr: 75deg; }
+.screws i:nth-child(4) { bottom: 5px; right: 5px; --sr: 160deg; }
+
+/* Holographic foil, for the two top rarities only. */
 .foil {
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
+  z-index: 2;
   mix-blend-mode: color-dodge;
   background: repeating-linear-gradient(
       115deg,
@@ -2032,87 +2149,146 @@ h1.name .g-fixed {
   background-size: 300% 300%;
   background-position: calc(var(--px) * 1%) calc(var(--py) * 1%);
   filter: saturate(1.3);
-  /* Shine on the art and the frame edge, never on the words. */
+  /* Shine on the art and the bezel, never on the words. */
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 56%, transparent 92%, #000 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 56%, transparent 92%, #000 100%);
+}
+
+/* A hard specular streak that slides across as the card turns. */
+.sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.0) 40%,
+    rgba(255, 255, 255, 0.65) 47%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.45) 53%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: calc(100% - var(--px) * 1%) 0;
+  mix-blend-mode: soft-light;
+  opacity: calc(0.35 + var(--on) * 0.65);
 }
 
 .glare {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 2;
   background: radial-gradient(
     circle at calc(var(--px) * 1%) calc(var(--py) * 1%),
-    rgba(255, 255, 255, calc(0.15 + var(--on) * 0.35)),
-    transparent 55%
+    rgba(255, 255, 255, calc(0.12 + var(--on) * 0.3)),
+    transparent 50%
   );
   mix-blend-mode: overlay;
 }
 
-.r-legendary {
-  --frame: #c9962b;
-  --face: #fff7e3;
-}
+/* Alloys */
 
-.r-legendary .card-front {
-  border-image: linear-gradient(135deg, #ffe08a, #c9962b 40%, #fff1c2 60%, #a87418) 1;
-  border-radius: 16px;
-  outline: 7px solid transparent;
+.r-legendary {
+  --frame: #8a5f12;
+  --m1: #fff1c2;
+  --m2: #d9a93a;
+  --m3: #7a520e;
+  --m4: #fff8de;
+  --face-a: #fbf1d2;
+  --face-b: #e0c47a;
+  --cink: #3a2706;
 }
 
 .r-legendary .foil {
-  opacity: calc(0.35 + var(--on) * 0.4);
+  opacity: calc(0.12 + var(--on) * 0.38);
 }
 
 .r-epic {
-  --frame: #a3256b;
-  --face: #fbeef4;
+  /* anodised: magenta that runs blue at the edges, like heat-tinted titanium */
+  --frame: #6e1747;
+  --m1: #f7b6da;
+  --m2: #a3256b;
+  --m3: #3d0f2b;
+  --m4: #b9c0ff;
+  --face-a: #f4e9f1;
+  --face-b: #d3bccd;
+  --cink: #2c0a1f;
 }
 
 .r-epic .foil {
-  opacity: calc(0.2 + var(--on) * 0.3);
+  opacity: calc(0.14 + var(--on) * 0.26);
 }
 
 .r-rare {
-  --frame: #1f727a;
-  --face: #eef7f6;
-}
-
-.r-rare .foil {
-  opacity: calc(0.06 + var(--on) * 0.2);
+  --frame: #135057;
+  --m1: #c9f3f1;
+  --m2: #2a8890;
+  --m3: #0c3236;
+  --m4: #effcfc;
+  --face-a: #e8f2f2;
+  --face-b: #bcd0d1;
+  --cink: #082a2e;
 }
 
 .r-common {
-  --frame: #33414e;
+  --frame: #2a333b;
+  --cink: #11181e;
 }
 
 .r-legendary .gem {
-  background: linear-gradient(135deg, #ffe08a, #c9962b);
   animation: gem 2.4s ease-in-out infinite;
 }
 
 @keyframes gem {
   50% {
-    box-shadow: inset 0 0 0 2px #fff, 0 0 12px #ffc63d;
+    box-shadow: 0 0 0 1.5px var(--m3), 0 0 12px #ffc63d;
   }
 }
 
-/* Back */
+/* Back: a darker plate with a guilloche, the kind of engraving on banknotes
+   and watch dials, and a monogram pressed into it. */
 
 .back-pattern {
+  background:
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 4px, rgba(255, 255, 255, 0.13) 4px 5px),
+    repeating-conic-gradient(from 0deg at 50% 50%, rgba(0, 0, 0, 0.12) 0 4deg, transparent 4deg 8deg),
+    radial-gradient(90% 70% at calc(var(--px) * 1%) calc(var(--py) * 1%), rgba(255, 255, 255, 0.25), transparent 70%),
+    linear-gradient(160deg, var(--m2), var(--m3));
+}
+
+.back-mono {
   position: absolute;
   inset: 0;
-  opacity: 0.16;
-  background-image: radial-gradient(circle at 50% 50%, #fff 1.5px, transparent 2px);
-  background-size: 14px 14px;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 6%;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 5rem;
+  letter-spacing: -0.06em;
+  color: transparent;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.35), 1px 1px 0 rgba(255, 255, 255, 0.25);
+  pointer-events: none;
 }
 
 .back-body {
   position: relative;
+  z-index: 1;
   display: grid;
-  align-content: center;
+  align-content: start;
   gap: 0.7rem;
-  padding: 1.1rem;
+  padding: 1.6rem 1.4rem;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.back-serial {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
 }
 
 .back-name {
@@ -2138,11 +2314,14 @@ h1.name .g-fixed {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--frame);
-  background: #fff;
+  text-shadow: none;
+  background: linear-gradient(180deg, #fff, var(--m1));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 #fff;
   border-radius: 999px;
   padding: 0.3em 0.75em;
   text-decoration: none;
 }
+
 
 /* The wheel */
 
@@ -2182,7 +2361,7 @@ h1.name .g-fixed {
 }
 
 .deck-slot .card-front {
-  box-shadow: 0 calc(16px + var(--on) * 24px) calc(40px + var(--on) * 30px) rgba(15, 29, 44, calc(0.22 + var(--on) * 0.2));
+  box-shadow: var(--bevel), 0 calc(16px + var(--on) * 24px) calc(40px + var(--on) * 30px) rgba(15, 29, 44, calc(0.22 + var(--on) * 0.2));
 }
 
 .deck-wheel {
@@ -3681,4 +3860,639 @@ html.no-scroll .toast {
   font-weight: 500;
   font-size: 11px;
   fill: var(--muted);
+}
+
+/* ==================================================================
+   Section furniture: index tag, margin note, section stickers
+   ================================================================== */
+
+.sec-top {
+  position: relative;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.kicker-n {
+  padding: 0.2em 0.55em;
+  border-radius: 5px;
+  background: var(--ink);
+  color: var(--paper);
+  letter-spacing: 0.04em;
+}
+
+.scribble {
+  position: relative;
+  display: inline-block;
+  margin: calc(-1 * clamp(2.5rem, 6vw, 4.5rem) + 0.6rem) 0 clamp(2.25rem, 5vw, 3.5rem) clamp(2.5rem, 14vw, 16rem);
+  padding-left: 2.4rem;
+  font-family: var(--f-hand), cursive;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.4rem);
+  line-height: 1.1;
+  color: var(--cobalt);
+  transform: rotate(-2.5deg);
+  transform-origin: left center;
+}
+
+.scribble-arrow {
+  position: absolute;
+  left: -0.4rem;
+  top: -1.3rem;
+  width: 2.6rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.deck-sec .scribble {
+  margin-bottom: 0;
+  margin-top: 1rem;
+}
+
+.sec-stickers.stickers {
+  inset: -1rem 0 0;
+  z-index: 3;
+}
+
+.sec-stickers .sticker {
+  scale: 1.25;
+}
+
+/* Captions open beside the sticker that was tapped. */
+.stickers .sticker-caption {
+  right: auto;
+  bottom: auto;
+  width: max-content;
+  max-width: min(20rem, 80vw);
+  z-index: 200;
+  transform: translate(-50%, 3.6rem);
+  box-shadow: 0 12px 30px rgba(15, 29, 44, 0.3);
+}
+
+.stickers .sticker-caption.show {
+  transform: translate(-50%, 3.1rem);
+}
+
+@media (max-width: 760px) {
+  .sec-stickers.stickers {
+    position: relative;
+    inset: auto;
+    height: 120px;
+    margin: -1rem 0 1.5rem;
+  }
+  .scribble {
+    margin-left: 1rem;
+  }
+}
+
+/* ==================================================================
+   Hazard tape
+   ================================================================== */
+
+/* Clips sideways only, so the tilted ends don't make the page scroll
+   horizontally but the corners above and below still show. */
+.tape-wrap {
+  overflow-x: clip;
+  padding-top: clamp(4.5rem, 10vw, 8rem);
+}
+
+.tape {
+  --tape-bg: var(--sodium);
+  --tape-ink: #0f1d2c;
+  position: relative;
+  z-index: 5;
+  width: 112vw;
+  margin-left: -6vw;
+  padding: 0.85rem 0;
+  overflow: hidden;
+  transform: rotate(var(--tilt));
+  background: var(--tape-bg);
+  color: var(--tape-ink);
+  box-shadow: 0 10px 30px rgba(15, 29, 44, 0.22);
+}
+
+.tape::before,
+.tape::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: repeating-linear-gradient(-45deg, var(--tape-ink) 0 10px, transparent 10px 20px);
+}
+
+.tape::before {
+  top: 0;
+}
+
+.tape::after {
+  bottom: 0;
+}
+
+.tape-flag {
+  --tape-bg: var(--flag);
+  --tape-ink: #fff;
+}
+
+.tape-sea {
+  --tape-bg: var(--sea);
+  --tape-ink: #fff;
+}
+
+.tape-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.tape-run {
+  display: flex;
+}
+
+.tape-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 0.25rem 0 0.2rem 1.6rem;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tape-sep {
+  width: 0.8em;
+  height: 0.8em;
+  background: currentColor;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+}
+
+/* ==================================================================
+   Depth gauge
+   ================================================================== */
+
+.gauge {
+  position: fixed;
+  left: 18px;
+  top: 50%;
+  z-index: 60;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.9rem;
+  height: min(64vh, 540px);
+  transform: translateY(-50%);
+  font-variant-numeric: tabular-nums;
+}
+
+.gauge-read {
+  display: grid;
+  gap: 0.1rem;
+  margin-left: -6px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.gauge-m {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.gauge-m small {
+  font-size: 0.7rem;
+  margin-left: 1px;
+  color: var(--muted);
+}
+
+.gauge-t {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--muted);
+}
+
+.gauge-scale {
+  position: relative;
+  width: 2px;
+  margin-left: 6px;
+  background: var(--line);
+}
+
+.gauge-tick {
+  position: absolute;
+  left: 0;
+  width: 5px;
+  height: 1px;
+  background: var(--muted);
+  opacity: 0.6;
+}
+
+.gauge-tick.major {
+  width: 10px;
+  opacity: 1;
+}
+
+.gauge-mark {
+  position: absolute;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: var(--paper);
+  border: 1.5px solid var(--muted);
+  text-decoration: none;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.gauge-mark span {
+  position: absolute;
+  left: 14px;
+  top: -6px;
+  transform: rotate(-45deg) translateX(-4px);
+  transform-origin: 0 0;
+  padding: 0.1em 0.5em;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s var(--ease);
+  pointer-events: none;
+}
+
+.gauge:hover .gauge-mark span,
+.gauge-mark.on span {
+  opacity: 1;
+  transform: rotate(-45deg);
+  pointer-events: auto;
+}
+
+.gauge-mark.on {
+  background: var(--flag);
+  border-color: var(--flag);
+}
+
+.gauge-mark.on span {
+  color: var(--ink);
+}
+
+.gauge-diver {
+  position: absolute;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--sodium);
+  border: 2px solid var(--ink);
+  z-index: 2;
+}
+
+.gauge-bubbles {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--sea);
+  background: color-mix(in srgb, var(--sea) 15%, transparent);
+  animation: bubble 1.8s ease-out forwards;
+}
+
+@keyframes bubble {
+  to {
+    transform: translate(var(--wob), -110px);
+    opacity: 0;
+  }
+}
+
+.gauge-surface {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.gauge-surface::before {
+  content: "↑ ";
+}
+
+.gauge-surface:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 1399px) {
+  .gauge {
+    left: 8px;
+  }
+  .gauge-read,
+  .gauge-surface {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .gauge {
+    display: none;
+  }
+}
+
+/* ==================================================================
+   Commit log, keycaps, polaroids
+   ================================================================== */
+
+.log {
+  display: grid;
+  max-width: 72ch;
+  margin-top: 2rem;
+  border-left: 2px solid var(--line);
+}
+
+.log li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 5.2rem 1fr;
+  gap: 1rem;
+  padding: 0.7rem 0.9rem 0.7rem 1.3rem;
+  border-radius: 0 10px 10px 0;
+  transition: background 0.2s;
+}
+
+.log li::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 1.05rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--muted);
+  transition: background 0.2s, border-color 0.2s, transform 0.3s var(--ease);
+}
+
+.log li:hover {
+  background: var(--paper-2);
+}
+
+.log li:hover::before {
+  background: var(--ok);
+  border-color: var(--ok);
+  transform: scale(1.25);
+}
+
+.log-hash {
+  padding-top: 0.2em;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--cobalt);
+}
+
+@media (max-width: 640px) {
+  .log li {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.5rem;
+}
+
+.kc {
+  padding: 0.42em 0.8em 0.55em;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--paper) 70%, #fff), var(--paper-2));
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.1;
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--ink) 14%, transparent),
+    0 2px 0 color-mix(in srgb, var(--ink) 35%, transparent),
+    0 4px 8px rgba(15, 29, 44, 0.12);
+  transition: transform 0.08s, box-shadow 0.08s, background 0.2s;
+}
+
+button.kc:hover {
+  transform: translateY(-1px);
+}
+
+button.kc:active,
+.kc.down {
+  transform: translateY(2px);
+  background: var(--sodium);
+  color: #0f1d2c;
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 0 0 color-mix(in srgb, var(--ink) 35%, transparent),
+    0 1px 2px rgba(15, 29, 44, 0.15);
+}
+
+.kc-sm {
+  font-size: 0.78rem;
+  padding: 0.3em 0.65em 0.42em;
+  border-radius: 6px;
+}
+
+.keys {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid var(--ink);
+}
+
+.keys-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.keys-group {
+  font-weight: 600;
+  padding-top: 0.35em;
+}
+
+.keys-caps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keys-out {
+  min-height: 3.2em;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.keys-out::before {
+  content: "$ ";
+  color: var(--sodium);
+}
+
+.keys-out strong {
+  color: var(--sodium);
+  font-weight: 500;
+}
+
+.keys-out .muted {
+  color: #8da0ab;
+}
+
+.keys-spoken {
+  color: var(--muted);
+}
+
+.keys-spoken .keys-group {
+  color: var(--ink);
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 860px) {
+  .keys-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}
+
+.edu-period {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.05em 0.5em;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.offclock {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 1.25rem;
+  padding-top: 0.75rem;
+}
+
+.polaroid {
+  position: relative;
+  padding: 0.7rem 0.7rem 1.1rem;
+  border-radius: 3px;
+  background: #fbfaf6;
+  color: #0f1d2c;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 14px 28px rgba(15, 29, 44, 0.2);
+  transform: rotate(var(--r));
+  transition: transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1), box-shadow 0.3s;
+}
+
+.polaroid:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.03);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 24px 40px rgba(15, 29, 44, 0.28);
+  z-index: 2;
+}
+
+/* A strip of tape holding it to the page. */
+.polaroid::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 72px;
+  height: 20px;
+  transform: translateX(-50%) rotate(calc(var(--r) * -2));
+  background: color-mix(in srgb, var(--sodium) 65%, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.polaroid-pic {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 0.75rem;
+  border-radius: 2px;
+  background: #24838a;
+  overflow: hidden;
+}
+
+.polaroid:nth-child(2) .polaroid-pic {
+  background: #2b1f3a;
+}
+
+.polaroid:nth-child(3) .polaroid-pic {
+  background: #2a46d8;
+}
+
+.polaroid:nth-child(4) .polaroid-pic {
+  background: #f2a93b;
+}
+
+.polaroid-pic svg {
+  width: 58%;
+  height: auto;
+  transition: transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.polaroid:hover .polaroid-pic svg {
+  transform: scale(1.12) rotate(-6deg);
+}
+
+.offclock .polaroid h3 {
+  font-family: var(--f-hand), cursive;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.offclock .polaroid p {
+  color: #4d5d69;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 480px) {
+  .offclock {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tape-track {
+    transform: none !important;
+  }
+  .bubble {
+    display: none;
+  }
 }

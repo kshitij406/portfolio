@@ -20,6 +20,20 @@ export default function CardArt({ art }: { art: string }) {
 }
 
 const ART: Record<string, React.ReactNode> = {
+  blackreef: (
+    <>
+      <rect width="240" height="150" fill="#0a1522" />
+      <path d="M0 52 Q60 40 120 52 T240 48" stroke="#3f8a99" strokeWidth="1.5" fill="none" opacity="0.6" />
+      <path d="M0 70 Q60 60 120 70 T240 66" stroke="#3f8a99" strokeWidth="1.2" fill="none" opacity="0.35" />
+      <path d="M0 150 V118 l18 -22 14 16 20 -38 18 30 16 -14 22 34 18 -48 20 40 16 -18 24 28 20 -24 34 34 V150z" fill="#05090f" />
+      <path d="M110 124 v-34 M110 100 l-12 -12 M110 108 l12 -10" stroke={FLAG} strokeWidth="4" strokeLinecap="round" fill="none" />
+      <path d="M58 132 v-18 M58 120 l8 -8" stroke={SODIUM} strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      <path d="M176 132 v-24 M176 116 l-9 -8" stroke="#7fe0e3" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      {[[40, 30], [150, 26], [200, 90], [80, 86], [130, 76]].map(([x, y]) => (
+        <circle key={x} cx={x} cy={y} r="2.2" fill={PAPER} opacity="0.5" />
+      ))}
+    </>
+  ),
   fraudlens: (
     <>
       <rect width="240" height="150" fill="#1c1030" />

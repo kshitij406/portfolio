@@ -143,6 +143,10 @@ export default function Hero() {
         </p>
         <div className="hero-meta">
           <Clock />
+          <p>
+            CEO and co-founder of{" "}
+            <a href="https://www.teamblackreef.com" target="_blank" rel="noreferrer">Black Reef</a>.
+          </p>
           <p>{PROFILE.availability}.</p>
           <p className="hero-links">
             <a href="/Kshitij_Jha_CV.pdf" target="_blank" rel="noreferrer">Read the CV</a>
@@ -152,7 +156,7 @@ export default function Hero() {
       </div>
 
       <p className="hero-hunt">
-        Six things on this page are broken on purpose, each one a small version of a real bug from
+        Five things on this page are broken on purpose, each one a small version of a real bug from
         the work below. Find them if you like. The counter is in the corner.
       </p>
     </section>

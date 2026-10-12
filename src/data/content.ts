@@ -11,11 +11,28 @@ export const PROFILE = {
 };
 
 export const LINKS = [
+  { label: "Black Reef", href: "https://www.teamblackreef.com", handle: "teamblackreef.com" },
   { label: "GitHub", href: "https://github.com/kshitij406", handle: "kshitij406" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/kshitij-jha2006/", handle: "kshitij-jha2006" },
   { label: "Letterboxd", href: "https://boxd.it/4m4al", handle: "Kxitiz_" },
   { label: "Instagram", href: "https://www.instagram.com/kxitiz_", handle: "kxitiz_" },
 ];
+
+export const BLACKREEF = {
+  company: "Black Reef",
+  role: "CEO and Co-founder",
+  place: "Mauritius",
+  period: "Oct 2026 to now",
+  lede:
+    "After FraudLens won Finnovate, the five of us kept going and started a software studio. Black Reef builds websites, mobile apps and custom software for businesses, at a price agreed before any work starts.",
+  points: [
+    "Five co-founders, the same team that built FraudLens. The people on a client's first call are the people who build the product.",
+    "Fixed-scope written proposals. The client owns the code, designs, domains and accounts from day one.",
+    "Built the company site: Next.js 16, statically prerendered, with one public endpoint for the contact form, validated server-side, rate limited and origin-checked, behind strict security headers.",
+  ],
+  stack: ["Next.js", "TypeScript", "GSAP", "Vercel"],
+  href: "https://www.teamblackreef.com",
+};
 
 export const WORK = [
   {
@@ -223,6 +240,19 @@ export const CARDS: {
     back: "Code flags suspicious vessel behaviour, then a Gemma agent investigates each one and ranks the cases for the coast guard. I led the team and built the backend.",
   },
   {
+    id: "blackreef",
+    name: "Black Reef",
+    kind: "Company, CEO",
+    rarity: "epic",
+    badge: "CEO and Co-founder",
+    year: "2026",
+    art: "blackreef",
+    line: "The hackathon team that didn't split up. Five of us, building software for clients in Mauritius and abroad.",
+    stats: [["Founders", "5"], ["Based", "Mauritius"], ["Started", "Oct 2026"]],
+    back: "Websites, mobile apps and custom software, at a fixed price agreed upfront. The clients own everything we build.",
+    links: [{ label: "teamblackreef.com", href: "https://www.teamblackreef.com" }],
+  },
+  {
     id: "smarterp",
     name: "SmartERP Attendance",
     kind: "Internship, ITL",
@@ -387,3 +417,27 @@ export const GAME = {
   src: "/games/platformer/Platformer.html",
   shot: "/demos/platformer.jpg",
 };
+
+/**
+ * Section furniture. Each section opens the same way: an index tag, the
+ * heading, and a note scribbled in the margin. Notes are asides, not claims.
+ */
+export const NOTES = {
+  deck: "the gold one is the one I'd frame",
+  work: "ask me about the one-column fix",
+  projects: "five people both times. I took the backend both times",
+  demos: "these are the real sites, go poke them",
+  about: "press the keys",
+  contact: "quicker than the phone box",
+};
+
+/** Hazard tape under the deck: the credentials a recruiter would scan for. */
+export const TAPE = [
+  "Winner, Finnovate Hackathon 2026",
+  "CEO and Co-founder, Black Reef",
+  "Judge's Choice, Build with Gemma",
+  "2 client sites live",
+  "1st Runner-Up, Middlesex Speed Coding",
+  "a First in every graded module",
+  "placement from summer 2027",
+];

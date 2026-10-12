@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import type { CARDS } from "@/data/content";
+import { CARDS } from "@/data/content";
 import CardArt from "./CardArt";
 
 export type CardData = (typeof CARDS)[number];
@@ -73,6 +73,15 @@ const Card = forwardRef<CardHandle, Props>(function Card(
     setTilt(((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100);
   };
   const onLeave = () => interactive && setTilt(50, 50, 0);
+  const serial = `No. ${String(CARDS.findIndex((c) => c.id === card.id) + 1).padStart(2, "0")} / ${String(CARDS.length).padStart(2, "0")}`;
+  const screws = (
+    <span className="screws" aria-hidden>
+      <i />
+      <i />
+      <i />
+      <i />
+    </span>
+  );
 
   return (
     <div
@@ -116,14 +125,23 @@ const Card = forwardRef<CardHandle, Props>(function Card(
           </dl>
           <div className="card-foot">
             <span>{card.badge}</span>
-            <span>{RARITY_LABEL[card.rarity]}</span>
+            <span className="card-serial">{serial}</span>
           </div>
+          {screws}
           <div className="foil" aria-hidden />
+          <div className="sheen" aria-hidden />
           <div className="glare" aria-hidden />
         </div>
         <div className="card-face card-back">
           <div className="back-pattern" aria-hidden />
+          <span className="back-mono" aria-hidden>
+            KJ
+          </span>
+          {screws}
           <div className="back-body">
+            <p className="back-serial">
+              {RARITY_LABEL[card.rarity]} · {serial}
+            </p>
             <p className="back-name">{card.name}</p>
             <p className="back-text">{card.back}</p>
             {card.links && (
@@ -136,6 +154,7 @@ const Card = forwardRef<CardHandle, Props>(function Card(
               </p>
             )}
           </div>
+          <div className="sheen" aria-hidden />
           <div className="glare" aria-hidden />
         </div>
       </div>

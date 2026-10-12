@@ -15,7 +15,7 @@ type Msg = { from: string; text: string; scam: boolean; tell: string };
 const MESSAGES: Msg[] = [
   {
     from: "MCB",
-    text: "Ou kont inn bloke. Pou debloke li imedyatman, klik lor https://mcb-secure.top/verify ek rant ou kod OTP.",
+    text: "Your account has been blocked. To unblock it immediately, click https://mcb-secure.top/verify and enter your OTP code.",
     scam: true,
     tell: "Banks never ask for your OTP, and mcb-secure.top is not mcb.mu.",
   },
@@ -57,7 +57,7 @@ const MESSAGES: Msg[] = [
   },
   {
     from: "SBM Bank",
-    text: "Cher client, votre compte sera suspendu dans 24h. Confirmez votre code PIN immédiatement pour éviter le blocage.",
+    text: "Dear customer, your account will be suspended in 24 hours. Confirm your PIN immediately to avoid the block.",
     scam: true,
     tell: "Threat, deadline, and a request for your PIN. All three at once is never real.",
   },

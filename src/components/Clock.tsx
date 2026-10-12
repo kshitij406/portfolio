@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAnomalies } from "@/lib/anomalies";
 
-// Labelled Canterbury, but it starts out reading East Africa Time: the clock
-// still thinks I'm on the internship in Dar es Salaam. Clicking it fixes it.
+// Local time in Canterbury. Rendered empty on the server so it can't mismatch.
 export default function Clock() {
-  const { found, flag } = useAnomalies();
-  const fixed = found.has("clock");
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -16,25 +12,18 @@ export default function Clock() {
     return () => clearInterval(id);
   }, []);
 
-  const zone = fixed ? "Europe/London" : "Africa/Dar_es_Salaam";
   const fmt = (opts: Intl.DateTimeFormatOptions) =>
-    now ? new Intl.DateTimeFormat("en-GB", { timeZone: zone, ...opts }).format(now) : "";
-  const time = fmt({ hour: "2-digit", minute: "2-digit" });
-  const abbr = now
-    ? new Intl.DateTimeFormat("en-GB", { timeZone: zone, timeZoneName: "short" })
-        .formatToParts(now)
-        .find((p) => p.type === "timeZoneName")?.value
-    : "";
+    now ? new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", ...opts }) : null;
+  const time = fmt({ hour: "2-digit", minute: "2-digit" })?.format(now!);
+  // GMT in winter, BST in summer.
+  const zone = fmt({ timeZoneName: "short" })
+    ?.formatToParts(now!)
+    .find((p) => p.type === "timeZoneName")?.value;
 
   return (
-    <button
-      type="button"
-      className={`clock${fixed ? " clock-fixed" : ""}`}
-      onClick={() => flag("clock")}
-      title={fixed ? "Canterbury time, correctly this time" : undefined}
-    >
+    <span className="clock">
       <span className="clock-dot" aria-hidden />
-      Canterbury, {time || "--:--"} <span className="clock-zone">{fixed ? abbr : "EAT"}</span>
-    </button>
+      Canterbury, {time || "--:--"} <span className="clock-zone">{zone || "UK"}</span>
+    </span>
   );
 }

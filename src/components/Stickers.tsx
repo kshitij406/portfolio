@@ -3,15 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Stickers on the hero, the personal side in one glance. Each one can be
- * peeled up and dragged anywhere in the hero. A tap without dragging shows
- * what it's about. Positions are percentages of the hero so they survive a
- * resize; phones get a smaller, tidier set of positions.
+ * Stickers, the personal side in one glance. The hero has the big sheet and
+ * every section header gets a few of its own. Each one can be peeled up and
+ * dragged around its patch of page; a tap without dragging shows what it's
+ * about, right next to it. Positions are percentages of the layer so they
+ * survive a resize; phones get a smaller, tidier set of positions.
  */
 
-type S = { id: string; label: string; caption: string; x: number; y: number; mx: number; my: number; r: number; w: number };
+export type S = { id: string; label: string; caption: string; x: number; y: number; mx: number; my: number; r: number; w: number };
 
-const STICKERS: S[] = [
+export const HERO_STICKERS: S[] = [
   { id: "mask", label: "Dive mask", caption: "I dive. Tanzanian coast first, Mauritius after.", x: 76, y: 9, mx: 16, my: 16, r: -10, w: 108 },
   { id: "uk", label: "Union Jack", caption: "The UK, since September 2026. Second year at Kent.", x: 92, y: 14, mx: 50, my: 12, r: 7, w: 96 },
   { id: "mu", label: "Mauritius flag", caption: "Mauritius: first year of uni, both hackathons, first clients.", x: 70, y: 25, mx: 84, my: 16, r: -6, w: 86 },
@@ -23,7 +24,40 @@ const STICKERS: S[] = [
   { id: "film", label: "Film clapperboard", caption: "Every film I watch goes on Letterboxd.", x: 96, y: 60, mx: 85, my: 85, r: -12, w: 76 },
 ];
 
-export default function Stickers() {
+// Section sets sit in the empty space to the right of each heading.
+export const SECTION_STICKERS: Record<string, S[]> = {
+  deck: [
+    { id: "lens", label: "Magnifying glass", caption: "Look closer. Everything on this page rewards it.", x: 78, y: 30, mx: 20, my: 50, r: -12, w: 104 },
+    { id: "star", label: "Gold star", caption: "One legendary in the deck. Rarity follows real results, not taste.", x: 92, y: 62, mx: 62, my: 50, r: 10, w: 70 },
+  ],
+  work: [
+    { id: "bug", label: "A bug", caption: "Found one. It was eating one punch in six.", x: 74, y: 28, mx: 18, my: 50, r: 14, w: 86 },
+    { id: "duck", label: "Rubber duck", caption: "Debugging partner. Never interrupts.", x: 90, y: 58, mx: 52, my: 50, r: -8, w: 92 },
+    { id: "hardhat", label: "Hard hat", caption: "Two internships in Dar es Salaam. Both shipped.", x: 66, y: 74, mx: 80, my: 50, r: 6, w: 84 },
+  ],
+  projects: [
+    { id: "lock", label: "Padlock", caption: "Speed coding: 13 locked problems. Nobody opened more than 6. We opened 6.", x: 76, y: 24, mx: 18, my: 50, r: -10, w: 66 },
+    { id: "wave", label: "A wave", caption: "2.3 million square kilometres of sea. BlueNet keeps an eye on it.", x: 92, y: 46, mx: 52, my: 50, r: 6, w: 110 },
+    { id: "trophy", label: "Trophy", caption: "Finnovate 2026. Winner. 72 hours, five people.", x: 72, y: 72, mx: 80, my: 50, r: 8, w: 76 },
+  ],
+  demos: [
+    { id: "cursor", label: "Mouse pointer", caption: "Go on, click one. They're live.", x: 82, y: 36, mx: 30, my: 50, r: -14, w: 62 },
+    { id: "pad2", label: "Game controller", caption: "There's a playable game down there. Arrow keys.", x: 94, y: 66, mx: 70, my: 50, r: 9, w: 96 },
+  ],
+  about: [
+    { id: "hello", label: "Hello my name is sticker", caption: "Kshitij. Rhymes with nothing. Kxitiz online.", x: 76, y: 30, mx: 26, my: 50, r: -6, w: 132 },
+    { id: "fedora", label: "Fedora hat", caption: "Fedora with KDE on the laptop. The hat is a pun.", x: 92, y: 64, mx: 76, my: 50, r: 10, w: 100 },
+  ],
+  contact: [
+    { id: "envelope", label: "Envelope", caption: "Email is the quickest way. I answer.", x: 80, y: 30, mx: 24, my: 50, r: 8, w: 104 },
+    { id: "plane", label: "Paper plane", caption: "Three countries so far. Next stop: a placement, summer 2027.", x: 94, y: 66, mx: 74, my: 50, r: -12, w: 92 },
+  ],
+};
+
+// Takes a section id rather than the array: server components can render
+// this, but can't read plain values out of a client module.
+export default function Stickers({ section, className = "" }: { section?: string; className?: string }) {
+  const set = (section && SECTION_STICKERS[section]) || HERO_STICKERS;
   const [pos, setPos] = useState<Record<string, { x: number; y: number; r: number }>>({});
   const [lifted, setLifted] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
@@ -58,6 +92,7 @@ export default function Stickers() {
     const p = at(s);
     drag.current = { id: s.id, sx: e.clientX, sy: e.clientY, ox: p.x, oy: p.y, moved: false };
     setLifted(s.id);
+    setCaption(null);
     topZ.current += 1;
     setZ((m) => ({ ...m, [s.id]: topZ.current }));
   };
@@ -81,11 +116,12 @@ export default function Stickers() {
     else setPos((m) => (m[s.id] ? { ...m, [s.id]: { ...m[s.id], r: s.r + (Math.random() - 0.5) * 10 } } : m));
   };
 
-  const cap = STICKERS.find((s) => s.id === caption);
+  const cap = set.find((s) => s.id === caption);
+  const cp = cap ? at(cap) : null;
 
   return (
-    <div className="stickers" ref={area}>
-      {STICKERS.map((s, i) => {
+    <div className={`stickers ${className}`} ref={area}>
+      {set.map((s, i) => {
         const p = at(s);
         return (
           <button
@@ -111,14 +147,18 @@ export default function Stickers() {
           </button>
         );
       })}
-      <p className={`sticker-caption${cap ? " show" : ""}`} role="status">
+      <p
+        className={`sticker-caption${cap ? " show" : ""}`}
+        role="status"
+        style={cp ? { left: `${Math.max(12, Math.min(88, cp.x))}%`, top: `${cp.y}%` } : undefined}
+      >
         {cap?.caption}
       </p>
     </div>
   );
 }
 
-function StickerArt({ id }: { id: string }) {
+export function StickerArt({ id }: { id: string }) {
   switch (id) {
     case "mask":
       return (
@@ -262,6 +302,187 @@ function StickerArt({ id }: { id: string }) {
           <rect x="14" y="40" width="40" height="6" rx="3" fill="#ffc63d" />
           <rect x="14" y="54" width="60" height="6" rx="3" fill="#4d5d69" />
           <rect x="14" y="66" width="30" height="6" rx="3" fill="#4d5d69" />
+        </svg>
+      );
+    case "pad2":
+      return <StickerArt id="pad" />;
+    case "lens":
+      return (
+        <svg viewBox="0 0 120 120">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <path d="M74 74 L106 106" stroke="#6b4b2a" strokeWidth="16" strokeLinecap="round" />
+            <circle cx="48" cy="48" r="36" fill="#cfe6f0" />
+          </g>
+          <circle cx="48" cy="48" r="36" fill="none" stroke="#0f1d2c" strokeWidth="7" />
+          <path d="M28 40 q6 -14 22 -16" stroke="#fff" strokeWidth="6" fill="none" strokeLinecap="round" />
+          <text x="48" y="62" textAnchor="middle" fontSize="34" fontWeight="800" fill="#d01f6b" fontFamily="system-ui">
+            і
+          </text>
+        </svg>
+      );
+    case "star":
+      return (
+        <svg viewBox="0 0 100 96">
+          <path
+            d="M50 6 L62 36 L94 38 L69 58 L78 90 L50 72 L22 90 L31 58 L6 38 L38 36z"
+            fill="#ffc63d"
+            stroke="#fff"
+            strokeWidth="6"
+            strokeLinejoin="round"
+            paintOrder="stroke"
+          />
+          <path d="M50 22 L56 40 L74 41" stroke="#fff3c4" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <circle cx="40" cy="54" r="3" fill="#0f1d2c" />
+          <circle cx="60" cy="54" r="3" fill="#0f1d2c" />
+          <path d="M42 64 q8 6 16 0" stroke="#0f1d2c" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </svg>
+      );
+    case "bug":
+      return (
+        <svg viewBox="0 0 100 100">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke" strokeLinecap="round">
+            <g stroke="#0f1d2c" strokeWidth="4">
+              <path d="M30 44 L12 36 M28 58 L10 60 M32 72 L16 84 M70 44 L88 36 M72 58 L90 60 M68 72 L84 84 M42 22 L34 8 M58 22 L66 8" />
+            </g>
+            <ellipse cx="50" cy="60" rx="24" ry="30" fill="#d01f6b" />
+            <circle cx="50" cy="28" r="12" fill="#0f1d2c" />
+          </g>
+          <path d="M50 32 V90" stroke="#0f1d2c" strokeWidth="3" />
+          <circle cx="40" cy="54" r="5" fill="#0f1d2c" />
+          <circle cx="60" cy="68" r="5" fill="#0f1d2c" />
+          <circle cx="42" cy="76" r="4" fill="#0f1d2c" />
+          <circle cx="45" cy="26" r="2.5" fill="#fff" />
+          <circle cx="55" cy="26" r="2.5" fill="#fff" />
+        </svg>
+      );
+    case "duck":
+      return (
+        <svg viewBox="0 0 110 96">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <path d="M14 58 Q14 86 52 86 Q96 86 96 60 Q96 44 80 44 Q70 44 66 50 Q60 46 50 48 Q30 40 14 58z" fill="#ffc63d" />
+            <circle cx="40" cy="34" r="22" fill="#ffc63d" />
+            <path d="M18 34 Q4 34 6 42 Q16 46 26 40z" fill="#f2832b" />
+          </g>
+          <circle cx="36" cy="28" r="4" fill="#0f1d2c" />
+          <circle cx="37.5" cy="26.5" r="1.3" fill="#fff" />
+          <path d="M58 60 Q72 72 86 58" stroke="#e0a520" strokeWidth="4" fill="none" strokeLinecap="round" />
+        </svg>
+      );
+    case "hardhat":
+      return (
+        <svg viewBox="0 0 110 80">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <path d="M6 60 H104 V68 Q104 72 98 72 H12 Q6 72 6 68z" fill="#e0a520" />
+            <path d="M18 60 Q18 18 55 16 Q92 18 92 60z" fill="#ffc63d" />
+          </g>
+          <path d="M48 17 H62 V60 H48z" fill="#e0a520" />
+          <path d="M28 46 Q30 30 44 24" stroke="#fff3c4" strokeWidth="4" fill="none" strokeLinecap="round" />
+        </svg>
+      );
+    case "lock":
+      return (
+        <svg viewBox="0 0 70 96">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <path d="M18 44 V28 a17 17 0 0 1 34 0 v6" fill="none" stroke="#9aa7b0" strokeWidth="9" />
+            <rect x="6" y="42" width="58" height="48" rx="8" fill="#ffc63d" />
+          </g>
+          <path d="M18 44 V28 a17 17 0 0 1 34 0 v6" fill="none" stroke="#9aa7b0" strokeWidth="8" />
+          <circle cx="35" cy="62" r="6" fill="#0f1d2c" />
+          <path d="M35 64 V76" stroke="#0f1d2c" strokeWidth="5" strokeLinecap="round" />        </svg>
+      );
+    case "wave":
+      return (
+        <svg viewBox="0 0 130 90">
+          <path
+            d="M6 84 V58 Q20 20 58 14 Q96 10 104 40 Q86 30 74 42 Q90 46 92 60 Q104 72 124 66 V84z"
+            fill="#24838a"
+            stroke="#fff"
+            strokeWidth="6"
+            strokeLinejoin="round"
+            paintOrder="stroke"
+          />
+          <path d="M20 58 Q36 30 64 26" stroke="#7fe0e3" strokeWidth="5" fill="none" strokeLinecap="round" />
+          <path d="M74 42 Q84 36 96 40" stroke="#fff" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <path d="M14 74 Q30 68 46 74 T78 74 T110 74" stroke="#4fc1c6" strokeWidth="4" fill="none" />
+        </svg>
+      );
+    case "trophy":
+      return (
+        <svg viewBox="0 0 90 100">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <path d="M20 14 Q4 14 6 30 Q8 44 26 46" fill="none" stroke="#c9962b" strokeWidth="6" />
+            <path d="M70 14 Q86 14 84 30 Q82 44 64 46" fill="none" stroke="#c9962b" strokeWidth="6" />
+            <path d="M18 8 H72 V30 Q72 58 45 60 Q18 58 18 30z" fill="#ffc63d" />
+            <rect x="24" y="78" width="42" height="16" rx="3" fill="#6b4b2a" />
+          </g>
+          <path d="M20 14 Q4 14 6 30 Q8 44 26 46 M70 14 Q86 14 84 30 Q82 44 64 46" fill="none" stroke="#c9962b" strokeWidth="5" />
+          <rect x="39" y="58" width="12" height="22" fill="#c9962b" />
+          <path d="M30 16 V32 Q30 44 40 48" stroke="#fff3c4" strokeWidth="4" fill="none" strokeLinecap="round" />
+          <text x="45" y="90" textAnchor="middle" fontSize="9" fontWeight="800" fill="#ffc63d" fontFamily="system-ui">
+            2026
+          </text>
+        </svg>
+      );
+    case "cursor":
+      return (
+        <svg viewBox="0 0 70 100">
+          <path
+            d="M8 6 L8 80 L26 64 L38 92 L52 86 L40 58 L64 58z"
+            fill="#0f1d2c"
+            stroke="#fff"
+            strokeWidth="6"
+            strokeLinejoin="round"
+            paintOrder="stroke"
+          />
+        </svg>
+      );
+    case "hello":
+      return (
+        <svg viewBox="0 0 150 100">
+          <rect x="4" y="4" width="142" height="92" rx="12" fill="#d0202f" stroke="#fff" strokeWidth="5" paintOrder="stroke" />
+          <text x="75" y="26" textAnchor="middle" fontSize="18" fontWeight="800" fill="#fff" fontFamily="system-ui">
+            HELLO
+          </text>
+          <text x="75" y="39" textAnchor="middle" fontSize="9" fontWeight="600" fill="#fff" fontFamily="system-ui">
+            my name is
+          </text>
+          <rect x="12" y="46" width="126" height="40" rx="3" fill="#fff" />
+          <text x="75" y="76" textAnchor="middle" fontSize="24" fill="#0f1d2c" style={{ fontFamily: "var(--f-hand), cursive" }}>
+            Kshitij
+          </text>
+        </svg>
+      );
+    case "fedora":
+      return (
+        <svg viewBox="0 0 120 70">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <ellipse cx="60" cy="54" rx="54" ry="12" fill="#3c2f2a" />
+            <path d="M28 54 Q26 18 44 12 Q52 18 60 14 Q68 18 76 12 Q94 18 92 54z" fill="#4a3a33" />
+          </g>
+          <path d="M28 44 Q60 50 92 44 L92 52 Q60 58 28 52z" fill="#3b78c2" />
+          <path d="M60 14 Q58 26 60 38" stroke="#2e231f" strokeWidth="3" fill="none" />
+        </svg>
+      );
+    case "envelope":
+      return (
+        <svg viewBox="0 0 120 84">
+          <g stroke="#fff" strokeWidth="6" paintOrder="stroke">
+            <rect x="6" y="8" width="108" height="70" rx="6" fill="#f4f7f5" />
+          </g>
+          <path d="M8 12 L60 50 L112 12" stroke="#0f1d2c" strokeWidth="3" fill="none" />
+          <rect x="6" y="8" width="108" height="70" rx="6" fill="none" stroke="#0f1d2c" strokeWidth="3" />
+          <rect x="86" y="54" width="20" height="16" fill="#ffc63d" stroke="#0f1d2c" strokeWidth="2" />
+          <circle cx="60" cy="50" r="9" fill="#d01f6b" />
+        </svg>
+      );
+    case "plane":
+      return (
+        <svg viewBox="0 0 120 90">
+          <g stroke="#fff" strokeWidth="6" strokeLinejoin="round" paintOrder="stroke">
+            <path d="M6 44 L114 6 L80 84 L58 58z" fill="#f4f7f5" />
+          </g>
+          <path d="M6 44 L114 6 L80 84 L58 58z M58 58 L114 6 M58 58 L56 80 L70 66" fill="none" stroke="#0f1d2c" strokeWidth="3" strokeLinejoin="round" />
+          <path d="M58 58 L56 80 L70 66z" fill="#cfd8dd" />
         </svg>
       );
     default:

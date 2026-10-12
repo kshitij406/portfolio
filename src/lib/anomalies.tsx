@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 /**
- * Six things on the page are quietly wrong. Each one is a small version of a
+ * Five things on the page are quietly wrong. Each one is a small version of a
  * real fault from the work below it. Finding them is optional, and remembered
  * per browser.
  */
@@ -14,13 +14,6 @@ export const ANOMALIES = [
     hint: "Not every letter in my name is the letter it looks like.",
     found: "A Cyrillic і (U+0456) hiding in a Latin name. FraudLens catches mсb.mu the same way.",
     points: 20,
-  },
-  {
-    id: "clock",
-    name: "Wrong time zone",
-    hint: "Somebody's clock never left Dar es Salaam.",
-    found: "The clock said Canterbury but ran on East Africa Time. Time zones are always the bug.",
-    points: 10,
   },
   {
     id: "punches",
@@ -48,7 +41,7 @@ export const ANOMALIES = [
     name: "Two goroutines, waiting forever",
     hint: "Two workers each hold what the other one needs.",
     found: "Deadlock broken by taking the locks in a fixed order.",
-    points: 10,
+    points: 20,
   },
 ] as const;
 

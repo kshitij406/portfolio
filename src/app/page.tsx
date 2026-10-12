@@ -11,18 +11,57 @@ import ScamGame from "@/components/ScamGame";
 import Patrol from "@/components/Patrol";
 import Journey from "@/components/Journey";
 import Demos from "@/components/Demos";
+import SecHead from "@/components/SecHead";
+import Tape from "@/components/Tape";
+import { StickerArt } from "@/components/Stickers";
 import {
+  BLACKREEF,
   EDUCATION,
-  LANGUAGES,
   LINKS,
+  NOTES,
   OFF_CLOCK,
   PROFILE,
-  SKILLS,
   SMALLER,
+  TAPE,
   WORK,
 } from "@/data/content";
+import Keys from "@/components/Keys";
 
 const ext = { target: "_blank", rel: "noreferrer" } as const;
+
+// A short, stable fake commit hash per line, so the log reads like one.
+const hash = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return (h >>> 0).toString(16).padStart(8, "0").slice(0, 7);
+};
+
+function Log({ points }: { points: string[] }) {
+  return (
+    <ol className="log">
+      {points.map((p) => (
+        <li key={p}>
+          <code className="log-hash">{hash(p)}</code>
+          <span>{p}</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Tags({ items }: { items: string[] }) {
+  return (
+    <p className="tags">
+      {items.map((t) => (
+        <span className="kc kc-sm" key={t}>
+          {t}
+        </span>
+      ))}
+    </p>
+  );
+}
+
+const POLAROID_ART = ["mask", "pad", "fedora", "film"];
 
 export default function Page() {
   const [itl, cubestone] = WORK;
@@ -35,17 +74,39 @@ export default function Page() {
 
         {/* The deck */}
         <section className="sec deck-sec" id="deck" aria-labelledby="deck-h">
-          <h2 className="sec-h" id="deck-h">
+          <SecHead id="deck" n={1} tag="The deck" note={NOTES.deck}>
             Pick a card. Each one is something I built or won.
-          </h2>
+          </SecHead>
           <Deck />
         </section>
 
+        <Tape items={TAPE} tone="sodium" tilt={-2} />
+
         {/* Work */}
         <section className="sec" id="work" aria-labelledby="work-h">
-          <h2 className="sec-h" id="work-h">
-            Two internships, both in Dar es Salaam, both shipped.
-          </h2>
+          <SecHead id="work" n={2} tag="Work" note={NOTES.work}>
+            The company I run, and the two internships before it.
+          </SecHead>
+
+          <article className="job">
+            <aside className="job-meta">
+              <h3>{BLACKREEF.company}</h3>
+              <p>{BLACKREEF.role}</p>
+              <p className="muted">
+                {BLACKREEF.period}, {BLACKREEF.place}
+              </p>
+            </aside>
+            <div className="job-body">
+              <p className="lede">{BLACKREEF.lede}</p>
+              <Log points={BLACKREEF.points} />
+              <Tags items={BLACKREEF.stack} />
+              <p className="stack">
+                <a href={BLACKREEF.href} {...ext}>
+                  teamblackreef.com
+                </a>
+              </p>
+            </div>
+          </article>
 
           <article className="job">
             <aside className="job-meta">
@@ -69,12 +130,8 @@ export default function Page() {
               </div>
               <PunchDemo />
 
-              <ul className="points">
-                {itl.points.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-              <p className="stack">{itl.stack.join(", ")}</p>
+              <Log points={itl.points} />
+              <Tags items={itl.stack} />
             </div>
           </article>
 
@@ -88,13 +145,9 @@ export default function Page() {
             </aside>
             <div className="job-body">
               <p className="lede">{cubestone.lede}</p>
-              <ul className="points">
-                {cubestone.points.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
+              <Log points={cubestone.points} />
+              <Tags items={cubestone.stack} />
               <p className="stack">
-                {cubestone.stack.join(", ")}.{" "}
                 <a href={cubestone.href} {...ext}>
                   Read the app code
                 </a>
@@ -105,9 +158,9 @@ export default function Page() {
 
         {/* Projects */}
         <section className="sec" id="projects" aria-labelledby="projects-h">
-          <h2 className="sec-h" id="projects-h">
+          <SecHead id="projects" n={3} tag="Projects" note={NOTES.projects}>
             Two hackathon teams I led, and one server I built to understand concurrency.
-          </h2>
+          </SecHead>
 
           <article className="project">
             <header className="project-head">
@@ -226,12 +279,11 @@ export default function Page() {
           </div>
         </section>
 
-
         {/* Demos */}
         <section className="sec" id="demos" aria-labelledby="demos-h">
-          <h2 className="sec-h" id="demos-h">
+          <SecHead id="demos" n={4} tag="Try it" note={NOTES.demos}>
             Don&rsquo;t take my word for it. Try the real things.
-          </h2>
+          </SecHead>
           <Demos />
         </section>
 
@@ -239,36 +291,28 @@ export default function Page() {
 
         {/* About */}
         <section className="sec" id="about" aria-labelledby="about-h">
-          <h2 className="sec-h" id="about-h">
+          <SecHead id="about" n={6} tag="About" note={NOTES.about}>
             Second year at Kent, and the rest of me.
-          </h2>
+          </SecHead>
           <div className="about">
             <div className="edu">
               {EDUCATION.map((e) => (
-                <div key={e.school} className="edu-item">
+                <div key={e.course} className="edu-item">
                   <h3>{e.school}</h3>
                   <p>
-                    {e.course}, {e.period}
+                    {e.course} <span className="edu-period">{e.period}</span>
                   </p>
                   <p className="muted">{e.note}</p>
                 </div>
               ))}
-              <dl className="skills">
-                {SKILLS.map((s) => (
-                  <div key={s.group}>
-                    <dt>{s.group}</dt>
-                    <dd>{s.items.join(", ")}</dd>
-                  </div>
-                ))}
-                <div>
-                  <dt>Spoken</dt>
-                  <dd>{LANGUAGES}</dd>
-                </div>
-              </dl>
+              <Keys />
             </div>
             <ul className="offclock">
-              {OFF_CLOCK.map((o) => (
-                <li key={o.title}>
+              {OFF_CLOCK.map((o, i) => (
+                <li key={o.title} className="polaroid" style={{ ["--r" as string]: `${[-3, 2.5, -1.5, 3][i % 4]}deg` }}>
+                  <div className="polaroid-pic" aria-hidden>
+                    <StickerArt id={POLAROID_ART[i % POLAROID_ART.length]} />
+                  </div>
                   <h3>{o.title}</h3>
                   <p>{o.body}</p>
                 </li>
@@ -279,9 +323,9 @@ export default function Page() {
 
         {/* Contact */}
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
-          <h2 className="contact-h" id="contact-h">
-            {PROFILE.availability}. Write to me.
-          </h2>
+          <SecHead id="contact" n={7} tag="Contact" note={NOTES.contact}>
+            {PROFILE.availability.replace("12-month", "12\u2011month")}. Write to me.
+          </SecHead>
           <CopyEmail email={PROFILE.email} />
           <ul className="elsewhere">
             <li>

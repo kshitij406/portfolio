@@ -72,6 +72,9 @@ export default function Journey() {
     <section className="journey" id="journey" ref={sec} aria-labelledby="journey-h">
       <div className="journey-sticky">
         <div className="journey-text">
+          <p className="kicker" aria-hidden>
+            <span className="kicker-n">05</span>Journey
+          </p>
           <h2 className="sec-h" id="journey-h">
             Three places so far.
           </h2>

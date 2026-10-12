@@ -33,10 +33,14 @@ The anomalies are for technical visitors. The rest is for anyone:
 | Piece | Component | What it does |
 | --- | --- | --- |
 | Stickers | `Stickers` | Six hand-drawn stickers on the hero. Peel, drag, tap for a caption |
-| The deck | `deck/Deck`, `deck/Card` | Nine collectible cards with holographic foil by rarity. Fanned hand, shuffle, pick one up, flip it. Swipeable on phones |
+| The deck | `deck/Deck`, `deck/Card` | Ten collectible metal cards (gold, anodised magenta, teal steel, gunmetal by rarity) with screws, a moving sheen and foil on the top two. Fanned hand, shuffle, pick one up, flip it. Swipeable on phones |
 | Scam or legit | `ScamGame` | Swipe eight Mauritian messages. FraudLens's rules take the same test at the end |
 | Patrol | `Patrol` | Full-screen arcade game. Drive the coast guard boat to vessels that go dark |
 | Journey | `Journey` | Scroll-driven route from Dar es Salaam to Mauritius to Canterbury |
+| Section headers | `SecHead` | Index tag, heading, a handwritten margin note, and a few draggable stickers per section (`SECTION_STICKERS`) |
+| Hazard tape | `Tape` | Tickers between sections. Drift on their own, get shoved by scrolling, hold still on hover |
+| Depth gauge | `DepthGauge` | The page as one dive: depth in metres, sections marked on the scale, bubbles on the way down |
+| Keyboard | `Keys` | Skills as keycaps. Press one to see where on the page it was used, found by searching the copy |
 
 ## Stack
 

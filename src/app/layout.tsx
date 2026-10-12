@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Funnel_Display, Funnel_Sans, Geist_Mono } from "next/font/google";
+import { Funnel_Display, Funnel_Sans, IBM_Plex_Mono, Kalam } from "next/font/google";
 import { AnomalyProvider } from "@/lib/anomalies";
 import SmoothScroll from "@/components/SmoothScroll";
 import CaseFile from "@/components/CaseFile";
+import DepthGauge from "@/components/DepthGauge";
 import "./globals.css";
 
 const display = Funnel_Display({
@@ -20,15 +21,23 @@ const sans = Funnel_Sans({
 });
 
 // Only for real code and code points, never for decorative labels.
-const mono = Geist_Mono({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--f-mono",
   weight: ["400", "500"],
   display: "swap",
 });
 
+// Margin notes and sticker handwriting only.
+const hand = Kalam({
+  subsets: ["latin"],
+  variable: "--f-hand",
+  weight: ["700"],
+  display: "swap",
+});
+
 const description =
-  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent. Two internships, two hackathon wins, and a habit of finding the bug nobody noticed.";
+  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent, CEO and co-founder of Black Reef. Two internships, two hackathon wins, and a habit of finding the bug nobody noticed.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kshitijj.me"),
@@ -57,14 +66,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-GB"
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${hand.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
-      <body>
+      {/* Extensions like Grammarly stamp attributes on <body> before hydration. */}
+      <body suppressHydrationWarning>
         <AnomalyProvider>
           <SmoothScroll />
+          <DepthGauge />
           {children}
           <CaseFile />
         </AnomalyProvider>
