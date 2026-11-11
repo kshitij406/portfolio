@@ -149,7 +149,7 @@ export default function VesselMap() {
 
     // Three patrol boats for 2.3 million square kilometres.
     for (const [px, py] of PATROLS) {
-      ctx.fillStyle = pal.cobalt;
+      ctx.fillStyle = pal.accent;
       ctx.beginPath();
       ctx.moveTo(px * w, py * h - 7);
       ctx.lineTo(px * w + 6, py * h + 5);

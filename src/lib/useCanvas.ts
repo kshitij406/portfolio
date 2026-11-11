@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export type Palette = Record<"ink" | "paper" | "muted" | "line" | "flag" | "ok" | "cobalt" | "sodium" | "sea" | "sans" | "mono", string>;
+export type Palette = Record<"ink" | "paper" | "muted" | "line" | "flag" | "ok" | "accent" | "sodium" | "sea" | "sans" | "mono", string>;
 
 export function readPalette(): Palette {
   const s = getComputedStyle(document.documentElement);
@@ -14,7 +14,7 @@ export function readPalette(): Palette {
     line: v("line"),
     flag: v("flag"),
     ok: v("ok"),
-    cobalt: v("cobalt"),
+    accent: v("accent"),
     sodium: v("sodium"),
     sea: v("sea"),
     sans: v("f-sans") || "system-ui, sans-serif",

@@ -143,7 +143,7 @@ export default function ScamCheck() {
         <ul className="scam-hits">
           {hits.length === 0 && <li className="scam-empty">No rule fired. That isn&rsquo;t proof it&rsquo;s safe.</li>}
           {hits.map((h, i) => (
-            <li key={h.code + i}>
+            <li key={h.code + i} style={{ ["--i" as string]: i }}>
               <span className="pts">+{h.points}</span>
               <span>
                 {h.label}

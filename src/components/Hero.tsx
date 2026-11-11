@@ -149,8 +149,8 @@ export default function Hero() {
           </p>
           <p>{PROFILE.availability}.</p>
           <p className="hero-links">
+            <a className="btn btn-accent" href={`mailto:${PROFILE.email}`}>Email me</a>
             <a href="/Kshitij_Jha_CV.pdf" target="_blank" rel="noreferrer">Read the CV</a>
-            <a href={`mailto:${PROFILE.email}`}>Email me</a>
           </p>
         </div>
       </div>

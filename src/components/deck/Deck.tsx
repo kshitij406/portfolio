@@ -326,28 +326,56 @@ function Inspector({
   onStep: (d: number) => void;
 }) {
   const [flipped, setFlipped] = useState(false);
-  const [leaving, setLeaving] = useState(false);
+  const [leaving, setLeaving] = useState<false | "fade" | "return">(false);
   const handle = useRef<CardHandle>(null);
   const stage = useRef<HTMLDivElement>(null);
   const first = useRef(true);
+  const openedAs = useRef(index);
   const closeBtn = useRef<HTMLButtonElement>(null);
 
+  // Where the stage sits relative to the card's slot in the hand, with a
+  // midpoint lifted off the straight line so the card travels on an arc.
+  const path = (el: HTMLElement, r: DOMRect) => {
+    const to = el.getBoundingClientRect();
+    const dx = r.left + r.width / 2 - (to.left + to.width / 2);
+    const dy = r.top + r.height / 2 - (to.top + to.height / 2);
+    const s = r.width / to.width;
+    const lift = Math.min(140, Math.hypot(dx, dy) * 0.25);
+    return {
+      slot: `translate(${dx}px, ${dy}px) scale(${s}) rotate(-6deg)`,
+      mid: `translate(${dx * 0.5}px, ${dy * 0.5 - lift}px) scale(${(1 + s) / 2}) rotate(-3deg)`,
+    };
+  };
+
   const close = useCallback(() => {
-    setLeaving(true);
-    setTimeout(onClose, 260);
-  }, [onClose]);
+    // Put it back where it came from, if it's still the card that was picked up.
+    const back = from && index === openedAs.current && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!back) {
+      setLeaving("fade");
+      setTimeout(onClose, 240);
+      return;
+    }
+    setLeaving("return");
+    setFlipped(false);
+    const el = stage.current!;
+    const p = path(el, from);
+    // 80% of the 650ms entrance, easing in because it's leaving.
+    el.animate([{ transform: "none" }, { transform: p.mid, offset: 0.5 }, { transform: p.slot }], {
+      duration: 520,
+      easing: "cubic-bezier(0.55, 0, 1, 0.45)",
+      fill: "forwards",
+    }).finished.then(onClose);
+  }, [onClose, index, from]);
 
   // Fly in from the card's place in the hand (first open only).
   useEffect(() => {
     const el = stage.current!;
     if (first.current && from && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      const to = el.getBoundingClientRect();
-      const dx = from.left + from.width / 2 - (to.left + to.width / 2);
-      const dy = from.top + from.height / 2 - (to.top + to.height / 2);
-      const s = from.width / to.width;
+      const p = path(el, from);
       el.animate(
         [
-          { transform: `translate(${dx}px, ${dy}px) scale(${s}) rotate(-6deg)` },
+          { transform: p.slot },
+          { transform: p.mid, offset: 0.4 },
           { transform: "translate(0,0) scale(1.04) rotate(1deg)", offset: 0.75 },
           { transform: "none" },
         ],
@@ -399,7 +427,7 @@ function Inspector({
   const card = CARDS[index];
 
   return (
-    <div className={`inspect${leaving ? " leaving" : ""}`} onClick={close} role="dialog" aria-modal="true" aria-label={card.name}>
+    <div className={`inspect${leaving === "fade" ? " leaving" : leaving === "return" ? " returning" : ""}`} onClick={close} role="dialog" aria-modal="true" aria-label={card.name}>
       <div className="inspect-stage" ref={stage} onClick={(e) => e.stopPropagation()} onPointerMove={onTouchMove}>
         <Card ref={handle} card={card} flipped={flipped} className="card-big" onClick={() => setFlipped((f) => !f)} />
       </div>

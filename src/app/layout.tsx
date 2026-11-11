@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Funnel_Display, Funnel_Sans, IBM_Plex_Mono, Kalam } from "next/font/google";
+import { Funnel_Display, Funnel_Sans, IBM_Plex_Mono } from "next/font/google";
 import { AnomalyProvider } from "@/lib/anomalies";
 import SmoothScroll from "@/components/SmoothScroll";
 import CaseFile from "@/components/CaseFile";
-import DepthGauge from "@/components/DepthGauge";
 import "./globals.css";
 
 const display = Funnel_Display({
@@ -25,14 +24,6 @@ const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--f-mono",
   weight: ["400", "500"],
-  display: "swap",
-});
-
-// Margin notes and sticker handwriting only.
-const hand = Kalam({
-  subsets: ["latin"],
-  variable: "--f-hand",
-  weight: ["700"],
   display: "swap",
 });
 
@@ -66,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-GB"
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable} ${hand.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
@@ -75,7 +66,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body suppressHydrationWarning>
         <AnomalyProvider>
           <SmoothScroll />
-          <DepthGauge />
           {children}
           <CaseFile />
         </AnomalyProvider>

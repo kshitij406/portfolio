@@ -3,11 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Stickers, the personal side in one glance. The hero has the big sheet and
- * every section header gets a few of its own. Each one can be peeled up and
- * dragged around its patch of page; a tap without dragging shows what it's
- * about, right next to it. Positions are percentages of the layer so they
- * survive a resize; phones get a smaller, tidier set of positions.
+ * Stickers, the personal side in one glance. Each one can be peeled up and
+ * dragged around the hero; a tap without dragging shows what it's about,
+ * right next to it. Positions are percentages of the layer so they survive a
+ * resize; phones get a smaller, tidier set of positions.
  */
 
 export type S = { id: string; label: string; caption: string; x: number; y: number; mx: number; my: number; r: number; w: number };
@@ -24,42 +23,22 @@ export const HERO_STICKERS: S[] = [
   { id: "film", label: "Film clapperboard", caption: "Every film I watch goes on Letterboxd.", x: 96, y: 60, mx: 85, my: 85, r: -12, w: 76 },
 ];
 
-// Section sets sit in the empty space to the right of each heading.
-export const SECTION_STICKERS: Record<string, S[]> = {
-  deck: [
-    { id: "lens", label: "Magnifying glass", caption: "Look closer. Everything on this page rewards it.", x: 78, y: 30, mx: 20, my: 50, r: -12, w: 104 },
-    { id: "star", label: "Gold star", caption: "One legendary in the deck. Rarity follows real results, not taste.", x: 92, y: 62, mx: 62, my: 50, r: 10, w: 70 },
-  ],
-  work: [
-    { id: "bug", label: "A bug", caption: "Found one. It was eating one punch in six.", x: 74, y: 28, mx: 18, my: 50, r: 14, w: 86 },
-    { id: "duck", label: "Rubber duck", caption: "Debugging partner. Never interrupts.", x: 90, y: 58, mx: 52, my: 50, r: -8, w: 92 },
-    { id: "hardhat", label: "Hard hat", caption: "Two internships in Dar es Salaam. Both shipped.", x: 66, y: 74, mx: 80, my: 50, r: 6, w: 84 },
-  ],
-  projects: [
-    { id: "lock", label: "Padlock", caption: "Speed coding: 13 locked problems. Nobody opened more than 6. We opened 6.", x: 76, y: 24, mx: 18, my: 50, r: -10, w: 66 },
-    { id: "wave", label: "A wave", caption: "2.3 million square kilometres of sea. BlueNet keeps an eye on it.", x: 92, y: 46, mx: 52, my: 50, r: 6, w: 110 },
-    { id: "trophy", label: "Trophy", caption: "Finnovate 2026. Winner. 72 hours, five people.", x: 72, y: 72, mx: 80, my: 50, r: 8, w: 76 },
-  ],
-  demos: [
-    { id: "cursor", label: "Mouse pointer", caption: "Go on, click one. They're live.", x: 82, y: 36, mx: 30, my: 50, r: -14, w: 62 },
-    { id: "pad2", label: "Game controller", caption: "There's a playable game down there. Arrow keys.", x: 94, y: 66, mx: 70, my: 50, r: 9, w: 96 },
-  ],
-  about: [
-    { id: "hello", label: "Hello my name is sticker", caption: "Kshitij. Rhymes with nothing. Kxitiz online.", x: 76, y: 30, mx: 26, my: 50, r: -6, w: 132 },
-    { id: "fedora", label: "Fedora hat", caption: "Fedora with KDE on the laptop. The hat is a pun.", x: 92, y: 64, mx: 76, my: 50, r: 10, w: 100 },
-  ],
-  contact: [
-    { id: "envelope", label: "Envelope", caption: "Email is the quickest way. I answer.", x: 80, y: 30, mx: 24, my: 50, r: 8, w: 104 },
-    { id: "plane", label: "Paper plane", caption: "Three countries so far. Next stop: a placement, summer 2027.", x: 94, y: 66, mx: 74, my: 50, r: -12, w: 92 },
-  ],
+const clamp = (v: number) => Math.max(0, Math.min(100, v));
+
+// Past the edge the sticker keeps following, but with growing resistance,
+// topping out about 8% beyond the layer.
+const rubber = (v: number) => {
+  const over = v < 0 ? -v : v - 100;
+  if (over <= 0) return v;
+  const give = 8 * (1 - Math.exp(-over / 8));
+  return v < 0 ? -give : 100 + give;
 };
 
-// Takes a section id rather than the array: server components can render
-// this, but can't read plain values out of a client module.
-export default function Stickers({ section, className = "" }: { section?: string; className?: string }) {
-  const set = (section && SECTION_STICKERS[section]) || HERO_STICKERS;
+export default function Stickers() {
+  const set = HERO_STICKERS;
   const [pos, setPos] = useState<Record<string, { x: number; y: number; r: number }>>({});
   const [lifted, setLifted] = useState<string | null>(null);
+  const [snapping, setSnapping] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
   const [z, setZ] = useState<Record<string, number>>({});
@@ -103,8 +82,8 @@ export default function Stickers({ section, className = "" }: { section?: string
     const dx = e.clientX - d.sx,
       dy = e.clientY - d.sy;
     if (Math.hypot(dx, dy) > 4) d.moved = true;
-    const x = Math.max(0, Math.min(100, d.ox + (dx / r.width) * 100));
-    const y = Math.max(0, Math.min(100, d.oy + (dy / r.height) * 100));
+    const x = rubber(d.ox + (dx / r.width) * 100);
+    const y = rubber(d.oy + (dy / r.height) * 100);
     const tilt = Math.max(-25, Math.min(25, e.movementX * 1.5));
     setPos((m) => ({ ...m, [d.id]: { x, y, r: tilt } }));
   };
@@ -112,22 +91,26 @@ export default function Stickers({ section, className = "" }: { section?: string
     const d = drag.current;
     drag.current = null;
     setLifted(null);
-    if (d && !d.moved) setCaption(s.id);
-    else setPos((m) => (m[s.id] ? { ...m, [s.id]: { ...m[s.id], r: s.r + (Math.random() - 0.5) * 10 } } : m));
+    if (d && !d.moved) return setCaption(s.id);
+    setSnapping(s.id);
+    setTimeout(() => setSnapping((v) => (v === s.id ? null : v)), 350);
+    setPos((m) =>
+      m[s.id] ? { ...m, [s.id]: { x: clamp(m[s.id].x), y: clamp(m[s.id].y), r: s.r + (Math.random() - 0.5) * 10 } } : m,
+    );
   };
 
   const cap = set.find((s) => s.id === caption);
   const cp = cap ? at(cap) : null;
 
   return (
-    <div className={`stickers ${className}`} ref={area}>
+    <div className="stickers" ref={area}>
       {set.map((s, i) => {
         const p = at(s);
         return (
           <button
             type="button"
             key={s.id}
-            className={`sticker${lifted === s.id ? " lifted" : ""}`}
+            className={`sticker${lifted === s.id ? " lifted" : ""}${snapping === s.id ? " snapping" : ""}`}
             aria-label={`${s.label}. ${s.caption}`}
             style={{
               left: `${p.x}%`,

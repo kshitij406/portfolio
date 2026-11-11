@@ -14,38 +14,18 @@ import Demos from "@/components/Demos";
 import SecHead from "@/components/SecHead";
 import Tape from "@/components/Tape";
 import { StickerArt } from "@/components/Stickers";
-import {
-  BLACKREEF,
-  EDUCATION,
-  LINKS,
-  NOTES,
-  OFF_CLOCK,
-  PROFILE,
-  SMALLER,
-  TAPE,
-  WORK,
-} from "@/data/content";
+import { BLACKREEF, EDUCATION, LINKS, OFF_CLOCK, PROFILE, SMALLER, TAPE, WORK } from "@/data/content";
 import Keys from "@/components/Keys";
 
 const ext = { target: "_blank", rel: "noreferrer" } as const;
 
-// A short, stable fake commit hash per line, so the log reads like one.
-const hash = (s: string) => {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
-  return (h >>> 0).toString(16).padStart(8, "0").slice(0, 7);
-};
-
 function Log({ points }: { points: string[] }) {
   return (
-    <ol className="log">
+    <ul className="log">
       {points.map((p) => (
-        <li key={p}>
-          <code className="log-hash">{hash(p)}</code>
-          <span>{p}</span>
-        </li>
+        <li key={p}>{p}</li>
       ))}
-    </ol>
+    </ul>
   );
 }
 
@@ -74,19 +54,15 @@ export default function Page() {
 
         {/* The deck */}
         <section className="sec deck-sec" id="deck" aria-labelledby="deck-h">
-          <SecHead id="deck" n={1} tag="The deck" note={NOTES.deck}>
-            Pick a card. Each one is something I built or won.
-          </SecHead>
+          <SecHead id="deck">Eleven things I built or won. Pick a card.</SecHead>
           <Deck />
         </section>
 
-        <Tape items={TAPE} tone="sodium" tilt={-2} />
+        <Tape items={TAPE} tone="sodium" tilt={0} />
 
         {/* Work */}
         <section className="sec" id="work" aria-labelledby="work-h">
-          <SecHead id="work" n={2} tag="Work" note={NOTES.work}>
-            The company I run, and the two internships before it.
-          </SecHead>
+          <SecHead id="work">CEO of a five&#8209;founder studio. Two internships before that.</SecHead>
 
           <article className="job">
             <aside className="job-meta">
@@ -158,9 +134,7 @@ export default function Page() {
 
         {/* Projects */}
         <section className="sec" id="projects" aria-labelledby="projects-h">
-          <SecHead id="projects" n={3} tag="Projects" note={NOTES.projects}>
-            Two hackathon teams I led, and one server I built to understand concurrency.
-          </SecHead>
+          <SecHead id="projects">Two hackathon awards as team lead, and a Go server that taught me locks.</SecHead>
 
           <article className="project">
             <header className="project-head">
@@ -281,9 +255,7 @@ export default function Page() {
 
         {/* Demos */}
         <section className="sec" id="demos" aria-labelledby="demos-h">
-          <SecHead id="demos" n={4} tag="Try it" note={NOTES.demos}>
-            Don&rsquo;t take my word for it. Try the real things.
-          </SecHead>
+          <SecHead id="demos">Three live sites and a game you can play right here.</SecHead>
           <Demos />
         </section>
 
@@ -291,16 +263,14 @@ export default function Page() {
 
         {/* About */}
         <section className="sec" id="about" aria-labelledby="about-h">
-          <SecHead id="about" n={6} tag="About" note={NOTES.about}>
-            Second year at Kent, and the rest of me.
-          </SecHead>
+          <SecHead id="about">Second year of CS at Kent, after a First in every graded module.</SecHead>
           <div className="about">
             <div className="edu">
               {EDUCATION.map((e) => (
                 <div key={e.course} className="edu-item">
                   <h3>{e.school}</h3>
                   <p>
-                    {e.course} <span className="edu-period">{e.period}</span>
+                    {e.course}, <span className="edu-period">{e.period}</span>
                   </p>
                   <p className="muted">{e.note}</p>
                 </div>
@@ -309,7 +279,7 @@ export default function Page() {
             </div>
             <ul className="offclock">
               {OFF_CLOCK.map((o, i) => (
-                <li key={o.title} className="polaroid" style={{ ["--r" as string]: `${[-3, 2.5, -1.5, 3][i % 4]}deg` }}>
+                <li key={o.title} className="polaroid">
                   <div className="polaroid-pic" aria-hidden>
                     <StickerArt id={POLAROID_ART[i % POLAROID_ART.length]} />
                   </div>
@@ -323,7 +293,7 @@ export default function Page() {
 
         {/* Contact */}
         <section className="sec contact" id="contact" aria-labelledby="contact-h">
-          <SecHead id="contact" n={7} tag="Contact" note={NOTES.contact}>
+          <SecHead id="contact">
             {PROFILE.availability.replace("12-month", "12\u2011month")}. Write to me.
           </SecHead>
           <CopyEmail email={PROFILE.email} />
@@ -346,7 +316,6 @@ export default function Page() {
 
       <footer className="foot">
         <p>Designed and built by Kshitij in Canterbury, 2026.</p>
-        <p className="muted">Next.js, two canvases, and nothing generated from a template.</p>
       </footer>
     </>
   );

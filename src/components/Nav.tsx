@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 const LINKS = [
   ["Cards", "#deck"],
@@ -19,16 +20,35 @@ export default function Nav() {
     setDark(set ? set === "dark" : matchMedia("(prefers-color-scheme: dark)").matches);
   }, []);
 
-  const toggle = () => {
+  const toggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     const next = !dark;
-    setDark(next);
     const html = document.documentElement;
-    html.classList.add("theme-anim");
-    html.dataset.theme = next ? "dark" : "light";
-    try {
-      localStorage.setItem("kj-theme", html.dataset.theme);
-    } catch {}
-    setTimeout(() => html.classList.remove("theme-anim"), 500);
+    const apply = () => {
+      flushSync(() => setDark(next));
+      html.dataset.theme = next ? "dark" : "light";
+      try {
+        localStorage.setItem("kj-theme", html.dataset.theme);
+      } catch {}
+    };
+
+    if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      html.classList.add("theme-anim");
+      apply();
+      setTimeout(() => html.classList.remove("theme-anim"), 500);
+      return;
+    }
+
+    // The new theme spreads out of the toggle as a growing circle.
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = r.left + r.height / 2;
+    const y = r.top + r.height / 2;
+    const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    document.startViewTransition(apply).ready.then(() => {
+      html.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
+        { duration: 550, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    });
   };
 
   return (
@@ -53,7 +73,11 @@ export default function Nav() {
         aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
       >
         <span className="theme-orb" aria-hidden />
-        <span className="theme-label">{dark === null ? "" : dark ? "Night dive" : "Day"}</span>
+        <span className="theme-label">
+          <span className="swap" key={String(dark)}>
+            {dark === null ? "" : dark ? "Night dive" : "Day"}
+          </span>
+        </span>
       </button>
     </header>
   );

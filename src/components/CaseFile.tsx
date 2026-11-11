@@ -6,6 +6,8 @@ import { ANOMALIES, useAnomalies } from "@/lib/anomalies";
 export default function CaseFile() {
   const { found, lastFound, reset } = useAnomalies();
   const [open, setOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [pulse, setPulse] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [verdict, setVerdict] = useState(false);
   const prev = useRef(found.size);
@@ -20,28 +22,44 @@ export default function CaseFile() {
     prev.current = n;
     const a = ANOMALIES.find((x) => x.id === lastFound)!;
     setToast(a.id);
+    setPulse(true);
+    const p = setTimeout(() => setPulse(false), 700);
     const id = setTimeout(() => setToast(null), 5200);
     if (n === ANOMALIES.length) {
       const v = setTimeout(() => setVerdict(true), 1400);
       return () => {
         clearTimeout(id);
+        clearTimeout(p);
         clearTimeout(v);
       };
     }
-    return () => clearTimeout(id);
+    return () => {
+      clearTimeout(id);
+      clearTimeout(p);
+    };
   }, [lastFound, n]);
+
+  // Closing plays the panel back into the counter before unmounting it.
+  const closePanel = () => {
+    if (!open || leaving) return;
+    setLeaving(true);
+    setTimeout(() => {
+      setOpen(false);
+      setLeaving(false);
+    }, 160);
+  };
 
   useEffect(() => {
     if (!verdict && !open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setVerdict(false);
-        setOpen(false);
+        closePanel();
       }
     };
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
-  }, [verdict, open]);
+  });
 
   // Keep the last message rendered while the toast slides out.
   const lastToast = useRef<string | null>(null);
@@ -52,15 +70,15 @@ export default function CaseFile() {
     <>
       <div className={`casefile${open ? " open" : ""}`}>
         {open && (
-          <div className="cf-panel" role="dialog" aria-label="Anomalies">
+          <div className={`cf-panel${leaving ? " leaving" : ""}`} role="dialog" aria-label="Anomalies">
             <p className="cf-title">
               {all ? "All five found." : `${n} of ${ANOMALIES.length} found. Hints for the rest:`}
             </p>
             <ol className="cf-list">
-              {ANOMALIES.map((a) => {
+              {ANOMALIES.map((a, i) => {
                 const got = found.has(a.id);
                 return (
-                  <li key={a.id} className={got ? "got" : ""}>
+                  <li key={a.id} className={got ? "got" : ""} style={{ ["--i" as string]: i }}>
                     <strong>{got ? a.name : "Unsolved"}</strong>
                     <span>{got ? a.found : a.hint}</span>
                   </li>
@@ -83,9 +101,9 @@ export default function CaseFile() {
         )}
         <button
           type="button"
-          className="cf-pill"
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
+          className={`cf-pill${pulse ? " pulse" : ""}`}
+          aria-expanded={open && !leaving}
+          onClick={() => (open ? closePanel() : setOpen(true))}
         >
           <Ring n={n} />
           <span>
@@ -157,8 +175,8 @@ function Verdict({ onClose }: { onClose: () => void }) {
           <span className="verdict-of">out of 100, rules only, no model consulted</span>
         </div>
         <ul className="verdict-lines">
-          {ANOMALIES.map((a) => (
-            <li key={a.id}>
+          {ANOMALIES.map((a, i) => (
+            <li key={a.id} style={{ ["--i" as string]: i }}>
               <span className="pts">+{a.points}</span>
               <span>
                 <strong>{a.name}</strong>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function CopyEmail({ email }: { email: string }) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   const [user, domain] = email.split("@");
   return (
     <div className="contact-email">
@@ -13,16 +13,21 @@ export default function CopyEmail({ email }: { email: string }) {
       </a>
       <button
         type="button"
-        className="btn btn-ghost"
+        className={`btn btn-ghost copy-btn ${state}`}
+        aria-live="polite"
         onClick={async () => {
           try {
             await navigator.clipboard.writeText(email);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-          } catch {}
+            setState("copied");
+          } catch {
+            setState("failed");
+          }
+          setTimeout(() => setState("idle"), 2000);
         }}
       >
-        {copied ? "Copied" : "Copy address"}
+        <span className="swap" key={state}>
+          {state === "copied" ? "Copied to clipboard" : state === "failed" ? "Couldn't copy, select it above" : "Copy address"}
+        </span>
       </button>
     </div>
   );

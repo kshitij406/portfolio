@@ -418,19 +418,6 @@ export const GAME = {
   shot: "/demos/platformer.jpg",
 };
 
-/**
- * Section furniture. Each section opens the same way: an index tag, the
- * heading, and a note scribbled in the margin. Notes are asides, not claims.
- */
-export const NOTES = {
-  deck: "the gold one is the one I'd frame",
-  work: "ask me about the one-column fix",
-  projects: "five people both times. I took the backend both times",
-  demos: "these are the real sites, go poke them",
-  about: "press the keys",
-  contact: "quicker than the phone box",
-};
-
 /** Hazard tape under the deck: the credentials a recruiter would scan for. */
 export const TAPE = [
   "Winner, Finnovate Hackathon 2026",
