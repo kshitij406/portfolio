@@ -16,7 +16,7 @@ These 40 rules apply to every UI change on this site. Check new work against bot
 8. Group with spacing
 9. Make headlines specific
 10. Emphasize the CTA
-11. Add an accent colour (one: sodium yellow; `--sodium` as a fill, `--accent` as text. Magenta and green are status only: wrong and fixed)
+11. Add an accent colour. This site is deliberately pure black on white, so the "accent" is ink itself (`--accent: var(--ink)`). Magenta and green appear only inside the interactive demos, as status: wrong and fixed
 12. Keep icons consistent
 13. Remove embellishments
 14. Inner radius = outer - padding
@@ -41,7 +41,7 @@ These 40 rules apply to every UI change on this site. Check new work against bot
 10. Start popovers at 0.95
 11. Enter from the trigger
 12. Exit to the trigger
-13. No bounce on everyday UI (playful toys like stickers and cards may keep it)
+13. No bounce on everyday UI
 14. Don't tween while held
 15. Make exits 20% shorter (and ease them in with `--ease-in`)
 16. Overlap old & new states

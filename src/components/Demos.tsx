@@ -4,78 +4,35 @@ import { useEffect, useRef, useState } from "react";
 import { DEMOS, GAME } from "@/data/content";
 
 /**
- * Things you can try without leaving the page.
- *
- * Sites sit as loose browser windows. Hovering (or, on touch, just having one
- * on screen) scrolls a full-page capture through the window. Opening one
- * loads the real site in a big frame; sites that refuse to be framed open
- * the capture instead, with a link out.
- *
- * The game sits in a handheld drawn for this page. Press start and the real
- * Godot build runs full-screen.
+ * Things you can try without leaving the page. A live site opens in a big
+ * frame; sites that refuse to be framed open a full-page capture instead,
+ * with a link out. The game sits in a handheld drawn for this page.
  */
 
 type Open = { kind: "site"; index: number } | { kind: "game" } | null;
 
-export default function Demos() {
+export function LiveSite({ id }: { id: string }) {
   const [open, setOpen] = useState<Open>(null);
-
-  return (
-    <div className="demos">
-      <div className="demo-desk">
-        {DEMOS.map((d, i) => (
-          <SiteWindow key={d.id} index={i} onOpen={() => setOpen({ kind: "site", index: i })} />
-        ))}
-      </div>
-      <Handheld onPlay={() => setOpen({ kind: "game" })} />
-      {open && <Viewer open={open} onClose={() => setOpen(null)} />}
-    </div>
-  );
-}
-
-function SiteWindow({ index, onOpen }: { index: number; onOpen: () => void }) {
+  const index = DEMOS.findIndex((d) => d.id === id);
   const d = DEMOS[index];
-  const ref = useRef<HTMLElement>(null);
-
-  // On touch screens there's no hover, so the capture drifts on its own while
-  // the window is on screen.
-  useEffect(() => {
-    if (matchMedia("(hover: hover)").matches) return;
-    const io = new IntersectionObserver(([e]) => ref.current?.classList.toggle("drift", e.isIntersecting), {
-      threshold: 0.5,
-    });
-    io.observe(ref.current!);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <article className={`site-win sw-${index}`} ref={ref}>
-      <div className="sw-bar" aria-hidden>
-        <i />
-        <i />
-        <i />
-        <span className="sw-url">{d.url.replace("https://", "")}</span>
-      </div>
-      <button type="button" className="sw-view" onClick={onOpen} aria-label={`Open ${d.name}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={d.shot} alt="" loading="lazy" />
-        <span className="sw-cta">{d.embed ? "Try it live" : "Look around"}</span>
+    <>
+      <button type="button" className="btn" onClick={() => setOpen({ kind: "site", index })}>
+        {d.embed ? "Try the live site here" : "Look around the site"}
       </button>
-      <div className="sw-meta">
-        <p className="sw-tag">{d.tag}</p>
-        <h3>{d.name}</h3>
-        <p>{d.what}</p>
-      </div>
-    </article>
+      {open && <Viewer open={open} onClose={() => setOpen(null)} />}
+    </>
   );
 }
 
-function Handheld({ onPlay }: { onPlay: () => void }) {
+export function PlayGame() {
+  const [open, setOpen] = useState<Open>(null);
   const [touch, setTouch] = useState(false);
   useEffect(() => setTouch(!matchMedia("(hover: hover)").matches), []);
+  const play = () => setOpen({ kind: "game" });
   return (
     <div className="game-row">
-      <button type="button" className="handheld" onClick={onPlay} aria-label="Play Platformer">
+      <button type="button" className="handheld" onClick={play} aria-label="Play Platformer">
         <span className="hh-grip hh-left" aria-hidden>
           <span className="hh-dpad">
             <i />
@@ -95,18 +52,16 @@ function Handheld({ onPlay }: { onPlay: () => void }) {
         </span>
       </button>
       <div className="game-copy">
-        <p className="sw-tag">Playable, made in Godot</p>
-        <h3>{GAME.name}</h3>
-        <p>{GAME.what}</p>
         <p className="muted">
           {touch
             ? "It needs arrow keys, so it's best on a computer. On a phone it'll load, but you can't move."
             : "Arrow keys to move. Click the game once it loads so it hears your keyboard."}
         </p>
-        <button type="button" className="btn" onClick={onPlay}>
+        <button type="button" className="btn" onClick={play}>
           Play it here
         </button>
       </div>
+      {open && <Viewer open={open} onClose={() => setOpen(null)} />}
     </div>
   );
 }

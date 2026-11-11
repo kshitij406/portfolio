@@ -1,25 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Funnel_Display, Funnel_Sans, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { IBM_Plex_Mono } from "next/font/google";
 import { AnomalyProvider } from "@/lib/anomalies";
 import SmoothScroll from "@/components/SmoothScroll";
-import CaseFile from "@/components/CaseFile";
+import Header from "@/components/Header";
 import "./globals.css";
+import "./demos.css";
 
-const display = Funnel_Display({
-  subsets: ["latin"],
-  variable: "--f-display",
-  weight: ["300", "400", "600", "800"],
-  display: "swap",
-});
-
-const sans = Funnel_Sans({
-  subsets: ["latin"],
+// Switzer by Indian Type Foundry, self-hosted under the ITF Free Font License.
+const sans = localFont({
+  src: "./fonts/Switzer-Variable.woff2",
   variable: "--f-sans",
-  weight: ["400", "500", "600"],
+  weight: "100 900",
   display: "swap",
 });
 
-// Only for real code and code points, never for decorative labels.
+// Only for real code, never for decorative labels.
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--f-mono",
@@ -28,11 +24,11 @@ const mono = IBM_Plex_Mono({
 });
 
 const description =
-  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent, CEO and co-founder of Black Reef. Two internships, two hackathon wins, and a habit of finding the bug nobody noticed.";
+  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent, CEO and co-founder of Black Reef. Two internships, two hackathon awards, and a habit of finding the bug nobody noticed.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kshitijj.me"),
-  title: "Kshitij Jha, software developer",
+  title: { default: "Kshitij Jha, software developer", template: "%s | Kshitij Jha" },
   description,
   openGraph: {
     title: "Kshitij Jha, software developer",
@@ -44,30 +40,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#e6ece8" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a1522" },
-  ],
+  themeColor: "#ffffff",
 };
-
-const themeInit = `(function(){try{var t=localStorage.getItem('kj-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en-GB"
-      suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-      </head>
+    <html lang="en-GB" className={`${sans.variable} ${mono.variable}`}>
       {/* Extensions like Grammarly stamp attributes on <body> before hydration. */}
       <body suppressHydrationWarning>
         <AnomalyProvider>
           <SmoothScroll />
+          <Header />
           {children}
-          <CaseFile />
         </AnomalyProvider>
       </body>
     </html>
