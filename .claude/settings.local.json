@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(npx prettier *)",
+      "Bash(git checkout *)",
+      "Bash(echo \"EXIT=$?\")",
+      "mcp__plugin_ecc_chrome-devtools__new_page",
+      "mcp__plugin_ecc_chrome-devtools__resize_page",
+      "mcp__plugin_ecc_chrome-devtools__evaluate_script",
+      "mcp__plugin_ecc_chrome-devtools__take_screenshot",
+      "Bash(npx next *)",
+      "mcp__plugin_ecc_chrome-devtools__close_page",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
