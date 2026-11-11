@@ -76,8 +76,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
   const demos = DEMOS[slug] ?? [];
 
   return (
-    <div className="page">
-      <main>
+    <main className="wrap page">
         <article className="proj">
           <aside className="proj-meta">
             <div>
@@ -157,8 +156,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
             ))}
           </div>
         )}
-      </main>
       <Footer />
-    </div>
+    </main>
   );
 }

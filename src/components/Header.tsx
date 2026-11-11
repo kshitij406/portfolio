@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
-const NAV = [
-  ["Work", "/work"],
-  ["About", "/about"],
-  ["Contact", "/contact"],
-] as const;
 
 // One solid 24px glyph per site, so the set reads as a family.
 const ICONS = {
@@ -34,19 +27,20 @@ const ICONS = {
   ),
 };
 
-const ELSEWHERE = [
+export const ELSEWHERE = [
   ["github", "GitHub", "https://github.com/kshitij406"],
   ["linkedin", "LinkedIn", "https://www.linkedin.com/in/kshitij-jha2006/"],
   ["instagram", "Instagram", "https://www.instagram.com/kxitiz_"],
   ["letterboxd", "Letterboxd", "https://boxd.it/4m4al"],
 ] as const;
 
-// Canterbury time. Empty on the server so the first render can't mismatch.
+// Canterbury time, 24-hour like a departures board. Empty on the server so
+// the first render can't mismatch.
 function LocalTime() {
   const [now, setNow] = useState<string | null>(null);
   useEffect(() => {
-    const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "numeric", minute: "2-digit", hour12: true });
-    const tick = () => setNow(fmt.format(new Date()).toUpperCase());
+    const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" });
+    const tick = () => setNow(fmt.format(new Date()));
     tick();
     const id = setInterval(tick, 15_000);
     return () => clearInterval(id);
@@ -55,30 +49,29 @@ function LocalTime() {
 }
 
 export default function Header() {
-  const path = usePathname();
   return (
     <header className="head">
-      <Link href="/" className="head-who" aria-label="Kshitij Jha, home">
-        Kshitij Jha
-        <span>Software developer</span>
+      <div className="head-left">
+        <p className="head-where">
+          <LocalTime /> Canterbury
+        </p>
+        <p className="head-who">
+          Kshitij Jha <span>Software developer</span>
+        </p>
+      </div>
+      <Link href="/" className="mark" aria-label="Kshitij Jha, home">
+        <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden>
+          <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <path
+            d="M13 11v18M13 21l9-10M16.5 18l6.5 11M27 11v13.5c0 3-1.6 4.5-4.4 4.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </Link>
-      <p className="head-where">
-        Canterbury, UK
-        <span>
-          Local time
-          <LocalTime />
-        </span>
-      </p>
-      <nav className="head-nav" aria-label="Main">
-        {NAV.map(([label, href]) => (
-          <Link key={href} href={href} aria-current={path.startsWith(href) ? "page" : undefined}>
-            {label}
-          </Link>
-        ))}
-        <a href="/Kshitij_Jha_CV.pdf" target="_blank" rel="noreferrer">
-          CV
-        </a>
-      </nav>
       <nav className="head-elsewhere" aria-label="Elsewhere">
         {ELSEWHERE.map(([icon, name, href]) => (
           <a key={icon} href={href} target="_blank" rel="noreferrer" aria-label={name} title={name}>

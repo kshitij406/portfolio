@@ -1,9 +1,15 @@
-export default function Footer() {
+export default function Footer({ className = "" }: { className?: string }) {
   return (
-    <footer className="foot">
-      <p>© 2026 Kshitij Jha</p>
-      <p>Looking for a 12&#8209;month placement from summer 2027</p>
-      <p>Built in Next.js</p>
+    <footer className={`foot ${className}`}>
+      <p>
+        © 2026 Kshitij Jha
+        <a href="mailto:kshitij.j615@gmail.com">kshitij.j615@gmail.com</a>
+      </p>
+      <p>
+        <a href="/Kshitij_Jha_CV.pdf" target="_blank" rel="noreferrer">
+          CV
+        </a>
+      </p>
     </footer>
   );
 }

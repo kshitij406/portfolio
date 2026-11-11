@@ -4,10 +4,14 @@
  * `illustration` marks images drawn for the site rather than captured.
  */
 
+export const CATEGORIES = ["Client", "Internship", "Hackathon", "Personal", "Company"] as const;
+export type Category = (typeof CATEGORIES)[number];
+
 export type Project = {
   slug: string;
   name: string;
   kind: string;
+  category: Category;
   role: string;
   year: string;
   award?: string;
@@ -24,6 +28,7 @@ export const PROJECTS: Project[] = [
     slug: "fraudlens",
     name: "FraudLens AI",
     kind: "Hackathon build",
+    category: "Hackathon",
     role: "Team lead, backend and Chrome extension",
     year: "2026",
     award: "Winner, Finnovate Hackathon 2026",
@@ -42,6 +47,7 @@ export const PROJECTS: Project[] = [
     slug: "bluenet",
     name: "BlueNet: Ocean Watch",
     kind: "Hackathon build",
+    category: "Hackathon",
     role: "Team lead, backend",
     year: "2026",
     award: "Judge's Choice, Build with Gemma",
@@ -55,6 +61,7 @@ export const PROJECTS: Project[] = [
     slug: "blackreef",
     name: "Black Reef",
     kind: "Company",
+    category: "Company",
     role: "CEO and co-founder",
     year: "2026 to now",
     stack: ["Next.js", "TypeScript", "GSAP", "Vercel"],
@@ -73,6 +80,7 @@ export const PROJECTS: Project[] = [
     slug: "smarterp",
     name: "SmartERP Attendance",
     kind: "Internship, Imatic Technologies",
+    category: "Internship",
     role: "Software developer intern",
     year: "2026",
     stack: ["Next.js", "MSSQL", "C# / .NET 8", "Node.js", "IIS", "Stimulsoft"],
@@ -94,6 +102,7 @@ export const PROJECTS: Project[] = [
     slug: "sultan",
     name: "Sultan Mauritius",
     kind: "Client work",
+    category: "Client",
     role: "Built and launched",
     year: "2026",
     stack: ["Next.js", "Prisma", "Sanity"],
@@ -108,6 +117,7 @@ export const PROJECTS: Project[] = [
     slug: "tcp",
     name: "TCP chat server",
     kind: "Personal project",
+    category: "Personal",
     role: "Solo",
     year: "2026",
     stack: ["Go"],
@@ -123,6 +133,7 @@ export const PROJECTS: Project[] = [
     slug: "country",
     name: "Country Materials",
     kind: "Client work",
+    category: "Client",
     role: "Built and launched",
     year: "2026",
     stack: ["Next.js", "Sanity"],
@@ -137,6 +148,7 @@ export const PROJECTS: Project[] = [
     slug: "fleet",
     name: "Fleet Manager",
     kind: "Internship, CubeStone Consulting",
+    category: "Internship",
     role: "Software developer intern, solo build",
     year: "2026",
     stack: ["C#", "Dapper", "SAP HANA", "React Native", "Expo"],
@@ -159,6 +171,7 @@ export const PROJECTS: Project[] = [
     slug: "platformer",
     name: "Platformer",
     kind: "Personal project, game",
+    category: "Personal",
     role: "Solo",
     year: "2026",
     stack: ["Godot 4", "WebAssembly"],

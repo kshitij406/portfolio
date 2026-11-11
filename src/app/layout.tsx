@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { IBM_Plex_Mono } from "next/font/google";
+import { Inter, IBM_Plex_Mono } from "next/font/google";
 import { AnomalyProvider } from "@/lib/anomalies";
 import SmoothScroll from "@/components/SmoothScroll";
 import Header from "@/components/Header";
+import PillNav from "@/components/PillNav";
 import "./globals.css";
 import "./demos.css";
 
-// Switzer by Indian Type Foundry, self-hosted under the ITF Free Font License.
-const sans = localFont({
-  src: "./fonts/Switzer-Variable.woff2",
+// Inter with its optical-size axis, so large text gets the tighter Display cut.
+const sans = Inter({
+  subsets: ["latin"],
   variable: "--f-sans",
-  weight: "100 900",
+  axes: ["opsz"],
   display: "swap",
 });
 
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#fafafa",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -52,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScroll />
           <Header />
           {children}
+          <PillNav />
         </AnomalyProvider>
       </body>
     </html>
