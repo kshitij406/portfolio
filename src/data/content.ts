@@ -14,7 +14,7 @@ export const LINKS = [
   { label: "Black Reef", href: "https://www.teamblackreef.com", handle: "teamblackreef.com" },
   { label: "GitHub", href: "https://github.com/kshitij406", handle: "kshitij406" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/kshitij-jha2006/", handle: "kshitij-jha2006" },
-  { label: "Letterboxd", href: "https://boxd.it/4m4al", handle: "Kxitiz_" },
+  { label: "Letterboxd", href: "https://letterboxd.com/Kxitiz_/", handle: "Kxitiz_" },
   { label: "Instagram", href: "https://www.instagram.com/kxitiz_", handle: "kxitiz_" },
 ];
 

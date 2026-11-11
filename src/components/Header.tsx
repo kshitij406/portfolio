@@ -31,7 +31,7 @@ export const ELSEWHERE = [
   ["github", "GitHub", "https://github.com/kshitij406"],
   ["linkedin", "LinkedIn", "https://www.linkedin.com/in/kshitij-jha2006/"],
   ["instagram", "Instagram", "https://www.instagram.com/kxitiz_"],
-  ["letterboxd", "Letterboxd", "https://boxd.it/4m4al"],
+  ["letterboxd", "Letterboxd", "https://letterboxd.com/Kxitiz_/"],
 ] as const;
 
 // Canterbury time, 24-hour like a departures board. Empty on the server so
