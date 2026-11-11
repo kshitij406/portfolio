@@ -7,6 +7,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 const ITEMS = [
   ["Index", "/"],
   ["Work", "/work"],
+  ["Experience", "/experience"],
   ["About", "/about"],
   ["Contact", "/contact"],
 ] as const;

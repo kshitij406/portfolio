@@ -431,6 +431,181 @@ button {
   transition: none;
 }
 
+/* Five items have to fit a 360px phone. */
+@media (max-width: 420px) {
+  .pill {
+    font-size: 13px;
+  }
+  .pill a {
+    padding: 7px 10px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Experience: one row per role, dates on the left, the work on the right
+   ------------------------------------------------------------------ */
+
+.jobs {
+  margin-top: clamp(3rem, 7vw, 5rem);
+  border-top: 1px solid var(--ink);
+}
+
+.job {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  border-bottom: 1px solid var(--line);
+  animation: rise 0.6s var(--ease) both;
+  animation-delay: calc(0.1s + var(--i) * 60ms);
+}
+
+.job-when {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.job-when span,
+.job-who p {
+  display: block;
+  color: var(--muted);
+}
+
+.job-who h2 {
+  font-size: clamp(1.6rem, 1rem + 1.6vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.job-who p {
+  margin-top: 0.4rem;
+  font-size: 15px;
+}
+
+/* Each logo sits on the background it was drawn for, in a tile of one
+   size, so three different marks still read as a set. */
+.job-logo {
+  position: relative;
+  display: block;
+  width: min(100%, 280px);
+  aspect-ratio: 16 / 10;
+  margin-top: 1.5rem;
+  border-radius: var(--r-md);
+  transition: transform 0.4s var(--ease), box-shadow 0.3s;
+}
+
+.job-logo.dark {
+  background: #0b0b0b;
+}
+
+.job-logo.light {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* Pinned inside a fixed margin, so a square mark and a wide wordmark
+   both fill the tile instead of setting its size. */
+.job-logo img {
+  position: absolute;
+  inset: 20% 12%;
+  width: 76%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.job-logo:hover {
+  transform: translateY(-3px);
+}
+
+.job-body {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 62ch;
+}
+
+.job-lede {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.job-points {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.job-points li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.job-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.job-stack span {
+  padding: 4px 11px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 13px;
+}
+
+.job-proj {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  justify-self: start;
+  padding: 8px 16px 8px 8px;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-weight: 500;
+  transition: box-shadow 0.25s, transform 0.25s var(--ease);
+}
+
+/* Inner radius = outer radius minus the 8px padding. */
+.job-proj img {
+  width: 112px;
+  aspect-ratio: 1600 / 1140;
+  object-fit: cover;
+  border-radius: calc(var(--r-md) - 8px);
+}
+
+.job-proj .label {
+  display: block;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.job-proj svg {
+  transition: transform 0.35s var(--ease);
+}
+
+.job-proj:hover {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.job-proj:hover svg {
+  transform: rotate(45deg);
+}
+
+.job-proj:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 860px) {
+  .job {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .job-who {
+    order: -1;
+  }
+}
+
 /* ------------------------------------------------------------------
    Page frame
    ------------------------------------------------------------------ */

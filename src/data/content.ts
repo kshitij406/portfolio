@@ -185,3 +185,58 @@ export const GAME = {
   src: "/games/platformer/Platformer.html",
   shot: "/demos/platformer.jpg",
 };
+
+/**
+ * Roles, newest first. Points come from the CV; `project` links each role
+ * to the case study it produced. `tile` is the background each logo was made
+ * for: ITL's is white type, so it needs a dark tile.
+ */
+export const EXPERIENCE = [
+  {
+    company: "Black Reef",
+    role: "CEO and Co-founder",
+    href: "https://www.teamblackreef.com", logo: "/logos/blackreef.svg", tile: "dark",
+    place: "Mauritius",
+    period: "Oct 2026 to now",
+    project: "blackreef",
+    lede: "After FraudLens won Finnovate, the five of us kept going and started a software studio. Black Reef builds websites, mobile apps and custom software for businesses, at a price agreed before any work starts.",
+    points: [
+      "Five co-founders, the same team that built FraudLens. The people on a client's first call are the people who build the product.",
+      "Fixed-scope written proposals. The client owns the code, designs, domains and accounts from day one.",
+      "Built the company site: Next.js 16, statically prerendered, with one public endpoint for the contact form, validated server-side, rate limited and origin-checked, behind strict security headers.",
+    ],
+    stack: ["Next.js", "TypeScript", "GSAP", "Vercel"],
+  },
+  {
+    company: "Imatic Technologies",
+    role: "Software Developer Intern",
+    href: "https://www.itl.co.tz/", logo: "/logos/itl.png", tile: "dark",
+    place: "Dar es Salaam",
+    period: "Jun to Sep 2026",
+    project: "smarterp",
+    lede: "I built the attendance module for SmartERP, ITL's ERP product, from the schema up. Next.js on the front, MSSQL stored procedures underneath, deployed under IIS. It's in user acceptance testing now, and ships to ITL's customer companies after that.",
+    points: [
+      "Multi-company from the session down: every login carries a company ID, every route passes it to the procedures, so one deployment serves several companies.",
+      "Attendance processing runs each employee in their own transaction. A full month, 49 people and 13,487 punches, processes in about 1.5 seconds with no failures.",
+      "Found why the import was quietly losing about one punch in six: two doors in the same minute looked identical to the unique index. The fix was one column.",
+      "Built the same 9-endpoint API twice, in .NET 8 and in Node.js, so the team could decide on leaving ASP.NET MVC with numbers instead of opinions.",
+      "Redesigned the MUA portal's landing page and components, now in production. Also got the team using Claude Code, which turned days of UI work into hours.",
+    ],
+    stack: ["Next.js", "MSSQL", "C# / .NET 8", "Node.js", "IIS", "Stimulsoft"],
+  },
+  {
+    company: "CubeStone Consulting",
+    role: "Software Developer Intern",
+    href: "https://cubestoneconsulting.com/index.html", logo: "/logos/cubestone.png", tile: "light",
+    place: "Dar es Salaam",
+    period: "Jan to Mar 2026",
+    project: "fleet",
+    lede: "My first codebase with somebody else's money on it. I built a fleet management system on my own: around 40 endpoints in C# with Dapper against SAP HANA, the schema behind them, and the React Native app on top.",
+    points: [
+      "Assets, drivers, fuel logs, service schedules, work orders, reports.",
+      "Bearer-token login plus a per-employee permission table that decides which tabs and report cards each person sees.",
+      "Expo app with dashboard analytics, preventative maintenance scheduling and PDF export.",
+    ],
+    stack: ["C#", "Dapper", "SAP HANA", "React Native", "Expo"],
+  },
+];
