@@ -5,10 +5,10 @@ import Eyes from "@/components/Eyes";
 import Glyph, { type GlyphName, type GlyphTone } from "@/components/Glyph";
 import ProjectCard from "@/components/ProjectCard";
 import Footer from "@/components/Footer";
+import FeatureStack from "@/components/FeatureStack";
 import { FAQ, PROFILE, RECOGNITION, SERVICES, STATS } from "@/data/content";
-import { PROJECTS, project } from "@/data/projects";
+import { PROJECTS } from "@/data/projects";
 
-const featured = project("travelio")!;
 
 // Where each recognition note is pinned, and how it leans.
 const NOTE_TILT = [-4, 3, -2, 4, -3];
@@ -49,17 +49,7 @@ export default function Home() {
           CEO and co-founder of Black Reef.
         </p>
 
-        <Link href={`/work/${featured.slug}`} className="glass hero-feature">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={featured.image} alt="" className="glass-thumb" />
-          <span className="glass-text">
-            <span className="glass-meta">
-              <span>{featured.award}</span>
-            </span>
-            <span className="glass-title">{featured.name}</span>
-            <span className="glass-sub hf-go">Read the case study</span>
-          </span>
-        </Link>
+        <FeatureStack />
       </section>
 
       {/* ---------- About ---------- */}

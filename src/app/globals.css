@@ -603,23 +603,23 @@ button {
   transition: transform 0.25s var(--ease), background-color 0.25s;
 }
 
-/* Over the photo: frosted white with a thin light edge. */
-.hero .glass,
+/* Over the photo: the same light iPhone material as the notification
+   stack in the opposite corner, so the two read as a pair. */
 .head-over .glass {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), 0 8px 24px -12px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-radius: 22px;
+  background: rgba(246, 246, 246, 0.72);
+  color: #111;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 26px -10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
 }
 
 .glass:hover {
   transform: translateY(-2px);
 }
 
-.hero .glass:hover,
 .head-over .glass:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(250, 250, 250, 0.8);
 }
 
 .glass:active {
@@ -681,39 +681,203 @@ button {
   box-shadow: 0 0 0 3px rgba(52, 199, 90, 0.25);
 }
 
-.hero-feature {
+/* Featured projects: an iPhone notification stack, bottom right.
+   Collapsed, the front card is on top and the next two peek out below it;
+   open, they fan out upwards into a list. One card is 72px, one step 80px. */
+.fstack {
   position: absolute !important;
   right: var(--gutter);
-  bottom: 120px;
+  bottom: 112px;
+  width: 340px;
+  max-width: calc(100vw - 2 * var(--gutter));
+  height: 72px;
 }
 
-/* Two cards peeking out above it, like a short stack of case studies.
-   Only their top edges show, so nothing crosses the card's text. */
-.hero-feature::before,
-.hero-feature::after {
-  content: "";
+.notif {
   position: absolute;
-  bottom: 100%;
-  height: 7px;
-  border-radius: 10px 10px 0 0;
-  background: rgba(255, 255, 255, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  inset: 0;
+  z-index: calc(10 - var(--d));
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px 0 12px;
+  border-radius: 22px;
+  background: rgba(246, 246, 246, 0.72);
+  color: #111;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 26px -10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  transform-origin: top center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: pan-y;
+  clip-path: inset(0 round 22px);
+  transition: translate 0.45s var(--ease-in-out), scale 0.45s var(--ease-in-out), opacity 0.35s var(--ease-in-out),
+    clip-path 0.45s var(--ease-in-out);
+  transition-delay: calc(var(--d) * 30ms);
 }
 
-.hero-feature::before {
-  left: 5%;
-  right: 5%;
+.notif > * {
+  transition: opacity 0.25s var(--ease);
 }
 
-.hero-feature::after {
-  left: 10%;
-  right: 10%;
-  bottom: calc(100% + 7px);
-  background: rgba(255, 255, 255, 0.12);
+/* Cards behind: smaller, lower, blank, and lighter on the GPU. */
+.notif:not([data-depth="0"]) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(246, 246, 246, 0.5);
 }
 
-.hf-go::after {
-  content: " →";
+/* Behind the translucent front card, only each card's bottom edge shows. */
+.fstack:not([data-open]) .notif:not([data-depth="0"]) {
+  /* 62px, in the card's own unscaled box, is where the card in front ends. */
+  clip-path: inset(62px 0 0 0 round 0 0 22px 22px);
+}
+
+.fstack:not([data-open]) .notif:not([data-depth="0"]) > * {
+  opacity: 0;
+}
+
+/* While the front card is being dragged, the next one shows in full
+   underneath, the way the next notification does on a phone. */
+.fstack:has(.notif.held) .notif[data-depth="1"] {
+  translate: 0 0;
+  scale: 1;
+  clip-path: inset(0 round 22px);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  background: rgba(246, 246, 246, 0.72);
+}
+
+.fstack:has(.notif.held) .notif[data-depth="1"] > * {
+  opacity: 1;
+}
+
+/* Each card behind peeks about 9px below the one in front of it. */
+.fstack:not([data-open]) .notif[data-depth="1"] { translate: 0 14px; scale: 0.94; }
+.fstack:not([data-open]) .notif[data-depth="2"] { translate: 0 26px; scale: 0.88; }
+.fstack:not([data-open]) .notif[data-depth="3"] { translate: 0 30px; scale: 0.84; opacity: 0; pointer-events: none; }
+
+.fstack:not([data-open]) .notif[data-depth="0"]:hover {
+  background: rgba(250, 250, 250, 0.8);
+}
+
+/* Open: every card full size, newest at the top of the list. */
+.fstack[data-open] .notif {
+  translate: 0 calc((var(--n) - 1 - var(--d)) * -80px);
+  background: rgba(246, 246, 246, 0.72);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+}
+
+.fstack[data-open] .notif:hover {
+  background: rgba(252, 252, 252, 0.85);
+}
+
+.notif:active {
+  scale: 0.97;
+}
+
+/* A new one drops in from above, the way a notification arrives. */
+.notif.arrive {
+  animation: arrive 0.5s var(--ease);
+}
+
+@keyframes arrive {
+  from {
+    translate: 0 -36px;
+    scale: 0.96;
+    opacity: 0;
+  }
+}
+
+/* Swiped away: it keeps going in the direction you threw it. */
+.notif.fling-r,
+.notif.fling-l {
+  opacity: 0;
+  transition-duration: 0.36s;
+  transition-timing-function: var(--ease-in);
+}
+
+.notif.fling-r { translate: 120% 0 !important; }
+.notif.fling-l { translate: -120% 0 !important; }
+
+/* Held: no tweening, it sits under the pointer. */
+.notif.held {
+  cursor: grabbing;
+  transition: none;
+}
+
+.notif-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+}
+
+.notif-text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.notif-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.notif-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notif-when {
+  flex: none;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.notif-body {
+  font-size: 0.82rem;
+  line-height: 1.3;
+  color: rgba(0, 0, 0, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fstack-less {
+  position: absolute;
+  right: 0;
+  bottom: calc(var(--n) * 80px + 4px);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(246, 246, 246, 0.72);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  color: #111;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0;
+  scale: 0.95;
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease-in), scale 0.2s var(--ease-in);
+}
+
+.fstack[data-open] .fstack-less {
+  opacity: 1;
+  scale: 1;
+  pointer-events: auto;
+  transition: opacity 0.25s var(--ease) 0.15s, scale 0.25s var(--ease) 0.15s;
 }
 
 @media (max-width: 600px) {
@@ -900,8 +1064,8 @@ button {
   .hs-a { right: auto; left: 60%; top: -34px; }
   .hs-b { display: none; }
   .hs-c { display: none; }
-  .hero-tag { bottom: 196px; }
-  .hero-feature { left: var(--gutter); right: auto; bottom: 96px; }
+  .hero-tag { bottom: 236px; }
+  .fstack { bottom: 108px; }
 }
 
 /* ------------------------------------------------------------------
@@ -2415,4 +2579,9 @@ details[open] > summary .svc-x {
   .portrait {
     rotate: 0deg;
   }
+}
+
+/* Inner radius = outer (22px) minus padding (8px). */
+.head-over .glass-thumb {
+  border-radius: 14px;
 }
