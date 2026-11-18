@@ -1057,16 +1057,54 @@ button {
   background: currentColor;
 }
 
+/* Phones: the hero is a column, not a stage. Headline, tagline and the
+   notification stack follow each other, so a short screen (a phone with
+   its browser bars showing) makes the hero taller instead of piling them
+   on top of each other. The stack stays bottom right; the bottom padding
+   keeps it clear of the dock. */
 @media (max-width: 860px) {
   .hero {
-    place-items: start;
-    align-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 100svh;
+    padding: 96px var(--gutter) 96px;
+  }
+  .hero-h {
+    margin-block: auto;
+    padding-top: 1.75rem;
+    /* Sized by the shorter of width and height, so five lines fit a phone
+       with its browser bars showing. */
+    font-size: min(clamp(2.3rem, 11vw, 4.5rem), 7.4svh);
   }
   .hs-a { right: auto; left: 60%; top: -34px; }
   .hs-b { display: none; }
   .hs-c { display: none; }
-  .hero-tag { bottom: 236px; }
-  .fstack { bottom: 108px; }
+  .hero-tag,
+  .fstack {
+    position: relative !important;
+    inset: auto;
+  }
+  .hero-tag {
+    margin-top: 1.25rem;
+    font-size: 0.95rem;
+  }
+  .fstack {
+    align-self: flex-end;
+    width: 100%;
+    max-width: 340px;
+    flex: none;
+    /* Room for the two cards peeking out underneath. */
+    margin: 1.25rem 0 28px;
+  }
+}
+
+/* Very short screens: the tagline goes (the About section says the same
+   just below), so the stack still clears the dock. */
+@media (max-width: 860px) and (max-height: 600px) {
+  .hero-tag {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------------
