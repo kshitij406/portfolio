@@ -30,7 +30,8 @@ export default function ProjectCard({ p, i }: { p: Project; i: number }) {
         <span className="pcard-name">{p.name}</span>
         <span className="pcard-meta">
           <span>{p.award ?? p.kind}</span>
-          <span>{p.year}</span>
+          {/* Awards already carry their year. */}
+          {!(p.award ?? p.kind).includes(p.year) && <span>{p.year}</span>}
         </span>
       </span>
     </Link>

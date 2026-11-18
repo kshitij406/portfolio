@@ -85,6 +85,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 html.no-scroll {
@@ -644,7 +645,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 500;
   opacity: 0.85;
 }
@@ -859,7 +860,7 @@ button {
   position: absolute;
   right: 0;
   bottom: calc(var(--n) * 80px + 4px);
-  padding: 6px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
   background: rgba(246, 246, 246, 0.72);
   backdrop-filter: blur(24px) saturate(1.8);
@@ -1595,7 +1596,7 @@ details[open] > summary .svc-x {
 .foot {
   position: relative;
   margin-top: clamp(3rem, 6vw, 5rem);
-  padding: 16px 16px 110px;
+  padding: 16px 16px 100px;
   background: var(--yellow);
 }
 
@@ -1631,8 +1632,8 @@ details[open] > summary .svc-x {
 .foot-social a {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #fff;
   color: var(--ink);
@@ -1697,8 +1698,14 @@ details[open] > summary .svc-x {
 .foot-bar nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  gap: 0 1.25rem;
   text-transform: uppercase;
+}
+
+/* Tall enough to hit with a thumb, without changing how the row looks. */
+.foot-bar nav a {
+  display: inline-block;
+  padding-block: 12px;
 }
 
 .foot-bar nav a:hover {
@@ -2584,4 +2591,82 @@ details[open] > summary .svc-x {
 /* Inner radius = outer (22px) minus padding (8px). */
 .head-over .glass-thumb {
   border-radius: 14px;
+}
+
+/* ------------------------------------------------------------------
+   Phones
+   ------------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+  /* 1. Tags sit on the heading's corner, inside the screen. */
+  .sec-tag,
+  .phead-tag {
+    left: 0;
+    top: -32px;
+  }
+  .sec-head,
+  .phead,
+  .faq-h {
+    padding-top: 0.5rem;
+  }
+
+  /* 2. One tag in the footer, above the headline, clear of the words. */
+  .st-b,
+  .st-c {
+    display: none;
+  }
+  .st-a {
+    top: -40px;
+  }
+
+  /* 4. The email card keeps the page gutter. */
+  .page > .contact-email {
+    margin-inline: var(--gutter);
+    padding-inline: 1.25rem;
+  }
+
+  /* 6. Card name, then its details on one line underneath. */
+  .pcard-foot {
+    flex-direction: column;
+    align-items: start;
+    gap: 2px;
+  }
+  .pcard-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5em;
+    justify-items: start;
+    text-align: left;
+  }
+  .pcard-meta span + span::before {
+    content: "· ";
+  }
+
+  /* Fewer, gentler tilts on a narrow screen, so edges stay inside. */
+  .pcard,
+  .note,
+  .gallery figure {
+    rotate: calc(var(--tilt, 0deg) * 0.5);
+  }
+}
+
+/* 5. On narrow screens a project reads top to bottom: title, image,
+   facts, story, links, then the build log and the next project. */
+@media (max-width: 860px) {
+  .proj {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+  .proj-meta,
+  .proj-media {
+    display: contents;
+  }
+  .proj-meta > div:first-child { order: 1; }
+  .proj-media figure { order: 2; }
+  .facts { order: 3; }
+  .story { order: 4; }
+  .links { order: 5; }
+  .log { order: 6; }
+  .next { order: 7; }
 }
