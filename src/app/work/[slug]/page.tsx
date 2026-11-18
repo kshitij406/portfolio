@@ -77,6 +77,12 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
 
   return (
     <main className="page">
+        <Link href="/work" className="back">
+          <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden>
+            <path d="M7.5 2.5 4 6l3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Work
+        </Link>
         <article className="proj">
           <aside className="proj-meta">
             <div>

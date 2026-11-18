@@ -1057,28 +1057,34 @@ button {
   background: currentColor;
 }
 
-/* Phones: the hero is a column, not a stage. Headline, tagline and the
-   notification stack follow each other, so a short screen (a phone with
-   its browser bars showing) makes the hero taller instead of piling them
-   on top of each other. The stack stays bottom right; the bottom padding
-   keeps it clear of the dock. */
+/* Phones: the hero is a symmetric column, not a stage. Status card,
+   notification stack and dock share one width (the page gutter on both
+   sides); the headline and tagline are centred between them. A screen
+   shortened by browser bars makes the hero taller rather than piling
+   things up. */
 @media (max-width: 860px) {
   .hero {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     min-height: 100svh;
-    padding: 96px var(--gutter) 96px;
+    padding: 96px var(--gutter) calc(92px + env(safe-area-inset-bottom));
+    text-align: center;
   }
+  /* Headline and tagline travel together as one centred block. */
   .hero-h {
-    margin-block: auto;
-    padding-top: 1.75rem;
-    /* Sized by the shorter of width and height, so five lines fit a phone
-       with its browser bars showing. */
-    font-size: min(clamp(2.3rem, 11vw, 4.5rem), 7.4svh);
+    margin-top: auto;
+    padding-top: 2rem;
+    font-size: min(12vw, 7.6svh, 4.6rem);
+    line-height: 0.95;
   }
-  .hs-a { right: auto; left: 60%; top: -34px; }
-  .hs-b { display: none; }
+  .hero-h .line,
+  .hero-h .line:nth-child(2),
+  .hero-h .line:nth-child(3) {
+    margin-inline: auto;
+  }
+  .hs-a { top: -40px; right: auto; left: calc(50% - 52px); }
+  .hs-b,
   .hs-c { display: none; }
   .hero-tag,
   .fstack {
@@ -1086,16 +1092,22 @@ button {
     inset: auto;
   }
   .hero-tag {
-    margin-top: 1.25rem;
+    margin: 1.25rem 0 auto;
+    max-width: none;
     font-size: 0.95rem;
   }
+  .notif {
+    text-align: left;
+  }
+  .hero-tag::before {
+    display: none;
+  }
   .fstack {
-    align-self: flex-end;
     width: 100%;
-    max-width: 340px;
+    max-width: none;
     flex: none;
-    /* Room for the two cards peeking out underneath. */
-    margin: 1.25rem 0 28px;
+    /* Room for the two cards peeking out underneath, clear of the dock. */
+    margin: 1.25rem 0 34px;
   }
 }
 
@@ -1105,7 +1117,11 @@ button {
   .hero-tag {
     display: none;
   }
+  .hero-h {
+    margin-bottom: auto;
+  }
 }
+
 
 /* ------------------------------------------------------------------
    Home: sections
@@ -2707,4 +2723,174 @@ details[open] > summary .svc-x {
   .links { order: 5; }
   .log { order: 6; }
   .next { order: 7; }
+}
+
+/* ------------------------------------------------------------------
+   Phones, part two: make it feel like an app.
+   ------------------------------------------------------------------ */
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Back to the work list, top of every project page. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 1rem;
+  padding: 8px 14px 8px 10px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: transform 0.2s var(--ease);
+}
+
+.page > .back {
+  width: fit-content;
+  margin-inline: max(var(--gutter), calc((100% - var(--measure)) / 2 + var(--gutter)));
+  padding-inline: 10px 14px;
+}
+
+.back:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 600px) {
+  /* Header: one full-width card, social buttons inside it on the right,
+     dark on the light material so they never vanish into the sky. */
+  .head {
+    display: block;
+    padding: 14px var(--gutter);
+  }
+  .status {
+    width: 100%;
+    max-width: none;
+    padding-right: 100px;
+  }
+  .status .glass-sub {
+    display: block;
+  }
+  .head-right {
+    position: absolute;
+    top: 14px;
+    right: calc(var(--gutter) + 10px);
+    height: 68px;
+    color: #111;
+  }
+  .head-elsewhere {
+    gap: 6px;
+  }
+  .head-elsewhere a {
+    width: 38px;
+    height: 38px;
+    background: rgba(0, 0, 0, 0.06);
+  }
+  .head-elsewhere a:nth-child(n + 3) {
+    display: none;
+  }
+
+  /* Dock: full width, like the one at the bottom of a home screen. */
+  .dock {
+    left: var(--gutter);
+    right: var(--gutter);
+    translate: none;
+    justify-content: space-between;
+    border-radius: 26px;
+  }
+  .dock-tile {
+    flex: 1;
+    max-width: 64px;
+    width: auto;
+    aspect-ratio: 1;
+    height: auto;
+  }
+
+  /* Tighter sections. */
+  .sec {
+    padding-block: 3.5rem;
+  }
+  .sec-head {
+    margin-bottom: 2.25rem;
+  }
+  .band {
+    padding: 3.5rem 0 4rem;
+  }
+  .band .sec-head {
+    padding-inline: var(--gutter);
+  }
+
+  /* Swipeable rows: the next card peeks in from the right. */
+  .band .pgrid,
+  .notes {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    padding: 28px var(--gutter) 18px;
+    margin-inline: calc(-1 * var(--gutter));
+    scrollbar-width: none;
+  }
+  .band .pgrid {
+    margin-inline: 0;
+  }
+  .band .pgrid::-webkit-scrollbar,
+  .notes::-webkit-scrollbar,
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+  .band .pgrid .pcard,
+  .notes .note {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+    rotate: 0deg;
+  }
+  .notes .note {
+    flex-basis: 74%;
+  }
+  .notes .note:nth-child(even) {
+    margin-top: 0;
+  }
+
+  /* Stats: a 2 by 2 grid of widgets. */
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .stats .note {
+    padding: 2rem 1rem 1rem;
+    rotate: 0deg;
+  }
+  .stats .stat {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+  }
+  .stats h3 {
+    font-size: 0.92rem;
+  }
+  .stats .note p:not(.stat) {
+    font-size: 0.8rem;
+  }
+
+  /* Work filters: one row you scroll sideways. */
+  .filters {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter);
+    scrollbar-width: none;
+  }
+  .filter {
+    flex: none;
+  }
+
+  /* Page headings a little closer to the top. */
+  .phead {
+    padding-block: 2.5rem 2rem;
+  }
 }

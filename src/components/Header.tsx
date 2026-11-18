@@ -27,7 +27,7 @@ export default function Header() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/portrait.jpg" alt="" width="36" height="36" className="glass-thumb" />
         <span className="glass-text">
-          <span className="glass-meta status-live">Open to a placement, July 2027</span>
+          <span className="glass-meta status-live">Placement from July 2027</span>
           <span className="glass-title">Kshitij Jha</span>
           <span className="glass-sub">Software developer</span>
         </span>
