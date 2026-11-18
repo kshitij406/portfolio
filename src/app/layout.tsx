@@ -1,17 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Mona_Sans, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { AnomalyProvider } from "@/lib/anomalies";
 import SmoothScroll from "@/components/SmoothScroll";
 import Header from "@/components/Header";
-import PillNav from "@/components/PillNav";
+import Dock from "@/components/Dock";
+import Reveal from "@/components/Reveal";
 import "./globals.css";
 import "./demos.css";
 
-// Inter with its optical-size axis, so large text gets the tighter Display cut.
-const sans = Inter({
+// Headlines: Mona Sans, heavy and stretched wide on its width axis.
+const display = Mona_Sans({
+  subsets: ["latin"],
+  variable: "--f-display",
+  axes: ["wdth"],
+  display: "swap",
+});
+
+// Everything else.
+const sans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--f-sans",
-  axes: ["opsz"],
   display: "swap",
 });
 
@@ -24,7 +32,7 @@ const mono = IBM_Plex_Mono({
 });
 
 const description =
-  "Kshitij Jha builds backends and the interfaces on top of them. Computer Science at the University of Kent, CEO and co-founder of Black Reef. Two internships, two hackathon awards, and a habit of finding the bug nobody noticed.";
+  "Kshitij Jha builds things people actually use. Computer Science at the University of Kent, CEO and co-founder of Black Reef. Two internships, three hackathon awards, and a habit of finding the bug nobody noticed.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kshitijj.me"),
@@ -40,19 +48,20 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafafa",
+  themeColor: "#f5f3ea",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="en-GB" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       {/* Extensions like Grammarly stamp attributes on <body> before hydration. */}
       <body suppressHydrationWarning>
         <AnomalyProvider>
           <SmoothScroll />
           <Header />
           {children}
-          <PillNav />
+          <Dock />
+          <Reveal />
         </AnomalyProvider>
       </body>
     </html>

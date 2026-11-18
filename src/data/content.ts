@@ -53,6 +53,11 @@ export const SMALLER = [
 
 export const RECOGNITION = [
   {
+    title: "Life Powered by Tech 2026",
+    result: "Winner",
+    detail: "November 2026. 24 hours, theme Powered to Move. Team lead of five. Built Travelio.",
+  },
+  {
     title: "Finnovate Hackathon 2026",
     result: "Winner",
     detail: "September 2026. 72 hours, FinTech and AI. Team lead of five. Built FraudLens.",
@@ -117,7 +122,7 @@ export const EDUCATION = [
 ];
 
 export const SKILLS = [
-  { group: "Languages", items: ["C#", "TypeScript", "JavaScript", "SQL", "Python", "Go", "Java"] },
+  { group: "Languages", items: ["Python", "Java", "SQL", "C#", "TypeScript", "JavaScript", "Go"] },
   { group: "Backend and data", items: [".NET 8", "ASP.NET MVC", "Node.js", "REST APIs", "SQL Server", "SAP HANA", "Dapper", "Prisma", "SQLite"] },
   { group: "Frontend", items: ["Next.js", "React", "React Native"] },
   { group: "Infrastructure", items: ["Docker", "Azure", "IIS", "Linux", "GitHub Actions", "Tailscale"] },
@@ -188,14 +193,15 @@ export const GAME = {
 
 /**
  * Roles, newest first. Points come from the CV; `project` links each role
- * to the case study it produced. `tile` is the background each logo was made
- * for: ITL's is white type, so it needs a dark tile.
+ * to the case study it produced. `tile` is the background each logo sits on. All three
+ * sit on white: Black Reef's mark is inverted to black, and ITL's white
+ * lettering is recoloured navy, each in an `-on-white` copy of the file.
  */
 export const EXPERIENCE = [
   {
     company: "Black Reef",
     role: "CEO and Co-founder",
-    href: "https://www.teamblackreef.com", logo: "/logos/blackreef.svg", tile: "dark",
+    href: "https://www.teamblackreef.com", logo: "/logos/blackreef-on-white.svg", tile: "light",
     place: "Mauritius",
     period: "Oct 2026 to now",
     project: "blackreef",
@@ -210,7 +216,7 @@ export const EXPERIENCE = [
   {
     company: "Imatic Technologies",
     role: "Software Developer Intern",
-    href: "https://www.itl.co.tz/", logo: "/logos/itl.png", tile: "dark",
+    href: "https://www.itl.co.tz/", logo: "/logos/itl-on-white.png", tile: "light",
     place: "Dar es Salaam",
     period: "Jun to Sep 2026",
     project: "smarterp",
@@ -238,5 +244,83 @@ export const EXPERIENCE = [
       "Expo app with dashboard analytics, preventative maintenance scheduling and PDF export.",
     ],
     stack: ["C#", "Dapper", "SAP HANA", "React Native", "Expo"],
+  },
+];
+
+/** The four cards under the about block on the home page. All from the CV. */
+export const STATS = [
+  { value: "3", label: "Hackathon awards", body: "Winner at Finnovate and Life Powered by Tech, Judge's Choice at Build with Gemma." },
+  { value: "2", label: "Internships", body: "A fleet system at CubeStone, then the attendance module at Imatic Technologies." },
+  { value: "10", label: "Projects here", body: "Products, client sites and hackathon builds, 2025 to now." },
+  { value: "1.5s", label: "For a month of punches", body: "49 people and 13,487 punches, processed with no failures." },
+];
+
+/** What I build, each with where I've already built it. `tone` is the row colour. */
+export const SERVICES = [
+  {
+    title: "Backends and APIs",
+    tone: "pink",
+    body: "Schemas, stored procedures, APIs and the rules that guard them. The attendance module at ITL, Travelio's Firebase backend, and around 40 endpoints for the fleet system at CubeStone.",
+    stack: ["C# / .NET 8", "Node.js", "REST", "Dapper"],
+  },
+  {
+    title: "Web front ends",
+    tone: "blue",
+    body: "Sites people pay for and use. Sultan Mauritius and Country Materials, both built and launched, both edited by the client through Sanity.",
+    stack: ["Next.js", "React", "TypeScript", "Sanity"],
+  },
+  {
+    title: "Databases",
+    tone: "yellow",
+    body: "Where most of my bugs turn out to live. SQL Server, SAP HANA and SQLite, and the one-column fix that brought back one punch in six.",
+    stack: ["SQL Server", "SAP HANA", "Prisma", "SQLite"],
+  },
+  {
+    title: "Mobile apps",
+    tone: "green",
+    body: "The fleet manager's Expo app: dashboard analytics, maintenance scheduling and PDF export, with tabs gated per employee.",
+    stack: ["React Native", "Expo"],
+  },
+  {
+    title: "AI that can be checked",
+    tone: "lilac",
+    body: "In FraudLens the model never decides the verdict. A rules engine owns the score, and the model has to quote the message or its output is thrown away.",
+    stack: ["Rules engines", "Gemma", "Function calling"],
+  },
+  {
+    title: "Infrastructure",
+    tone: "lime",
+    body: "Deployed under IIS for ITL, on Vercel for Black Reef, and a Fedora machine at home that I take apart more than I should.",
+    stack: ["Docker", "Azure", "IIS", "Linux", "GitHub Actions"],
+  },
+];
+
+/** Questions a recruiter or client asks first. `tone` is the pill colour. */
+export const FAQ = [
+  {
+    q: "When can you start?",
+    a: "July 2027, for a 12-month placement. It's the Year in Industry on my Kent degree.",
+    tone: "pink",
+  },
+  {
+    q: "Where are you based?",
+    a: "Canterbury, UK. Both internships were in Dar es Salaam, and Black Reef runs from Mauritius.",
+    tone: "lime",
+  },
+  {
+    q: "What do you build in?",
+    a: "Mostly Python, Java and SQL. At work I've also shipped C# and .NET, Node.js and Next.js, and I pick up whatever the job runs on.",
+    tone: "blue",
+  },
+  {
+    q: "Do you take client work?",
+    a: "Through Black Reef, the studio I co-founded. Fixed-scope proposals, and the client owns everything from day one.",
+    tone: "yellow",
+  },
+  {
+    q: "Can I see your CV?",
+    a: "Yes, it's a one-page PDF.",
+    link: { label: "Open the CV", href: "/Kshitij_Jha_CV.pdf" },
+    tone: "green",
   },
 ];

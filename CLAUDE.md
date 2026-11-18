@@ -16,9 +16,9 @@ These 40 rules apply to every UI change on this site. Check new work against bot
 8. Group with spacing
 9. Make headlines specific
 10. Emphasize the CTA
-11. Add an accent colour. This site is deliberately pure black on white, so the "accent" is ink itself (`--accent: var(--ink)`). Magenta and green appear only inside the interactive demos, as status: wrong and fixed
+11. Add an accent colour. The site follows the Creatie template: cream graph paper, near-black ink, and six pastel tones (`--pink`, `--blue`, `--yellow`, `--green`, `--lilac`, `--lime`, set per element with `.t-<tone>`). Pastels colour tags, tiles and rows, never body text. Magenta and green stay reserved for the interactive demos, as status: wrong and fixed
 12. Keep icons consistent
-13. Remove embellishments
+13. Remove embellishments. The stickers, googly eyes, pins and paperclips are the template's deliberate character: every sticker names a real skill or section, and nothing gets added beyond those
 14. Inner radius = outer - padding
 15. Improve text contrast
 16. Wrap headlines properly (`text-wrap: balance`, non-breaking hyphens in compounds)

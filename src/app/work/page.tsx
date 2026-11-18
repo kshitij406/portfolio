@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
-import WorkIndex from "@/components/WorkIndex";
+import PageHead from "@/components/PageHead";
+import WorkGrid from "@/components/WorkGrid";
 import { SMALLER } from "@/data/content";
 
 export const metadata: Metadata = { title: "Work" };
 
 export default function Work() {
   return (
-    <main className="wrap page">
-      <header className="page-head">
-        <h1>Work</h1>
+    <main className="page">
+      <PageHead tag="Work" tone="yellow" title={<>Ten projects, start to finish</>}>
         <p>Products, client sites and hackathon builds, 2025 to now. Each one opens into the story and, where there is one, a demo you can use.</p>
-      </header>
+      </PageHead>
 
-      <WorkIndex />
+      <WorkGrid />
 
       <section className="smaller" aria-labelledby="smaller-h">
-        <h2 id="smaller-h">Smaller things</h2>
+        <h2 id="smaller-h" className="display">Smaller things</h2>
         <ul>
           {SMALLER.map((s) => (
             <li key={s.name}>

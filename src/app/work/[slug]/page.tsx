@@ -76,12 +76,18 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
   const demos = DEMOS[slug] ?? [];
 
   return (
-    <main className="wrap page">
+    <main className="page">
         <article className="proj">
           <aside className="proj-meta">
             <div>
               <p className="label">Project</p>
-              <h1>{p.name}</h1>
+              <div className="proj-title">
+                {p.icon && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={p.icon} alt="" className="proj-icon" width="72" height="72" />
+                )}
+                <h1 className="display">{p.name}</h1>
+              </div>
               {p.award && <p className="proj-award">{p.award}</p>}
             </div>
 
@@ -142,6 +148,17 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
             )}
           </div>
         </article>
+
+        {p.gallery && (
+          <section className="gallery" aria-label={`${p.name} screens`}>
+            {p.gallery.map((g, i) => (
+              <figure key={g.src} style={{ ["--tilt" as string]: `${[-3, 2, -1.5, 3, -2, 1.5][i % 6]}deg` }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={g.src} alt={g.alt} loading="lazy" />
+              </figure>
+            ))}
+          </section>
+        )}
 
         {demos.length > 0 && (
           <div className="proj-demos">

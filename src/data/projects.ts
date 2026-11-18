@@ -18,12 +18,48 @@ export type Project = {
   stack?: string[];
   image: string;
   illustration?: boolean;
+  /** App icon, shown large beside the title. */
+  icon?: string;
+  /** Phone screenshots, shown big under the cover. */
+  gallery?: { src: string; alt: string }[];
   story: string[];
   points?: string[];
   links?: { label: string; href: string }[];
 };
 
 export const PROJECTS: Project[] = [
+  {
+    slug: "travelio",
+    name: "Travelio",
+    kind: "Hackathon build, mobile app",
+    category: "Hackathon",
+    role: "Team lead, the whole backend",
+    year: "2026",
+    award: "Winner, Life Powered by Tech 2026",
+    stack: ["Firebase Realtime Database", "Firebase Auth", "Security rules", "Jest", "Flutter"],
+    image: "/work/travelio.jpg",
+    icon: "/work/travelio/icon.png",
+    story: [
+      "A live bus tracker for Mauritius, built in 24 hours and the winner of the Life Powered by Tech hackathon. Riders already on a bus share their position anonymously, and anyone waiting at a stop sees when it will arrive. I led the team of five and built the whole backend.",
+      "The hard part is trust: anyone can open the app and claim to be a bus. The database rules only accept a position inside Mauritius, at a speed a bus can actually reach, from the rider who owns that slot. Positions older than two minutes are ignored and anyone can clear them, so a dead phone never leaves a ghost bus on the map.",
+      "It covers 282 bus lines and the Metro Express. When nobody on a route is sharing, the app falls back to the timetable and says so.",
+    ],
+    points: [
+      "Firebase Realtime Database with anonymous sign-in: sharing a bus needs no name, number or account.",
+      "Every write is validated in the rules: coordinates inside Mauritius, speed under 120 km/h, no unknown fields, and crowding reports at most once every 30 seconds.",
+      "Only the latest position is stored, never a trip history. Sharing stops at the end of the route or after 90 minutes.",
+      "The optional leaderboard lives in a separate Firebase app, so a rider's points can never be linked back to where they went.",
+      "The rules are tested against the Firebase emulators with Jest, under a demo project id that never touches the real database.",
+    ],
+    gallery: [
+      { src: "/work/travelio/home.jpg", alt: "Travelio home screen: nearby stops and their next buses" },
+      { src: "/work/travelio/stop.jpg", alt: "A stop, with its next bus and a button to report a bus that passed without stopping" },
+      { src: "/work/travelio/onbus.jpg", alt: "I'm on the bus: picking the route before sharing" },
+      { src: "/work/travelio/map.jpg", alt: "Map with route 2 drawn from Port Louis to Curepipe" },
+      { src: "/work/travelio/plan.jpg", alt: "Journey planner" },
+      { src: "/work/travelio/places-beach.jpg", alt: "Places: beaches with their nearest stops" },
+    ],
+  },
   {
     slug: "fraudlens",
     name: "FraudLens AI",

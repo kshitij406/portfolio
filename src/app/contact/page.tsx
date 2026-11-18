@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
+import PageHead from "@/components/PageHead";
 import CopyEmail from "@/components/CopyEmail";
 import { LINKS, PROFILE } from "@/data/content";
 
@@ -14,14 +15,11 @@ const ROUTES = [
 
 export default function Contact() {
   return (
-    <main className="wrap page">
-      <div className="contact-top">
-        <header className="page-head">
-          <h1>Contact</h1>
-          <p>{PROFILE.availability.replace("12-month", "12‑month")}. Email is the quickest way to reach me, and I answer.</p>
-        </header>
-        <CopyEmail email={PROFILE.email} />
-      </div>
+    <main className="page">
+      <PageHead tag="Contact" tone="lilac" title={<>Email is quickest, and I answer</>}>
+        <p>{PROFILE.availability.replace("12-month", "12‑month")}.</p>
+      </PageHead>
+      <CopyEmail email={PROFILE.email} />
 
       <ul className="routes">
         {ROUTES.map((r, i) => (

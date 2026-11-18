@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
+import PageHead from "@/components/PageHead";
 import Journey from "@/components/Journey";
 import { EDUCATION, LANGUAGES, LINKS, OFF_CLOCK, PROFILE, RECOGNITION, SKILLS } from "@/data/content";
 
@@ -13,27 +14,27 @@ const EXPERIENCE = [
 
 export default function About() {
   return (
-    <main className="wrap page">
+    <main className="page">
       <div className="about">
-        <header className="page-head about-head">
-          <h1>About</h1>
+        <PageHead tag="About" tone="blue" title={<>From the Tanzanian coast to Kent</>}>
           <p>
             I&rsquo;m Kshitij, a second-year Computer Science student at the University of Kent and CEO of Black Reef, a
-            five&#8209;person software studio in Mauritius. I build backends and the screens on top of them, and I&rsquo;m
+            five&#8209;person software studio in Mauritius. I build software people actually use, from the database to the screen, and I&rsquo;m
             looking for a 12&#8209;month placement from summer 2027.
           </p>
           <p>
             Placement or project? <a href={`mailto:${PROFILE.email}`} className="ul muted">{PROFILE.email}</a>
           </p>
-        </header>
+        </PageHead>
         <figure className="portrait">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/portrait.jpg" alt="Kshitij Jha in a dark suit, against a plain grey wall" />
         </figure>
       </div>
 
-      <div className="cols">
-        <section>
+      <div className="cols rv-list">
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Experience</h2>
           <ul>
             {EXPERIENCE.map(([role, org, when]) => (
@@ -46,7 +47,8 @@ export default function About() {
             ))}
           </ul>
         </section>
-        <section>
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Education</h2>
           <ul>
             {EDUCATION.map((e) => (
@@ -59,7 +61,8 @@ export default function About() {
             ))}
           </ul>
         </section>
-        <section>
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Recognition</h2>
           <ul>
             {RECOGNITION.map((r) => (
@@ -70,7 +73,8 @@ export default function About() {
             ))}
           </ul>
         </section>
-        <section>
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Stack</h2>
           <ul>
             {SKILLS.map((s) => (
@@ -81,7 +85,8 @@ export default function About() {
             ))}
           </ul>
         </section>
-        <section>
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Outside work</h2>
           <ul>
             {OFF_CLOCK.map((o) => (
@@ -96,7 +101,8 @@ export default function About() {
             </li>
           </ul>
         </section>
-        <section>
+        <section className="note rv">
+          <span className="pin" aria-hidden />
           <h2>Elsewhere</h2>
           <ul>
             <li>

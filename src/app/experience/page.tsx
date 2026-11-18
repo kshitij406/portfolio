@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import PageHead from "@/components/PageHead";
 import { EXPERIENCE } from "@/data/content";
 import { project } from "@/data/projects";
 
@@ -8,17 +9,16 @@ export const metadata: Metadata = { title: "Experience" };
 
 export default function Experience() {
   return (
-    <main className="wrap page">
-      <header className="page-head">
-        <h1>Experience</h1>
+    <main className="page">
+      <PageHead tag="Experience" tone="green" title={<>One studio, two internships</>}>
         <p>A software studio I co-founded, and the two internships before it. Each one opens into the project it produced.</p>
-      </header>
+      </PageHead>
 
       <ol className="jobs">
         {EXPERIENCE.map((job, i) => {
           const p = project(job.project)!;
           return (
-            <li key={job.company} className="job" style={{ ["--i" as string]: i }}>
+            <li key={job.company} className="job rv" style={{ ["--i" as string]: i }}>
               <p className="job-when">
                 {job.period}
                 <span>{job.place}</span>
